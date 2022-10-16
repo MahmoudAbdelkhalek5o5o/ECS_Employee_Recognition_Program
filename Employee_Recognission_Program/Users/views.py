@@ -5,7 +5,11 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.urls import reverse
-
+from django.shortcuts import render
+from django.http import HttpResponse
+# from .resources import UsersResource
+from tablib import Dataset
+from .resources import UsersResource
 # from activities.models import ActivityCategory
 from .models import  User , UserRegisterationRequests , RejectedUserRegisterationRequests
 from django.core.mail import send_mail
@@ -17,6 +21,8 @@ from django.contrib.auth.hashers import make_password
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
+from tablib import Dataset
+
 
 from .forms import UpdateUserForm
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
@@ -178,3 +184,19 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+
+def simple_upload(request):
+    if request.method == 'POST':
+        person_resource = UsersResource()
+        dataset = Dataset()
+        new_persons = request.FILES['myfile']
+
+        imported_data = dataset.load(new_persons.read())
+        result = person_resource.import_data(dataset, dry_run=True)  # Test the data import
+
+        if not result.has_errors():
+            person_resource.import_data(dataset, dry_run=False)  # Actually import now
+
+    return render(request, 'accounts/import_users.html')

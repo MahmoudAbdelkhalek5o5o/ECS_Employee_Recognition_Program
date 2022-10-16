@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from Users.views import ResetPasswordView
-from django.contrib.auth import views as auth_views
+# from django.contrib.auth import views as auth_views
 
 
 
@@ -35,10 +35,10 @@ urlpatterns = [
          name='password_reset_complete'),
     path('admin/', admin.site.urls),
     path("", include("Users.urls")),
-    # path("", include("homescreen.urls")),
+    path("", include("homescreen.urls")),
     
-    # path('activities/', include("activities.urls")),
-    # path('Rewards/', include("Rewards.urls")),
+    path('activities/', include("activities.urls")),
+    path('Rewards/', include("Rewards.urls")),
     # path("summernote/", include("django_summernote.urls")),
 
     

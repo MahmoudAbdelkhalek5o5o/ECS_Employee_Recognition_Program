@@ -169,3 +169,20 @@ class UpdateUserrequestForm(forms.ModelForm):
 class Active_Form(forms.Form):
     Active_Form = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control','style':'width:150px;height:50px;display:inline-block', 'placeholder': 'asc_desc'}), choices=[("Active","Active"),("Not-Active","Not-Active") ],label='' )   
 
+
+
+
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        exclude = [id, ]
+
+    def clean(self):
+        email = self.cleaned_data.get('email')
+        domain = email.split('@')[1]
+        ecsDomain = "ecs-co.com"
+        if domain != ecsDomain:
+            raise forms.ValidationError("Product offer price cannot be greater than Product MRP.")
+        return self.cleaned_data

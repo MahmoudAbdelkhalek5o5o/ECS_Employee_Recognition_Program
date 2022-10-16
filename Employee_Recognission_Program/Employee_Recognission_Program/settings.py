@@ -38,8 +38,8 @@ JWT_EXP_DELTA_SECONDS = 86400  # token expiring time in seconds let's assign one
 INSTALLED_APPS = [
     'Users',
     # 'homescreen',
-    # 'activities',
-    # 'Rewards',
+    'activities',
+    'Rewards',
     "phonenumber_field",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django_summernote",
+    'import_export'
 ]
 
 MIDDLEWARE = [
