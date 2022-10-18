@@ -92,7 +92,7 @@ DATABASES = {
         'HOST':config('DB_HOST'),
         'PORT': config('DB_PORT'),
         'USER':config('DB_USER'),
-        'PASSWORD': config('DB_Password')
+        'PASSWORD': config('DB_PASSWORD')
     }
 }
 #Authentication backends
