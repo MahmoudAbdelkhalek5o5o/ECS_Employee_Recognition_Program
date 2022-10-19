@@ -1,5 +1,6 @@
 from email.policy import default
 from msilib.schema import IniFile
+from tkinter import E
 from wsgiref.validate import validator
 from django.contrib.auth.models import AbstractUser
 
@@ -30,14 +31,17 @@ def validate_domain(data):
                 )
     return False
 
+# validate employee id doesn't exist
+
+# def validate_emp_id(value):
+#     if(User.objects.filter(emp_id = value).exists() and UserRegisterationRequests.objects.filter(emp_id = value).exists()):
+#         raise ValidationError('Employee Id already exists')
 # Create your models here.
 class User(AbstractUser):
     ROLE = [
         ("ADMIN" , "Admin"),
         ("CATEGORYOWNER" , "CategoryOwner"),
         ("EMPLOYEE" , "Employee"),
-
-              
     ]
     email = models.EmailField(null = False, blank = False , unique = True , validators = [validate_domain])
     emp_id = models.IntegerField(null = False, blank = False , primary_key= True, unique = True,default=3324)

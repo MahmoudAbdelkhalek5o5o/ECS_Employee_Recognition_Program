@@ -1,6 +1,3 @@
-from django.db import models
-
-# Create your models here.
 from datetime import datetime
 from tkinter import CASCADE
 from unittest.util import _MAX_LENGTH
@@ -25,8 +22,6 @@ class Vendors(models.Model):
     accepts_voucher = models.BooleanField(null=False , default = False)
     accepts_procurement = models.BooleanField(null=False , default = False)
     accepts_direct = models.BooleanField(null=False , default = False)
-
-    
 
 class OldDataVendors(models.Model):
     original_vendor = models.ForeignKey(Vendors,on_delete=models.CASCADE,null=False , blank = False)
