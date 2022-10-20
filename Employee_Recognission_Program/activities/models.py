@@ -24,7 +24,7 @@ class ActivityCategory(models.Model):
     description =  models.CharField(max_length=255,null=False, blank= False, default="")
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
     start_date = models.DateTimeField(editable=True, null = True, blank = True)
-    end_date = models.DateTimeField(min = datetime.now(), editable=True , null = True, blank = True)
+    end_date = models.DateTimeField(editable=True , null = True, blank = True)
     owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="category_owner")
     budget = models.IntegerField(null = False, blank = False, validators = [validate_budget])
     budget_compare = models.IntegerField(null = False, blank = False)
