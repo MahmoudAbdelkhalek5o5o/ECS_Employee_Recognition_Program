@@ -17,6 +17,7 @@ class UsersResource(resources.ModelResource):
         for row in dataset:
             if "@ecs-co.com" not in row[3]:
                 raise ValidationError(_('Please enter an ecs domain. ex: example@ecs-co.com'))
+        
             
     def after_import(self, dataset, result , using_transactions, dry_run = True, **kwargs):
         

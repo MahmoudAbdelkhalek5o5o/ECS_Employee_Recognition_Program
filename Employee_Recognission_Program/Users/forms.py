@@ -176,19 +176,19 @@ class Active_Form(forms.Form):
 
 
 
-class UserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        exclude = [id, ]
+# class UserForm(forms.ModelForm):
+#     class Meta:
+#         model = User
+#         exclude = [id, ]
 
-    def clean(self):
-        name = self.cleaned_data.get('name')
-        email = self.cleaned_data.get('email')
-        password = self.cleaned_data.get('password')
-        first_name = self.cleaned_data.get('first_name')
-        last_name  = self.cleaned_data.get('last_name')
-        emp_id = self.cleaned_data.get('emp_id')
-        img = self.cleaned_data.get('img')
-        if '@ecs-co.com' not in email:
-            raise forms.ValidationError(_('Please enter an ecs domain. ex: example@ecs-co.com'))
-        return self.cleaned_data
+#     def clean(self):
+#         name = self.cleaned_data.get('name')
+#         email = self.cleaned_data.get('email')
+#         password = self.cleaned_data.get('password')
+#         first_name = self.cleaned_data.get('first_name')
+#         last_name  = self.cleaned_data.get('last_name')
+#         emp_id = self.cleaned_data.get('emp_id')
+#         img = self.cleaned_data.get('img')
+#         if '@ecs-co.com' not in email:
+#             raise forms.ValidationError(_('Please enter an ecs domain. ex: example@ecs-co.com'))
+#         return self.cleaned_data
