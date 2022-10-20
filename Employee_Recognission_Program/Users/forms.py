@@ -4,6 +4,8 @@ from .models import User
 from django import forms
 from .models import Role
 from phonenumber_field.formfields import PhoneNumberField
+from django.utils.translation import gettext_lazy as _
+
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 
@@ -174,15 +176,19 @@ class Active_Form(forms.Form):
 
 
 
-class UserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        exclude = [id, ]
+# class UserForm(forms.ModelForm):
+#     class Meta:
+#         model = User
+#         exclude = [id, ]
 
-    def clean(self):
-        email = self.cleaned_data.get('email')
-        domain = email.split('@')[1]
-        ecsDomain = "ecs-co.com"
-        if domain != ecsDomain:
-            raise forms.ValidationError("Product offer price cannot be greater than Product MRP.")
-        return self.cleaned_data
+#     def clean(self):
+#         name = self.cleaned_data.get('name')
+#         email = self.cleaned_data.get('email')
+#         password = self.cleaned_data.get('password')
+#         first_name = self.cleaned_data.get('first_name')
+#         last_name  = self.cleaned_data.get('last_name')
+#         emp_id = self.cleaned_data.get('emp_id')
+#         img = self.cleaned_data.get('img')
+#         if '@ecs-co.com' not in email:
+#             raise forms.ValidationError(_('Please enter an ecs domain. ex: example@ecs-co.com'))
+#         return self.cleaned_data

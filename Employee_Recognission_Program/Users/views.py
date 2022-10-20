@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -198,5 +199,7 @@ def simple_upload(request):
 
         if not result.has_errors():
             person_resource.import_data(dataset, dry_run=False)  # Actually import now
+        else:
+            raise ValidationError("haha")
 
     return render(request, 'accounts/import_users.html')

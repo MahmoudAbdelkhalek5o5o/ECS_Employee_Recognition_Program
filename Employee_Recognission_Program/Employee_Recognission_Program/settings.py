@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from tempfile import template
+from typing import Any
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nb%mi^sfyv)4nfmun-jy645&^3%#hmwt%0qmhsbd%$j-i!2vh7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('SECRET_KEY')
+DEBUG = True
 
 ALLOWED_HOSTS = []
 JWT_SECRET = SECRET_KEY  # use settings secret key for JWT secret
