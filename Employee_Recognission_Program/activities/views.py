@@ -22,13 +22,8 @@ def mine(request):
     description = "adsfjo", start_date = None, end_date = None,
     owner = User.objects.get(pk = 3324), budget = 80001,
     budget_compare = 80001)
-    errors = categ.clean()
-    str = ""
-    if (errors):
-        for error in errors:
-           str+= errors[error] + "\n"
-    else:
-        categ.save()
+    #errors = categ.clean()
+    categ.save()
     #categ.delete()
     #ActivityCategory.objects.filter(category_name='hamed').delete()
     return HttpResponse(str)
