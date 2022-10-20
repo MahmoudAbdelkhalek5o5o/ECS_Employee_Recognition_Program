@@ -28,6 +28,7 @@ class ActivityCategory(models.Model):
     owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="category_owner")
     budget = models.IntegerField(null = False, blank = False, validators = [validate_budget])
     budget_compare = models.IntegerField(null = False, blank = False)
+    is_archived = models.BooleanField(null=False,blank = False , default=False)
 
     def clean(self, *args, **kwargs):
         if(self.start_date>self.end_date):
@@ -68,6 +69,7 @@ class Activity(models.Model):
     start_date = models.DateTimeField(editable=True)
     end_date = models.DateTimeField(editable=True,null=True)
     is_approved = models.BooleanField(null=False,blank = False , default=False)
+    is_archived = models.BooleanField(null=False,blank = False , default=False)
 
     def clean(self, *args, **kwargs):
         if(self.start_date>self.end_date):
