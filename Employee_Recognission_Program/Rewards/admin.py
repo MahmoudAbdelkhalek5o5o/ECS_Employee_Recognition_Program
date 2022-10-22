@@ -3,20 +3,59 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from .models import Vendors , Rewards , Suggest_vendor , OldDataVendors , ArchivedVendors , OldDataRewards , ArchiveRewards , Redemption_Request , OldDataSuggest_Vendor , budget
 from .resources import VendorResource , RewardResource
-
+from django.contrib import messages
+import pytz
+from datetime import datetime
 # Register your models here.
 
 
+@admin.action(description='Restore Vendor')
+def AdminRestoreVendor (modeladmin, request, queryset):
+    utc=pytz.UTC
+    now = utc.localize(datetime.now())
+    count=0
+    for obj in queryset:
+        cat = Vendors.objects.filter(id = obj.id)[0]
+        if cat.end_date >= now and cat.is_archived==True:
+            Vendors.objects.filter(id=cat.id).update(is_archived = False)
+            count=count+1
+        elif cat.is_archived==False:
+            messages.error(request, f'Vendor with id {cat.id} and the name of {cat.name} cannot be restored since it already is not archived')  
+        else:
+            messages.error(request, f'Vendor with id {cat.id} and the name of {cat.name} cannot be restored after the end date.')  
+    if count != 0:
+        messages.success(request, f'{count} Vendor(s) restored 0')  
+
+@admin.action(description='Restore Reward')
+def AdminRestoreReward (modeladmin, request, queryset):
+    utc=pytz.UTC
+    now = utc.localize(datetime.now())
+    count=0
+    for obj in queryset:
+        cat = Rewards.objects.filter(id = obj.id)[0]
+        if cat.end_date >= now and cat.vendor.is_archived==False and cat.is_archived==True:
+            Rewards.objects.filter(id=cat.id).update(is_archived = False)
+            count=count+1
+        elif cat.is_archived==False:
+            messages.error(request, f'Reward with id {cat.id} cannot be restored since it already is not archived') 
+        elif cat.category.is_archived==True:
+            messages.error(request, f'Reward with id {cat.id} cannot be restored since the parent category with the name {cat.vendor.name} is archived')       
+        else:
+            messages.error(request, f'Reward with id {cat.id} cannot be restored after the end date.')  
+    if count != 0:
+        messages.success(request, f'{count} Reward(s) restored successfully')
 
 @admin.register(Vendors)
 class ViewAdmin(ImportExportModelAdmin):
-        resource_class = VendorResource
+    resource_class = VendorResource
+    actions = [AdminRestoreVendor]
 
 
 
 @admin.register(Rewards)
 class ViewAdmin(ImportExportModelAdmin):
     resource_class = RewardResource
+    actions = [AdminRestoreReward]
 
 admin.site.register(Suggest_vendor)
 admin.site.register(OldDataVendors)
