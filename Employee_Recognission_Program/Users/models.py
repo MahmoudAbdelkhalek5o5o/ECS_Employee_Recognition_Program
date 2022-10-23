@@ -9,6 +9,9 @@ from PIL import Image
 import datetime
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+# from audit_log.models.managers import AuditLog
+# from audit_log.models.fields import LastUserField
+from auditlog.registry import auditlog
 
 
 class Role(Enum):
@@ -45,7 +48,7 @@ class User(AbstractUser):
     role = models.CharField(max_length = 20 , choices = ROLE , null = False , default = ROLE[0][1])
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
     points = models.IntegerField(default=0)
-
+    # audit_log = AuditLog()
 class OldDataUser(models.Model):
     ROLE = [
         ("ADMIN" , "Admin"),
@@ -121,3 +124,5 @@ class RejectedUserRegisterationRequests(models.Model):
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
     reject_date = models.DateTimeField(auto_now_add=True , null=False)
     rejected_by = models.ForeignKey(User , on_delete = models.CASCADE , null = False)
+
+auditlog.register(User)

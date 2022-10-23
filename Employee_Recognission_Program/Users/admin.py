@@ -6,8 +6,6 @@ from .resources import UsersResource
 # from .forms import UserForm
 # Register your models here.
 
-
-
 @admin.register(User)
 class ViewAdmin(ImportExportModelAdmin):
     resource_class = UsersResource
