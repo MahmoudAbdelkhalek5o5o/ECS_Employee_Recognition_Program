@@ -45,33 +45,9 @@ class User(AbstractUser):
     email = models.EmailField(null = False, blank = False , unique = True , validators = [validate_domain])
     emp_id = models.IntegerField(null = False, blank = False , primary_key= True, unique = True,default=3324)
     img = models.ImageField(upload_to='images/', null = True , blank = True, default = 'images/plus.png')
-    role = models.CharField(max_length = 20 , choices = ROLE , null = False , default = ROLE[0][1])
+    role = models.CharField(max_length = 20 , choices = ROLE , null = False , default = ROLE[0])
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
     points = models.IntegerField(default=0)
-<<<<<<< Updated upstream
-    # audit_log = AuditLog()
-class OldDataUser(models.Model):
-    ROLE = [
-        ("ADMIN" , "Admin"),
-        ("CATEGORYOWNER" , "CategoryOwner"),
-        ("EMPLOYEE" , "Employee"),
-
-              
-    ]
-    original_emp_id = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
-    username = models.CharField(max_length=20, null = False , blank = False)
-    first_name = models.CharField(max_length=20, null = False , blank = False)
-    last_name = models.CharField(max_length=20, null = False , blank = False)
-    email = models.EmailField(null = False, blank = False , unique = True)
-    img = models.ImageField(upload_to='images/', null = True , blank = True, default = 'images/plus.png')
-    role = models.CharField(max_length = 20 , choices = ROLE , null = False)
-    phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
-    points = models.IntegerField(default=0)
-    edit_date = models.DateTimeField(editable=True,null=True)
-    edit_by = models.ForeignKey(User , on_delete = models.CASCADE , null = False , related_name = "edited_by")
-=======
-
->>>>>>> Stashed changes
 
     
     
@@ -83,6 +59,9 @@ class announcement(models.Model):
     StartDate= models.DateTimeField(auto_now_add=True,editable=False)
     EndDate=models.DateTimeField(editable=False)
     is_archived = models.BooleanField(null=False , default = False)
+    def clean(self, *args, **kwargs):
+        if(self.start_date>self.end_date):
+            raise ValidationError("Start Date must be before end date")
 
 class UserRegisterationRequest(models.Model):
     username = models.CharField(max_length=20, null = False , blank = False)
@@ -95,41 +74,3 @@ class UserRegisterationRequest(models.Model):
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
 
 
-<<<<<<< Updated upstream
-class OldDataUserRegisterationRequests(models.Model):
-    ROLE = [
-        ("ADMIN" , "Admin"),
-        ("CATEGORYOWNER" , "CategoryOwner"),
-        ("EMPLOYEE" , "Employee"),
-
-              
-    ]
-    original_request = models.ForeignKey(UserRegisterationRequests,on_delete=models.CASCADE,null = False)
-    username = models.CharField(max_length=20, null = False , blank = False)
-    first_name = models.CharField(max_length=20, null = False , blank = False)
-    last_name = models.CharField(max_length=20, null = False , blank = False)
-    password = models.CharField(max_length=100, null = False , blank = False, default='123456Abc')
-    email = models.EmailField(null = False, blank = False)
-    emp_id = models.IntegerField(null = False, blank = False , primary_key= True, unique = True)
-    img = models.ImageField(upload_to='images/', null = True , blank = True, default = 'Logo.png')
-    role = models.CharField(max_length=20, null = False , blank = False, choices=ROLE)
-    phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
-    edit_date = models.DateTimeField(auto_now_add=True , null=False)
-    edit_by = models.ForeignKey(User , on_delete = models.CASCADE , null = False , related_name = "edited_registeration_by")
-
-
-class RejectedUserRegisterationRequests(models.Model):
-    request = models.ForeignKey(UserRegisterationRequests,on_delete=models.CASCADE,null=False )
-    username = models.CharField(max_length=20, null = False , blank = False)
-    first_name = models.CharField(max_length=20, null = False , blank = False)
-    last_name = models.CharField(max_length=20, null = False , blank = False)
-    email = models.EmailField(null = False, blank = False)
-    emp_id = models.IntegerField(null = False, blank = False , primary_key= True, unique = True)
-    img = models.ImageField(upload_to='images/', null = True , blank = True, default = 'Logo.png')
-    phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
-    reject_date = models.DateTimeField(auto_now_add=True , null=False)
-    rejected_by = models.ForeignKey(User , on_delete = models.CASCADE , null = False)
-
-auditlog.register(User)
-=======
->>>>>>> Stashed changes

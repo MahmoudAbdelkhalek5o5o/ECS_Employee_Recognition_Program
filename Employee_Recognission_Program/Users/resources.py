@@ -19,16 +19,16 @@ class UsersResource(resources.ModelResource):
                 raise ValidationError(_('Please enter an ecs domain. ex: example@ecs-co.com'))
         
             
-    def after_import(self, dataset, result , using_transactions, dry_run = True, **kwargs):
+    # def after_import(self, dataset, result , using_transactions, dry_run = True, **kwargs):
         
-        for row in dataset:
-            send_mail(
-                    'Activity Request',
-                    f'{User.username} Created an account for you.',
-                    'muhammad.mazen4@gmail.com',
-                    [f'{row[3]}'],
-                    fail_silently=False,
-                                        )
+    #     for row in dataset:
+    #         send_mail(
+    #                 'Activity Request',
+    #                 f'{User.username} Created an account for you.',
+    #                 'muhammad.mazen4@gmail.com',
+    #                 [f'{row[3]}'],
+    #                 fail_silently=False,
+    #                                     )
 
     
     

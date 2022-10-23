@@ -1,6 +1,4 @@
 from django.shortcuts import render
-<<<<<<< Updated upstream
-=======
 from asyncio.windows_events import NULL
 from contextlib import nullcontext
 from pydoc import describe
@@ -15,6 +13,5 @@ from Users.models import User ,announcement
 from Rewards.models import budget
 import pytz
 from django.forms.models import model_to_dict
->>>>>>> Stashed changes
 
 # Create your views here.

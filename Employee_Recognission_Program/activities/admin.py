@@ -1,10 +1,9 @@
 from django.contrib import admin
+from django.contrib import messages
+
 from import_export.admin import ImportExportModelAdmin
-<<<<<<< Updated upstream
-from .models import CategoryArchive , Activity ,ActivitySuggestion , ActivityCategory , ActivityArchive , ActivityRequest , ActivityRestorationRequest , OldActivityRequest , OldDataActivities , OldDataActivitySuggestion , OldDataCategory
-=======
 from numpy import rec
-from .models import CategoryArchive , Activity ,ActivitySuggestion , ActivityCategory  , ActivityRequest  
+from .models import  Activity ,ActivitySuggestion , ActivityCategory  , ActivityRequest , ActivityRestorationRequest  
 from django.utils.translation import gettext_lazy as _
 from datetime import datetime
 import pytz
@@ -37,7 +36,8 @@ def AdminArchiveCategory(modeladmin, request, queryset):
     queryset.update(is_archived = True)
     for category in queryset:
         Activity.objects.filter(category = category).update(is_archived = True)
-        ActivityRequest.objects.filter(category = category).update(is_archived = True)
+        ActivityCategory.objects.filter(pk = category.id).update(is_archived = True)
+        # ActivityRequest.objects.filter(category = category).update(is_archived = True)
     # messages.error(request, f'Activity cannot be restored after the end date of id {cat.id} with the name of {cat.activity_name}')  
     messages.success(request, f'Activity(ies) Archived successfully')  
     
@@ -79,26 +79,29 @@ def AdminRestoreActivity (modeladmin, request, queryset):
         messages.success(request, f'{count} Activity(ies) restored successfully')
 
 
->>>>>>> Stashed changes
 # Register your models here.
 
 @admin.register(ActivityCategory)
-class ViewAdmin(ImportExportModelAdmin):
-        pass
-
+class ViewAdminCategory(ImportExportModelAdmin):
+    actions = [AdminArchiveCategory, AdminRestoreCategory]
+    list_filter = (Filter,)
+    def get_queryset(self, request):
+        data = super().get_queryset(request)
+        to_archive = data.filter(end_date__lte=datetime.now())
+        to_archive.update(is_archived=True)
+        for category in to_archive:
+            Activity.objects.filter(category = category).update(is_archived = True)
+            ActivityRequest.objects.filter(category = category).update(is_archived = True)
+        return data
 
 
 @admin.register(Activity)
 class ViewAdmin(ImportExportModelAdmin):
-<<<<<<< Updated upstream
-    pass
-
-admin.site.register(ActivityArchive)
-=======
     actions = [AdminRestoreActivity]
     list_filter = ('is_archived',)
->>>>>>> Stashed changes
-admin.site.register(CategoryArchive)
-admin.site.register(ActivityRequest)
-admin.site.register(ActivitySuggestion)
 
+
+
+admin.site.register(ActivityRequest)
+admin.site.register(ActivityRestorationRequest)
+admin.site.register(ActivitySuggestion)
