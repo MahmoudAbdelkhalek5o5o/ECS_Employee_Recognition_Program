@@ -14,7 +14,7 @@ from enum import Enum
 # Create your models here.
 
 
-class Vendors(models.Model):
+class Vendor(models.Model):
     name = models.CharField(max_length=30,null=False, blank= False, unique = True)
     vendor_policy = models.CharField(max_length=5000 , null = True)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
@@ -26,6 +26,7 @@ class Vendors(models.Model):
     accepts_procurement = models.BooleanField(null=False , default = False)
     accepts_direct = models.BooleanField(null=False , default = False)
 
+<<<<<<< Updated upstream
     
 
 class OldDataVendors(models.Model):
@@ -61,42 +62,20 @@ class ArchivedVendors(models.Model):
     
 
 
+=======
+>>>>>>> Stashed changes
 
 
     
-class Rewards(models.Model):
-    vendor = models.ForeignKey(Vendors,on_delete=models.CASCADE,null=False , blank = False)
+class Reward(models.Model):
+    vendor = models.ForeignKey(Vendor,on_delete=models.CASCADE,null=False , blank = False)
     creation_day = models.DateTimeField(auto_now_add=True,editable=False)
     start_date = models.DateTimeField(editable=True)
     end_date = models.DateTimeField(editable=True)
     creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True, related_name="reward_creator")
     points_equivalent = models.IntegerField(null = False, blank = False)
 
-class OldDataRewards(models.Model):
-    original_voucher = models.ForeignKey(Rewards,on_delete=models.CASCADE,null=True)
-    creation_day = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True)
-    end_date = models.DateTimeField(editable=True)
-    creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True)
-    points_equivalent = models.IntegerField(null = False, blank = False)
-    update_date = models.DateTimeField(auto_now_add=True , editable = True , null = False)
-    updated_by=models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="reward_updater")
 
-class ArchiveRewards(models.Model):
-    id = models.IntegerField(null = False, blank = False , primary_key = True)
-    creation_day = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True)
-    end_date = models.DateTimeField(editable=True)
-    creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True)
-    points_equivalent = models.IntegerField(null = False, blank = False)
-    archived_date = models.DateTimeField(auto_now_add=True , editable = True , null = False)
-    archived_by=models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="archiver_reward")
-
-
-
-    
-
-    
 
 class Redemption_Request(models.Model):
     STATUS = [
@@ -108,7 +87,7 @@ class Redemption_Request(models.Model):
               
     ]
     employee = models.ForeignKey(User , on_delete = models.CASCADE, null = True , related_name="employee")
-    voucher = models.ForeignKey(Rewards,on_delete=models.CASCADE , null=False , blank=False)
+    voucher = models.ForeignKey(Reward,on_delete=models.CASCADE , null=False , blank=False)
     status = models.CharField(max_length=10, null = False , blank = False, choices=STATUS, default=STATUS[0][1])
     approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name="admin")
     request_date = models.DateTimeField(auto_now_add=True,editable=False)
@@ -140,28 +119,7 @@ class Suggest_vendor(models.Model):
 
 
 
-class OldDataSuggest_Vendor(models.Model):
-    STATUS = [
-        ("PENDING" , "Pending"),
-        ("ACCEPTED" , "Accpeted"),
-        ("REJECTED" , "Rejected"),
-        ("WITHDRAWN" , "Withdrawn"),
 
-              
-    ]
-    original_suggestion= models.ForeignKey(Suggest_vendor , on_delete = models.CASCADE, null = True)
-    vendor = models.CharField(max_length=30,null=False, blank= False, unique = False)
-    website = models.CharField(max_length=255,null=False, blank= False, unique = False)
-    reason = models.CharField(max_length=1024,null=False, blank= False, unique = False)
-    edit_delete_date = models.DateTimeField(editable=True,null=True)
-    edited = models.BooleanField(null=False,blank = False, default=False)
-    deleted = models.BooleanField(null=False,blank = False, default=False)
-    update_date = models.DateTimeField(auto_now_add=True , editable = True , null = False)
-    updated_by=models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="vendorsuggestion_updater")
-    status = models.CharField(max_length=20, null = False , blank = False, choices=STATUS , default=STATUS[0][1])
-
-
-    
     
     
 class budget(models.Model):

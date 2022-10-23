@@ -50,9 +50,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django_summernote",
     'import_export',
+<<<<<<< Updated upstream
     'auditlog' ,
 ]
 AUDITLOG_INCLUDE_ALL_MODELS=True
+=======
+    'auditlog',
+]
+AUDITLOG_INCLUDE_ALL_MODELS=True
+
+>>>>>>> Stashed changes
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

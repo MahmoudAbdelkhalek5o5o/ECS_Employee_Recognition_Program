@@ -43,6 +43,31 @@ class Activity(models.Model):
     start_date = models.DateTimeField(editable=True)
     end_date = models.DateTimeField(editable=True,null=True)
     is_approved = models.BooleanField(null=False,blank = False , default=False)
+<<<<<<< Updated upstream
+=======
+    is_archived = models.BooleanField(null=False,blank = False , default=False)
+
+    def clean(self, *args, **kwargs):
+        if(self.start_date>self.end_date):
+            raise ValidationError("Start Date must be before end date")
+        category_budget = self.category.budget
+        conversion_rate = budget.objects.filter(Archived_at = None)[0].EGP / budget.objects.filter(Archived_at = None)[0].point
+        if(self.points*conversion_rate>category_budget):
+            raise ValidationError("Activity points cannot fit within the category remaining budget")
+        super().clean(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.activity_name
+
+
+
+
+
+>>>>>>> Stashed changes
 
 
 class ActivityRequest(models.Model):
@@ -65,6 +90,7 @@ class ActivityRequest(models.Model):
     proof_of_action = models.FileField(upload_to = "proofs/",null=False, blank= False)
     activity_approval_date = models.DateTimeField(auto_now_add=False, auto_now=False, null = True, blank = False)
 
+<<<<<<< Updated upstream
 class OldActivityRequest(models.Model):
     STATUS = [
         ("PENDING" , "Pending"),
@@ -88,8 +114,9 @@ class OldActivityRequest(models.Model):
     updated_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="update_activityrequest_by")
     updated_approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="update_approved_by")
 
+=======
+>>>>>>> Stashed changes
 
-    
     
 class ActivitySuggestion(models.Model):
     activity_name = models.CharField(max_length=30 , null = False, blank=False)
@@ -110,6 +137,7 @@ class Points(models.Model):
 
 
 
+<<<<<<< Updated upstream
 class ActivityArchive(models.Model):
     id = models.IntegerField(null = False, blank = False , primary_key = True)
     activity_name = models.CharField(max_length=30,null=False, blank= False, unique=True)
@@ -124,6 +152,8 @@ class ActivityArchive(models.Model):
     end_date = models.DateTimeField(editable=True,null=True)
     is_approved = models.BooleanField(null=False,blank = False , default=False)
     archive_date = models.DateTimeField(auto_now_add=True,editable=False)
+=======
+>>>>>>> Stashed changes
 
 class ActivityRestorationRequest(models.Model):
     STATUS = [
@@ -153,6 +183,7 @@ class ActivityRestorationRequest(models.Model):
 
 
 
+<<<<<<< Updated upstream
 class OldDataActivities(models.Model):
     original_activity = models.ForeignKey(Activity, on_delete=models.CASCADE,null=True )
     activity_name = models.CharField(max_length=30,null=False, blank= False, unique=True)
@@ -194,3 +225,5 @@ class OldDataCategory(models.Model):
     budget_compare = models.IntegerField(null = False, blank = False)
     update_date = models.DateTimeField(auto_now_add=True,editable=False)
     updated_by = models.ForeignKey(User,on_delete=models.CASCADE , null=True , related_name="update_category_by")
+=======
+>>>>>>> Stashed changes

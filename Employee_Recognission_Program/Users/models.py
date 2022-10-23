@@ -48,6 +48,7 @@ class User(AbstractUser):
     role = models.CharField(max_length = 20 , choices = ROLE , null = False , default = ROLE[0][1])
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
     points = models.IntegerField(default=0)
+<<<<<<< Updated upstream
     # audit_log = AuditLog()
 class OldDataUser(models.Model):
     ROLE = [
@@ -68,19 +69,22 @@ class OldDataUser(models.Model):
     points = models.IntegerField(default=0)
     edit_date = models.DateTimeField(editable=True,null=True)
     edit_by = models.ForeignKey(User , on_delete = models.CASCADE , null = False , related_name = "edited_by")
+=======
+
+>>>>>>> Stashed changes
 
     
     
 
     
-class announcements(models.Model):
+class announcement(models.Model):
     creator = models.ForeignKey(User,on_delete=models.CASCADE,null=True )
     PostText= models.CharField(max_length=1024,null=False, blank= False)
     StartDate= models.DateTimeField(auto_now_add=True,editable=False)
     EndDate=models.DateTimeField(editable=False)
     is_archived = models.BooleanField(null=False , default = False)
 
-class UserRegisterationRequests(models.Model):
+class UserRegisterationRequest(models.Model):
     username = models.CharField(max_length=20, null = False , blank = False)
     first_name = models.CharField(max_length=20, null = False , blank = False)
     last_name = models.CharField(max_length=20, null = False , blank = False)
@@ -91,6 +95,7 @@ class UserRegisterationRequests(models.Model):
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
 
 
+<<<<<<< Updated upstream
 class OldDataUserRegisterationRequests(models.Model):
     ROLE = [
         ("ADMIN" , "Admin"),
@@ -126,3 +131,5 @@ class RejectedUserRegisterationRequests(models.Model):
     rejected_by = models.ForeignKey(User , on_delete = models.CASCADE , null = False)
 
 auditlog.register(User)
+=======
+>>>>>>> Stashed changes

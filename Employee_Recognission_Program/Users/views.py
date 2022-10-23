@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from tablib import Dataset
 from .resources import UsersResource
 # from activities.models import ActivityCategory
-from .models import  User , UserRegisterationRequests , RejectedUserRegisterationRequests
+from .models import  User 
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.contrib.auth.forms import PasswordChangeForm
