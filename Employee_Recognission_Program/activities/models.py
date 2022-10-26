@@ -29,11 +29,11 @@ def validate_year(value):
     
         
 def validate_budget(value):
-    total_budget = budget.objects.filter(Archived_at = None)[0].budget_compare
+    total_budget = budget.objects.filter(Archived_at = None)[0].budget
     used_budget = ActivityCategory.objects.aggregate(Sum('budget_compare'))['budget_compare__sum']
     if(not used_budget):
         used_budget = 0
-    if(value>total_budget-used_budget):
+    if(value>total_budget):
         raise ValidationError("Budget exceeded the limit")
 
 class ActivityCategory(models.Model):
@@ -120,6 +120,7 @@ class ActivityRequest(models.Model):
     evidence_needed = models.CharField(max_length=1024,null=False, blank= False, default="Provide evidence please")
     proof_of_action = models.FileField(upload_to = "proofs/",null=False, blank= False)
     activity_approval_date = models.DateTimeField(auto_now_add=False, auto_now=False, null = True, blank = False)
+    is_archived = models.BooleanField(default = False)
     def clean(self, *args, **kwargs):
         if(self.emp == self.category.owner or self.emp.role == "Admin"):
             raise ValidationError("You can't make an activity request")

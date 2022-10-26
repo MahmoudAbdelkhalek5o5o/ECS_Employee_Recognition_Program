@@ -9,6 +9,7 @@ from xmlrpc.client import DateTime
 from django.db import models
 from Users.models import User, Role
 from django.core.exceptions import ValidationError
+import pytz
 
 
 
@@ -48,8 +49,16 @@ class Vendor(models.Model):
     accepts_direct = models.BooleanField(null=False , default = False)
     is_archived = models.BooleanField(default = False)
     def clean(self, *args, **kwargs):
+        utc=pytz.UTC
+        print(Vendor.objects.filter(pk = self.id)[0].is_archived)
+
         if(self.start_date>self.end_date):
             raise ValidationError("Start Date must be before end date")
+
+        if self.start_date >= utc.localize(datetime.now()):
+            self.is_archived = True
+            
+        
     def __str__(self):
         return f"{self.id} {self.name}"
 
@@ -68,6 +77,7 @@ class Reward(models.Model):
     def clean(self, *args, **kwargs):
         if(self.start_date>self.end_date):
             raise ValidationError("Start Date must be before end date")
+        
 
 
 class Redemption_Request(models.Model):

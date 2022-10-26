@@ -47,14 +47,16 @@ def AdminRestoreReward (modeladmin, request, queryset):
 
 @admin.register(Vendor)
 class ViewAdmin(ImportExportModelAdmin):
+        list_display = ['name','creator','start_date','end_date']
+        list_filter = ['name','creator','start_date','is_archived']
+        search_fields = ['name','creator']
         resource_class = VendorResource
 
 
 
 @admin.register(Reward)
-class ViewAdmin(ImportExportModelAdmin):
+class View_Admin(ImportExportModelAdmin):
     resource_class = RewardResource
-
 admin.site.register(Suggest_vendor)
 
 admin.site.register(Redemption_Request)

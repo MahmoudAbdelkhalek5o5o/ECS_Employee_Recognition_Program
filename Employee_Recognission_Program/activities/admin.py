@@ -91,7 +91,7 @@ class ViewAdminCategory(ImportExportModelAdmin):
         to_archive.update(is_archived=True)
         for category in to_archive:
             Activity.objects.filter(category = category).update(is_archived = True)
-            ActivityRequest.objects.filter(category = category).update(is_archived = True)
+            ActivityCategory.objects.filter(pk = category.id).update(is_archived = True)
         return data
 
 
