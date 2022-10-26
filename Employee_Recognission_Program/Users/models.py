@@ -33,6 +33,14 @@ def validate_domain(data):
                 )
     return False
 
+def validate_year(value):
+    today = datetime.now()
+
+    year = today.year
+    
+    if not value.year == year:
+        raise ValidationError("You can not submit date that exceeds current year.")
+
 # Create your models here.
 class User(AbstractUser):
     ROLE = [
@@ -54,13 +62,13 @@ class User(AbstractUser):
 
     
 class announcement(models.Model):
-    creator = models.ForeignKey(User,on_delete=models.CASCADE,null=True )
+    creator = models.ForeignKey(User,on_delete=models.CASCADE,null=True,editable = False )
     PostText= models.CharField(max_length=1024,null=False, blank= False)
-    StartDate= models.DateTimeField(auto_now_add=True,editable=False)
-    EndDate=models.DateTimeField(editable=False)
+    StartDate= models.DateTimeField(editable=True)
+    EndDate=models.DateTimeField(editable=True)
     is_archived = models.BooleanField(null=False , default = False)
     def clean(self, *args, **kwargs):
-        if(self.start_date>self.end_date):
+        if(self.StartDate>self.EndDate):
             raise ValidationError("Start Date must be before end date")
 
 class UserRegisterationRequest(models.Model):

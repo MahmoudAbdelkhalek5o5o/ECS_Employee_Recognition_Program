@@ -4,6 +4,7 @@ from import_export.admin import ImportExportModelAdmin
 from .models import User  , announcement , UserRegisterationRequest 
 from .resources import UsersResource
 from django.contrib import messages
+from reversion.admin import VersionAdmin
 # from .forms import UserForm
 # Register your models here.
 
@@ -32,7 +33,7 @@ def Archive(self, request, queryset):
             messages.success(request, f'{count} User(s) archived successfully')
     
     queryset.update(is_active = False)
-    
+
 
 
 @admin.register(User)
@@ -41,7 +42,8 @@ class ViewAdmin(ImportExportModelAdmin):
     actions= [AdminRestoreUser,Archive]
     list_filter = ('is_active',)
     # form = UserForm
-    
+
+
 admin.site.register(announcement)
 admin.site.register(UserRegisterationRequest)
 

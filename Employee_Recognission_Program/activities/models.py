@@ -15,6 +15,17 @@ def validate_date_of_action(value):
     if not value.date() <= present.date():
         raise ValidationError("You can not submit date of action with a future date.")
     
+def validate_year(value):
+    today = datetime.now()
+
+    year = today.year
+    
+    if not value.year == year:
+        raise ValidationError("You can not submit date that exceeds current year.")
+
+        
+
+    
     
         
 def validate_budget(value):
@@ -29,8 +40,8 @@ class ActivityCategory(models.Model):
     category_name = models.CharField(max_length=30,null=False, blank= False, unique = True)
     description =  models.CharField(max_length=255,null=False, blank= False, default="")
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True, null = True, blank = True)
-    end_date = models.DateTimeField(editable=True , null = True, blank = True)
+    start_date = models.DateTimeField(editable=True, null = True, blank = True, validators = [validate_year])
+    end_date = models.DateTimeField(editable=True , null = True, blank = True ,  validators = [validate_year])
     owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="category_owner")
     budget = models.IntegerField(null = False, blank = False, validators = [validate_budget])
     budget_compare = models.IntegerField(null = False, blank = False)
@@ -63,8 +74,8 @@ class Activity(models.Model):
     approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     evidence_needed =  models.CharField(max_length=1024,null=False, blank= False)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True)
-    end_date = models.DateTimeField(editable=True,null=True)
+    start_date = models.DateTimeField(editable=True , validators = [validate_year])
+    end_date = models.DateTimeField(editable=True,null=True , validators = [validate_year])
     is_approved = models.BooleanField(null=False,blank = False , default=False)
     is_archived = models.BooleanField(null=False,blank = False , default=False)
 

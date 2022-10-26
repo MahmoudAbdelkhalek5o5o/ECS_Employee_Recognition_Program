@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "django_summernote",
     'import_export',
     'auditlog',
+    'reversion',
 ]
 AUDITLOG_INCLUDE_ALL_MODELS=True
 
