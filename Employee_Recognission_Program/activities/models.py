@@ -30,7 +30,7 @@ def validate_year(value):
         
 def validate_budget(value):
     total_budget = budget.objects.filter(Archived_at = None)[0].budget
-    used_budget = ActivityCategory.objects.aggregate(Sum('budget_compare'))['budget_compare__sum']
+    used_budget = ActivityCategory.objects.aggregate(Sum('total_budget'))['total_budget__sum']
     if(not used_budget):
         used_budget = 0
     if(value>total_budget):
@@ -44,15 +44,20 @@ class ActivityCategory(models.Model):
     end_date = models.DateTimeField(editable=True , null = True, blank = True ,  validators = [validate_year])
     owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="category_owner")
     budget = models.IntegerField(null = False, blank = False, validators = [validate_budget])
-    budget_compare = models.IntegerField(null = False, blank = False)
+    total_budget = models.IntegerField(null = False, blank = False)
     is_archived = models.BooleanField(null=False,blank = False , default=False)
 
     def clean(self, *args, **kwargs):
         if(self.start_date>self.end_date):
             raise ValidationError("Start Date must be before end date")
-        if(self.budget_compare<self.budget):
+        if(self.total_budget<self.budget):
             raise ValidationError("Remaining budget can not be bigger than the original budget")
+        if self.owner.role == "Employee" or self.owner.role == "EMPLOYEE":
+            User.objects.filter(pk = self.owner.emp_id).update(role = "CategoryOwner")
+        if not self.total_budget == self.budget:
+            self.budget = self.total_budget
         super().clean(*args, **kwargs)
+        
 
     def save(self, *args, **kwargs):
         self.full_clean()

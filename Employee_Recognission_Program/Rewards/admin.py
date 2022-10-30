@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing_extensions import Self
 from django.contrib import admin
 
 from import_export.admin import ImportExportModelAdmin
@@ -47,9 +48,17 @@ def AdminRestoreReward (modeladmin, request, queryset):
 
 @admin.register(Vendor)
 class ViewAdmin(ImportExportModelAdmin):
+      
         list_display = ['name','creator','start_date','end_date']
         list_filter = ['name','creator','start_date','is_archived']
-        search_fields = ['name','creator']
+        search_fields = ['name']
+        readonly_fields = ['creator']
+        def auto_archive(self):
+            utc=pytz.UTC
+
+            if self.start_date >= utc.localize(datetime.now()):
+                self.is_archived = True
+                return self.is_archived
         resource_class = VendorResource
 
 

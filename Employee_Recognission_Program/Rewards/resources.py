@@ -2,6 +2,7 @@ from datetime import datetime
 from import_export import resources
 from .models import Vendor , Reward
 from django.utils.translation import gettext_lazy as _
+import pytz
 
 from django.core.exceptions import ValidationError
 class VendorResource(resources.ModelResource):
@@ -13,6 +14,12 @@ class VendorResource(resources.ModelResource):
             
             if row[3] < row[2]:
                 raise ValidationError(_('End date should be greater than start date.'))
+           
+          
+
+
+
+            
 
         
 class RewardResource(resources.ModelResource):
