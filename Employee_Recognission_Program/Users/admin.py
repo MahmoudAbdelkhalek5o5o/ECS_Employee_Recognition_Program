@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from import_export.admin import ImportExportModelAdmin
+from activities.models import Activity, ActivityCategory
 from .models import User  , announcement , UserRegisterationRequest 
 from .resources import UsersResource
 from django.contrib import messages
@@ -23,12 +24,17 @@ def AdminRestoreUser (modeladmin, request, queryset):
 def Archive(self, request, queryset):
     count = 0
     for obj in queryset:
-        cat = User.objects.filter(emp_id = obj.emp_id)[0]
-        if cat.is_active == True:
-            User.objects.filter(emp_id=cat.emp_id).update(is_active = False)
+        user = User.objects.filter(emp_id = obj.emp_id)[0]
+        if user.is_active == True:
+            User.objects.filter(emp_id=user.emp_id).update(is_active = False)
             count=count+1
+            if ActivityCategory.objects.filter(owner = obj.emp_id).exists():
+                ActivityCategory.objects.filter(owner = obj.emp_id).update(is_archived = True)
+               
+
+
         else:
-            messages.error(request, f'User {cat.first_name} {cat.last_name} cannot be restored since its already archived')  
+            messages.error(request, f'User {user.first_name} {user.last_name} cannot be archived since its already archived')  
     if count != 0:
             messages.success(request, f'{count} User(s) archived successfully')
     

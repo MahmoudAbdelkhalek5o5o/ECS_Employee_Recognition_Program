@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from enum import Enum
 from PIL import Image
-import datetime
+from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 # from audit_log.models.managers import AuditLog
@@ -64,8 +64,8 @@ class User(AbstractUser):
 class announcement(models.Model):
     creator = models.ForeignKey(User,on_delete=models.CASCADE,null=True,editable = False )
     PostText= models.CharField(max_length=1024,null=False, blank= False)
-    StartDate= models.DateTimeField(editable=True)
-    EndDate=models.DateTimeField(editable=True)
+    StartDate= models.DateTimeField(editable=True,default = datetime.now())
+    EndDate=models.DateTimeField(editable=True,default = datetime(datetime.today().year, 12, 31))
     is_archived = models.BooleanField(null=False , default = False)
     def clean(self, *args, **kwargs):
         if(self.StartDate>self.EndDate):

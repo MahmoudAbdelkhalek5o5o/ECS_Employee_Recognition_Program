@@ -40,8 +40,8 @@ class Vendor(models.Model):
     name = models.CharField(max_length=30,null=False, blank= False, unique = True)
     vendor_policy = models.CharField(max_length=5000 , null = True)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True , null=False , validators = [validate_year])
-    end_date = models.DateTimeField(editable = True , null = True , validators = [validate_year])
+    start_date = models.DateTimeField(editable=True , null=False , default = datetime.now() ,validators = [validate_year])
+    end_date = models.DateTimeField(editable = True , null = True ,default = datetime(datetime.today().year, 12, 31), validators = [validate_year])
     img = models.ImageField(upload_to='images/', null = False , blank = True)
     creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True, default = User , editable = False ,related_name="vendor_creator")
     accepts_voucher = models.BooleanField(null=False , default = False)
@@ -69,8 +69,8 @@ class Vendor(models.Model):
 class Reward(models.Model):
     vendor = models.ForeignKey(Vendor,on_delete=models.CASCADE,null=False , blank = False)
     creation_day = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True , validators = [validate_year])
-    end_date = models.DateTimeField(editable=True , validators = [validate_year])
+    start_date = models.DateTimeField(editable=True , default = datetime.now() ,validators = [validate_year])
+    end_date = models.DateTimeField(editable=True , default = datetime(datetime.today().year, 12, 31),validators = [validate_year])
     creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True, related_name="reward_creator")
     points_equivalent = models.IntegerField(null = False, blank = False)
     is_archived = models.BooleanField(default = False)
@@ -94,7 +94,7 @@ class Redemption_Request(models.Model):
     status = models.CharField(max_length=10, null = False , blank = False, choices=STATUS, default=STATUS[0][1])
     approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name="admin")
     request_date = models.DateTimeField(auto_now_add=True,editable=False)
-    approved_date = models.DateTimeField(null=True)
+    approved_date = models.DateTimeField(null=True,default = datetime.now())
   
 
 

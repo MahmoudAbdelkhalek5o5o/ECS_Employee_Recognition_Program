@@ -1,4 +1,5 @@
 from email.policy import default
+from types import NoneType
 from wsgiref.validate import validator
 from django.db import models
 from Users.models import User, Role
@@ -8,6 +9,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from Rewards.models import budget
 from datetime import datetime
+from distutils.log import error
+
 
 # Create your models here.
 def validate_date_of_action(value):
@@ -23,7 +26,9 @@ def validate_year(value):
     if not value.year == year:
         raise ValidationError("You can not submit date that exceeds current year.")
 
-        
+def validate_exist(value):
+    if value is None:
+        error('This field cannot be null.')
 
     
     
@@ -40,21 +45,26 @@ class ActivityCategory(models.Model):
     category_name = models.CharField(max_length=30,null=False, blank= False, unique = True)
     description =  models.CharField(max_length=255,null=False, blank= False, default="")
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True, null = True, blank = True, validators = [validate_year])
-    end_date = models.DateTimeField(editable=True , null = True, blank = True ,  validators = [validate_year])
-    owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name="category_owner")
-    budget = models.IntegerField(null = False, blank = False, validators = [validate_budget])
+    start_date = models.DateField(editable=True, null = True, blank = True, default = datetime.today(), validators = [validate_year])
+    end_date = models.DateField(editable=True , null = True, blank = True ,  default = datetime(datetime.today().year, 12, 31), validators = [validate_year])
+    owner = models.ForeignKey(User,on_delete=models.CASCADE,null=False,blank = False, related_name="category_owner",validators = [validate_exist])
+    budget = models.IntegerField(null = True, blank = True, validators = [validate_budget])
     total_budget = models.IntegerField(null = False, blank = False)
     is_archived = models.BooleanField(null=False,blank = False , default=False)
+    class Meta:
+        verbose_name_plural = "Categories"
 
     def clean(self, *args, **kwargs):
-        if(self.start_date>self.end_date):
+        if self.start_date is None or self.owner.role is None:
+            raise ValidationError("Please enter required fields")
+
+        
+        elif(self.start_date>self.end_date):
             raise ValidationError("Start Date must be before end date")
-        if(self.total_budget<self.budget):
-            raise ValidationError("Remaining budget can not be bigger than the original budget")
-        if self.owner.role == "Employee" or self.owner.role == "EMPLOYEE":
+       
+        elif self.owner.role == "Employee" or self.owner.role == "EMPLOYEE":
             User.objects.filter(pk = self.owner.emp_id).update(role = "CategoryOwner")
-        if not self.total_budget == self.budget:
+        elif not self.total_budget == self.budget or self.budget is None:
             self.budget = self.total_budget
         super().clean(*args, **kwargs)
         
@@ -79,10 +89,12 @@ class Activity(models.Model):
     approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     evidence_needed =  models.CharField(max_length=1024,null=False, blank= False)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True , validators = [validate_year])
-    end_date = models.DateTimeField(editable=True,null=True , validators = [validate_year])
+    start_date = models.DateTimeField(default = datetime.now(), validators = [validate_year])
+    end_date = models.DateTimeField(default = datetime(datetime.today().year, 12, 31) , null=True , validators = [validate_year])
     is_approved = models.BooleanField(null=False,blank = False , default=False)
     is_archived = models.BooleanField(null=False,blank = False , default=False)
+    class Meta:
+        verbose_name_plural = "Activities"
 
     def clean(self, *args, **kwargs):
         if(self.start_date>self.end_date):
@@ -149,6 +161,8 @@ class Points(models.Model):
     end_date = models.DateTimeField(editable=False)
     employee = models.ForeignKey(User , on_delete=models.CASCADE,null=True , related_name="earned_to")
     is_used = models.BooleanField(null=False,blank = False , default=False)
+    class Meta:
+        verbose_name_plural = "Points"
     
 
 
