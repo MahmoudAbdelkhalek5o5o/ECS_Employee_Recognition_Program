@@ -28,16 +28,17 @@ def validate_year(value):
 
 def validate_none(value):
     if value is None:
-        raise ValidationError(_('This field cannot be null.'))
+        raise ValidationError(_('Owner field cannot be null.'))
 
 def validate_exist(value):
     if value is None:
         pass
-    elif isinstance(User.objects.filter(pk = value),User) == False:
+    try:
+        User.objects.get(pk = value)
+    except User.DoesNotExist:
         raise ValidationError(_('Employee doesn\'t exist'))
 
-    elif not User.objects.filter(pk = value)[0].is_active == True:
-         raise ValidationError(_('The selected employee is not an active user.'))    
+   
   
 
 
@@ -45,12 +46,17 @@ def validate_exist(value):
     
         
 def validate_budget(value):
-    total_budget = budget.objects.filter(Archived_at = None)[0].budget
-    used_budget = ActivityCategory.objects.aggregate(Sum('total_budget'))['total_budget__sum']
-    if(not used_budget):
-        used_budget = 0
-    if(value>total_budget):
-        raise ValidationError("Budget exceeded the limit")
+    print(1)
+    if budget.objects.filter(Archived_at = None).exists:
+        print(2)
+        raise ValidationError(_("Please add a budget before creating a Category"))
+    else:
+        total_budget = budget.objects.filter(Archived_at = None)[0].budget
+        used_budget = ActivityCategory.objects.aggregate(Sum('total_budget'))['total_budget__sum']
+        if(not used_budget):
+            used_budget = 0
+        if(value>total_budget):
+            raise ValidationError("Budget exceeded the limit")
 
 class ActivityCategory(models.Model):
     category_name = models.CharField(max_length=30,null=False, blank= False, unique = True)
@@ -58,9 +64,9 @@ class ActivityCategory(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
     start_date = models.DateField(editable=True, null = True, blank = True, default = datetime.today(), validators = [validate_year])
     end_date = models.DateField(editable=True , null = True, blank = True ,  default = datetime(datetime.today().year, 12, 31), validators = [validate_year])
-    owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank = True, related_name="category_owner",validators = [validate_exist,validate_none])
-    budget = models.IntegerField(null = True, blank = True, validators = [validate_budget])
-    total_budget = models.IntegerField(null = False, blank = False)
+    owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank = False, related_name="category_owner",validators = [validate_exist,validate_none])
+    budget = models.IntegerField(null = True, blank = True)
+    total_budget = models.IntegerField(null = False, blank = False,  validators = [validate_budget])
     is_archived = models.BooleanField(null=False,blank = False , default=False)
     class Meta:
         verbose_name_plural = "Categories"
@@ -69,13 +75,21 @@ class ActivityCategory(models.Model):
         
         if self.start_date is None :
             raise ValidationError("Please enter required fields")
-
         
         elif(self.start_date>self.end_date):
             raise ValidationError("Start Date must be before end date")
         if self.owner is not None:
+            print(User.objects.filter(pk = self.owner.emp_id),not isinstance(User.objects.filter(pk = self.owner.emp_id),User) == True)
+
             if  self.owner.role == "Employee" or self.owner.role == "EMPLOYEE":
                 User.objects.filter(pk = self.owner.emp_id).update(role = "CategoryOwner")
+            
+            if  isinstance(User.objects.filter(pk = self.owner.emp_id),User):
+                raise ValidationError(_('Employee doesn\'t exist'))
+          
+
+        # if self.owner is None:
+        #     raise ValidationError(_("Owner field can't be empty"))
         if not self.total_budget == self.budget or self.budget is None:
             self.budget = self.total_budget
             
