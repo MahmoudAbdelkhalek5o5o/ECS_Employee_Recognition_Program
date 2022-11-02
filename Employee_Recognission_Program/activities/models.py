@@ -16,7 +16,7 @@ from distutils.log import error
 def validate_date_of_action(value):
     present = datetime.now()
     if not value.date() <= present.date():
-        raise ValidationError("You can not submit date of action with a future date.")
+        raise ValidationError(_("You can not submit date of action with a future date."))
     
 def validate_year(value):
     today = datetime.now()
@@ -24,11 +24,22 @@ def validate_year(value):
     year = today.year
     
     if not value.year == year:
-        raise ValidationError("You can not submit date that exceeds current year.")
+        raise ValidationError(_("You can not submit date that exceeds current year."))
+
+def validate_none(value):
+    if value is None:
+        raise ValidationError(_('This field cannot be null.'))
 
 def validate_exist(value):
     if value is None:
-        error('This field cannot be null.')
+        pass
+    elif isinstance(User.objects.filter(pk = value),User) == False:
+        raise ValidationError(_('Employee doesn\'t exist'))
+
+    elif not User.objects.filter(pk = value)[0].is_active == True:
+         raise ValidationError(_('The selected employee is not an active user.'))    
+  
+
 
     
     
@@ -47,7 +58,7 @@ class ActivityCategory(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
     start_date = models.DateField(editable=True, null = True, blank = True, default = datetime.today(), validators = [validate_year])
     end_date = models.DateField(editable=True , null = True, blank = True ,  default = datetime(datetime.today().year, 12, 31), validators = [validate_year])
-    owner = models.ForeignKey(User,on_delete=models.CASCADE,null=False,blank = False, related_name="category_owner",validators = [validate_exist])
+    owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank = True, related_name="category_owner",validators = [validate_exist,validate_none])
     budget = models.IntegerField(null = True, blank = True, validators = [validate_budget])
     total_budget = models.IntegerField(null = False, blank = False)
     is_archived = models.BooleanField(null=False,blank = False , default=False)
@@ -55,20 +66,24 @@ class ActivityCategory(models.Model):
         verbose_name_plural = "Categories"
 
     def clean(self, *args, **kwargs):
-        if self.start_date is None or self.owner.role is None:
+        
+        if self.start_date is None :
             raise ValidationError("Please enter required fields")
 
         
         elif(self.start_date>self.end_date):
             raise ValidationError("Start Date must be before end date")
-       
-        elif self.owner.role == "Employee" or self.owner.role == "EMPLOYEE":
-            User.objects.filter(pk = self.owner.emp_id).update(role = "CategoryOwner")
-        elif not self.total_budget == self.budget or self.budget is None:
+        if self.owner is not None:
+            if  self.owner.role == "Employee" or self.owner.role == "EMPLOYEE":
+                User.objects.filter(pk = self.owner.emp_id).update(role = "CategoryOwner")
+        if not self.total_budget == self.budget or self.budget is None:
             self.budget = self.total_budget
-        super().clean(*args, **kwargs)
+            
         
 
+        super().clean(*args, **kwargs)
+        
+    
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)

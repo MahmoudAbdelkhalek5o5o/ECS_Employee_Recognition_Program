@@ -56,7 +56,8 @@ class User(AbstractUser):
     role = models.CharField(max_length = 20 , choices = ROLE , null = False , default = ROLE[0])
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
     points = models.IntegerField(default=0)
-
+    def clean(self, *args, **kwargs):
+        pass
     
     
 
