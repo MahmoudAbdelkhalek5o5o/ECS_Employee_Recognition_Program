@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 class CategoryResource(resources.ModelResource):
     class Meta:
         model = ActivityCategory
-        # fields = ('category_name','description','start_date','end_date','owner','total_budget')
+        fields = ('category_name','description','start_date','end_date','owner','total_budget')
         import_id_fields = ('category_name',)
     def before_import(self, dataset, using_transactions, dry_run, **kwargs):
         for row in dataset:

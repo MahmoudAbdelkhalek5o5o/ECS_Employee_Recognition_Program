@@ -62,8 +62,8 @@ class ActivityCategory(models.Model):
     category_name = models.CharField(max_length=30,null=False, blank= False, unique = True)
     description =  models.CharField(max_length=255,null=False, blank= False, default="")
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateField(editable=True, null = True, blank = True, default = datetime.today(), validators = [validate_year])
-    end_date = models.DateField(editable=True , null = True, blank = True ,  default = datetime(datetime.today().year, 12, 31), validators = [validate_year])
+    start_date = models.DateField(editable=True, null = True, blank = True, default = datetime.now(), validators = [validate_year])
+    end_date = models.DateField(editable=True , null = True, blank = True ,  default = datetime(datetime.now().year, 12, 31), validators = [validate_year])
     owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank = False, related_name="category_owner",validators = [validate_exist,validate_none])
     budget = models.IntegerField(null = True, blank = True)
     total_budget = models.IntegerField(null = False, blank = False,  validators = [validate_budget])
@@ -76,7 +76,7 @@ class ActivityCategory(models.Model):
         if self.start_date is None :
             raise ValidationError("Please enter required fields")
         
-        elif(self.start_date>self.end_date):
+        elif(self.start_date.month >= self.end_date.month and self.start_date.day > self.end_date.day):
             raise ValidationError("Start Date must be before end date")
         if self.owner is not None:
             print(User.objects.filter(pk = self.owner.emp_id),not isinstance(User.objects.filter(pk = self.owner.emp_id),User) == True)
