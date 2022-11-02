@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from tablib import Dataset
 from .resources import UsersResource
 # from activities.models import ActivityCategory
-from .models import  User 
+from .models import  User, UserRegisterationRequest
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.contrib.auth.forms import PasswordChangeForm
@@ -23,6 +23,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
 from tablib import Dataset
+from django.views.decorators.csrf import csrf_protect
+from django.template import RequestContext
 
 
 from .forms import UpdateUserForm
@@ -107,19 +109,19 @@ def register(request):
 
         # username already exists
         if not 'username' in error_messages:
-            if User.objects.filter(username=user["username"], is_active=False).exists() or  (UserRegisterationRequests.objects.filter(username=user["username"]).exists() and RejectedUserRegisterationRequests.objects.filter(username=user["username"]).exists()):
+            if User.objects.filter(username=user["username"], is_active=False).exists() or  (UserRegisterationRequest.objects.filter(username=user["username"]).exists()):
                 error_messages['username'] = "Username already exists"
         # ID already exists
         if not 'emp_id' in error_messages:
-            if User.objects.filter(emp_id=user["emp_id"], is_active=False).exists() or UserRegisterationRequests.objects.filter(emp_id=user["emp_id"]).exists():
+            if User.objects.filter(emp_id=user["emp_id"], is_active=False).exists() or UserRegisterationRequest.objects.filter(emp_id=user["emp_id"]).exists():
                 error_messages['emp_id'] = "ID already exists"
         # email already exists
         if not 'email' in error_messages:
-            if User.objects.filter(email=user["email"], is_active=False).exists() or UserRegisterationRequests.objects.filter(email=user["email"]).exists():
+            if User.objects.filter(email=user["email"], is_active=False).exists() or UserRegisterationRequest.objects.filter(email=user["email"]).exists():
                 error_messages['email'] = "Email already exists"
         # phone number already exists
         if not 'number' in error_messages:
-            if User.objects.filter(phone_number=user["phone_number"], is_active=False).exists() or UserRegisterationRequests.objects.filter(phone_number=user["phone_number"]).exists():
+            if User.objects.filter(phone_number=user["phone_number"], is_active=False).exists() or UserRegisterationRequest.objects.filter(phone_number=user["phone_number"]).exists():
                 error_messages['number'] = "Phone number already exists"
             
         if not error_messages == {}:
@@ -131,7 +133,7 @@ def register(request):
         # Attempt to create new user
         try:
             # database constraints errors
-            UserRegisterationRequests.objects.create(**user)
+            UserRegisterationRequest.objects.create(**user)
             # user request created successfully
             send_mail(
                         'Registeration Request',
@@ -147,7 +149,7 @@ def register(request):
         except IntegrityError:
             # username already exists
             
-            if UserRegisterationRequests.objects.filter(emp_id=request.POST["emp_id"], is_archived=False).exists():
+            if UserRegisterationRequest.objects.filter(emp_id=request.POST["emp_id"], is_archived=False).exists():
                 return render(request, "accounts/sign_up.html", {
                     "message": "Your request is pending",
                     'form':form,
@@ -155,8 +157,9 @@ def register(request):
     else:
         return render(request, "accounts/sign_up.html", {'form':RegisterForm()
         })
-
+@csrf_protect
 def login_view(request):
+    csrfContext = RequestContext(request)
     if not request.user.is_authenticated:
         if request.method == "POST":
 
