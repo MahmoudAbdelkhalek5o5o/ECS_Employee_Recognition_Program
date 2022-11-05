@@ -1,10 +1,11 @@
 from distutils.log import error
 from import_export import resources
-from .models import ActivityCategory, User
+from .models import ActivityCategory, User , Activity
 from django.utils.translation import gettext_lazy as _
 import pytz
-
+from Rewards.models import budget
 from django.core.exceptions import ValidationError
+from datetime import datetime
 
 
 class CategoryResource(resources.ModelResource):
@@ -13,26 +14,20 @@ class CategoryResource(resources.ModelResource):
         fields = ('category_name','description','start_date','end_date','owner','total_budget')
         import_id_fields = ('category_name',)
     def before_import(self, dataset, using_transactions, dry_run, **kwargs):
-        for row in dataset:
         
-            pass
-            # if row[4] is None or row[3] is None:
-            #     error('This field cannot be null.')
-                
-                  
-            # elif row[4] < row[3]:
-            #     error('End date should be greater than start date.')
-                
-                
-            # if row[2] is None:
-            #     error('This field cannot be null.')
+        total = 0
+        Budget = budget.objects.filter(year = datetime.now().year)[0].budget
 
-          
-            # if row[5] >= row[6] or not row[5] <= row[6]:
-            #     print(row[5] >= row[6] or not row[5] <= row[6])
-
-            #     error('Total budget and budget values must be equal.')
-                
+        for row in dataset.dict:
+            total += row["total_budget"]
+            if total > Budget:
+                raise ValidationError(_("Budget exceeded the limit"))
+            
+class ActivityResource(resources.ModelResource):
+    class Meta:
+        model = Activity
+        fields = ('activity_name','activity_description','category','points','evidence_needed','start_date','end_date','owner','total_budget')
+        import_id_fields = ('activity_name',)
             
         
     

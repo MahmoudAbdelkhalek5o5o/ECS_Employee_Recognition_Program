@@ -7,11 +7,12 @@ from django.contrib.admin.models import LogEntry, CHANGE
 from .models import  Activity ,ActivitySuggestion , ActivityCategory  , ActivityRequest , ActivityRestorationRequest  
 from Users.models import User
 from django.utils.translation import gettext_lazy as _
-from datetime import datetime
+import datetime
 import pytz
 from django import forms
 from .forms import CategoryForm
-from .resources import CategoryResource
+from .resources import CategoryResource , ActivityResource
+
 # Register your models here.
 
     
@@ -54,14 +55,7 @@ class Filter(admin.SimpleListFilter):
 
 @admin.action(description='Archive Category')
 def AdminArchiveCategory(modeladmin, request, queryset):
-    for obj in queryset:
-        LogEntry.objects.log_action(
-            user_id=request.user.emp_id, 
-            content_type_id= obj.id,
-            object_id=obj.pk,
-            object_repr=obj.description,
-            action_flag=CHANGE,
-            change_message="You have ...")
+        
     queryset.update(is_archived = True)
     
     for category in queryset:
@@ -72,22 +66,22 @@ def AdminArchiveCategory(modeladmin, request, queryset):
             User.objects.filter(pk = category.owner.emp_id).update(role = "Employee")
         # ActivityRequest.objects.filter(category = category).update(is_archived = True)
     # messages.error(request, f'Activity cannot be restored after the end date of id {cat.id} with the name of {cat.activity_name}')  
-    messages.success(request, f'Activity(ies) Archived successfully')  
+    messages.success(request, f'Category(ies) Archived successfully')  
     
 
 @admin.action(description='Restore Category')
 def AdminRestoreCategory (modeladmin, request, queryset):
     utc=pytz.UTC
-    now = utc.localize(datetime.now())
+    d = datetime.date( datetime.datetime.now().year,datetime.datetime.now().month,datetime.datetime.now().day)
     count=0
     for obj in queryset:
         cat = ActivityCategory.objects.filter(id = obj.id)[0]
-        if cat.end_date >= now and cat.is_archived==True:
+        if  cat.end_date >= d and cat.is_archived==True:
             ActivityCategory.objects.filter(id=cat.id).update(is_archived = False)
             count=count+1
         elif cat.is_archived==False:
             messages.error(request, f'Category {cat.category_name} cannot be restored since it already is not archived')  
-        else:
+        elif cat.end_date < d:
             messages.error(request, f'Category {cat.category_name} cannot be restored after the end date.')
         if obj.owner.is_active == False:
             messages.error(request, f'Category {cat.category_name} cannot as category owner {obj.owner.first_name} {obj.owner.last_name} is not active.')
@@ -102,11 +96,11 @@ def AdminRestoreCategory (modeladmin, request, queryset):
 @admin.action(description='Restore Activity')
 def AdminRestoreActivity (modeladmin, request, queryset):
     utc=pytz.UTC
-    now = utc.localize(datetime.now())
+    now = utc.localize(datetime.datetime.now())
     count=0
     for obj in queryset:
         cat = Activity.objects.filter(id = obj.id)[0]
-        if cat.end_date >= now and cat.category.is_archived==False and cat.is_archived==True:
+        if cat.end_date >= datetime.date.today() and cat.category.is_archived==False and cat.is_archived==True:
             Activity.objects.filter(id=cat.id).update(is_archived = False)
             count=count+1
         elif cat.is_archived==False:
@@ -144,7 +138,7 @@ class ViewAdminCategory(ImportExportModelAdmin,admin.ModelAdmin):
 
     def get_queryset(self, request):
         data = super().get_queryset(request)
-        to_archive = data.filter(end_date__lte=datetime.now())
+        to_archive = data.filter(end_date__lte=datetime.date.today())
         to_archive.update(is_archived=True)
         for category in to_archive:
             Activity.objects.filter(category = category).update(is_archived = True)
@@ -152,14 +146,7 @@ class ViewAdminCategory(ImportExportModelAdmin,admin.ModelAdmin):
         return data
 @admin.action(description='Archive Activity')
 def AdminArchiveActivity(modeladmin, request, queryset):
-    for obj in queryset:
-        LogEntry.objects.log_action(
-            user_id=request.user.emp_id, 
-            content_type_id= obj.id,
-            object_id=obj.pk,
-            object_repr=obj.activity_description,
-            action_flag=CHANGE,
-            change_message="You have ...")
+       
     queryset.update(is_archived = True)
     
     for category in queryset:
@@ -169,13 +156,21 @@ def AdminArchiveActivity(modeladmin, request, queryset):
 @admin.register(Activity)
 class ViewAdmin(ImportExportModelAdmin):
     actions = [AdminRestoreActivity,AdminArchiveActivity]
-    
+    resource_class = ActivityResource
     fields = ('activity_name', 'category','activity_description','start_date','end_date','points','evidence_needed','is_archived','approved_by')
 
     list_display = ("activity_name","category","activity_description","start_date","end_date","is_archived")
 
     list_filter = [Filter,"category","start_date","end_date"]
-    readonly_fields = ("approved_by","category",)
+    readonly_fields = ("approved_by",)
+    def get_queryset(self, request):
+        data = super().get_queryset(request)
+        to_archive = data.filter(end_date__lte=datetime.date.today())
+        to_archive.update(is_archived=True)
+        for activity in to_archive:
+            Activity.objects.filter(pk = activity.id).update(is_archived = True)
+          
+        return data
 
 
 

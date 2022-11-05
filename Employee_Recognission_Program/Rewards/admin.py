@@ -66,8 +66,28 @@ class ViewAdmin(ImportExportModelAdmin):
 @admin.register(Reward)
 class View_Admin(ImportExportModelAdmin):
     resource_class = RewardResource
+    
+@admin.register(budget)
+   
+class BudgetAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        if  not budget.objects.filter(year = datetime.now().year).exists():
+            return True
+        else:
+            return False
+   
+    fields = ('budget' , 'point' , 'EGP')
+    readonly_fields = ('year','budget_compare',)
+    list_display = ['budget' , 'year' , 'EGP' , 'point']
+    def get_changeform_initial_data(self, request):
+        get_data = super(BudgetAdmin, self).get_changeform_initial_data(request)
+        
+    
+        
+        return get_data
+    
+
 admin.site.register(Suggest_vendor)
 
 admin.site.register(Redemption_Request)
-admin.site.register(budget)
 

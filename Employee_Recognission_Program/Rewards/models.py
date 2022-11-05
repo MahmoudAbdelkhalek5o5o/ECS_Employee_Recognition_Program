@@ -2,6 +2,8 @@ from email.policy import default
 from django.db import models
 
 # Create your models here.
+from django.utils.translation import gettext_lazy as _
+
 from datetime import datetime
 from tkinter import CASCADE
 from unittest.util import _MAX_LENGTH
@@ -128,16 +130,34 @@ class Suggest_vendor(models.Model):
 class budget(models.Model):
     budget = models.IntegerField(null = False, blank = False)
     admin = models.ForeignKey(User, on_delete = models.CASCADE , null=True)
-    point = models.IntegerField(null = True, blank = False)
-    EGP = models.IntegerField(null = True, blank = False)
-    budget_compare = models.IntegerField(null = False, blank = False)
+    point = models.IntegerField(null = False, blank = False)
+    EGP = models.IntegerField(null = False, blank = False)
+    budget_compare = models.IntegerField(null = True, blank = False)
     year = models.IntegerField(null = False , default= datetime.now().year , validators = [validate_year_forbudget])
     start_date = models.DateTimeField(auto_now_add=True)
     Archived_at = models.DateTimeField(null = True , blank = True, default = None)
     is_active = models.BooleanField(null=False , default=True)
     
-    
- 
+    def clean(self, *args, **kwargs):
+        
+        if self.budget_compare is None:
+            self.budget_compare = self.budget
+        if budget.objects.filter(year = datetime.now().year).exists():
+            if self.budget +  budget.objects.filter(year = datetime.now().year)[0].budget >= 0:
+                self.budget += budget.objects.filter(year = datetime.now().year)[0].budget
+                self.budget_compare = self.budget
+            else:
+                raise ValidationError(_('budget can\'t be less than 0'))
+                
+        elif self.budget < 0:
+            raise ValidationError(_('budget can\'t be less than 0')) 
+        
+
+        
+        super().clean(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.year} , {self.budget}EGP'
     
     
         

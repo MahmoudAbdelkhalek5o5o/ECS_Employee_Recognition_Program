@@ -31,12 +31,10 @@ def validate_none(value):
         raise ValidationError(_('Owner field cannot be null.'))
 
 def validate_exist(value):
-    if value is None:
-        pass
-    try:
-        User.objects.get(pk = value)
-    except User.DoesNotExist:
-        raise ValidationError(_('Employee doesn\'t exist'))
+    if not User.objects.filter(pk = value).exists():
+        raise ValidationError(_('Employee Doesn\'t exist'))
+        
+    
 
    
   
@@ -46,17 +44,18 @@ def validate_exist(value):
     
         
 def validate_budget(value):
-    print(1)
-    if budget.objects.filter(Archived_at = None).exists:
-        print(2)
+    if not budget.objects.filter(year = datetime.now().year).exists():
         raise ValidationError(_("Please add a budget before creating a Category"))
     else:
-        total_budget = budget.objects.filter(Archived_at = None)[0].budget
+        total_budget = budget.objects.filter(year = datetime.now().year)[0].budget
         used_budget = ActivityCategory.objects.aggregate(Sum('total_budget'))['total_budget__sum']
         if(not used_budget):
             used_budget = 0
         if(value>total_budget):
             raise ValidationError("Budget exceeded the limit")
+
+    
+
 
 class ActivityCategory(models.Model):
     category_name = models.CharField(max_length=30,null=False, blank= False, unique = True)
@@ -78,14 +77,16 @@ class ActivityCategory(models.Model):
         
         elif(self.start_date.month >= self.end_date.month and self.start_date.day > self.end_date.day):
             raise ValidationError("Start Date must be before end date")
+        # if (self.start_date.month <= datetime.now().month and self.start_date.day < datetime.now().day):
+        #     print(888)
+        #     self.is_archived = True
         if self.owner is not None:
             print(User.objects.filter(pk = self.owner.emp_id),not isinstance(User.objects.filter(pk = self.owner.emp_id),User) == True)
 
             if  self.owner.role == "Employee" or self.owner.role == "EMPLOYEE":
                 User.objects.filter(pk = self.owner.emp_id).update(role = "CategoryOwner")
             
-            if  isinstance(User.objects.filter(pk = self.owner.emp_id),User):
-                raise ValidationError(_('Employee doesn\'t exist'))
+            
           
 
         # if self.owner is None:
@@ -103,7 +104,7 @@ class ActivityCategory(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return self.category_name
+        return f'{self.category_name}'
 
 
 
@@ -113,25 +114,35 @@ class ActivityCategory(models.Model):
 class Activity(models.Model):
     activity_name = models.CharField(max_length=30,null=False, blank= False, unique=True)
     activity_description = models.CharField(max_length=1024,null=False, blank= True)
-    category = models.ForeignKey(ActivityCategory,on_delete=models.CASCADE,null=False)
+    category = models.ForeignKey(ActivityCategory,on_delete=models.CASCADE,null=True , blank = False)
     points = models.IntegerField(null = False, blank = False)
-    approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True , blank = True)
     evidence_needed =  models.CharField(max_length=1024,null=False, blank= False)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(default = datetime.now(), validators = [validate_year])
-    end_date = models.DateTimeField(default = datetime(datetime.today().year, 12, 31) , null=True , validators = [validate_year])
+    start_date = models.DateField(default = datetime.now(), validators = [validate_year])
+    end_date = models.DateField(default = datetime(datetime.today().year, 12, 31) , null=True , validators = [validate_year])
     is_approved = models.BooleanField(null=False,blank = False , default=False)
     is_archived = models.BooleanField(null=False,blank = False , default=False)
     class Meta:
         verbose_name_plural = "Activities"
 
     def clean(self, *args, **kwargs):
-        if(self.start_date>self.end_date):
+        if(self.start_date.month >= self.end_date.month and self.start_date.day > self.end_date.day):
             raise ValidationError("Start Date must be before end date")
-        category_budget = self.category.budget
-        conversion_rate = budget.objects.filter(Archived_at = None)[0].EGP / budget.objects.filter(Archived_at = None)[0].point
-        if(self.points*conversion_rate>category_budget):
-            raise ValidationError("Activity points cannot fit within the category remaining budget")
+        if self.category is not None:
+            category_budget = self.category.total_budget
+            category_points = category_budget *  budget.objects.filter(year = datetime.now().year)[0].point
+            conversion_rate = budget.objects.filter(year = datetime.now().year)[0].EGP / budget.objects.filter(year = datetime.now().year)[0].point
+            if self.points > category_points:
+                raise ValidationError(_("points cannot have a higher value than the category threshhold"))
+        if(self.start_date.month >= self.end_date.month and self.start_date.day > self.end_date.day):
+                raise ValidationError("Activity points cannot fit within the category remaining budget")
+        # if (self.start_date.month <= datetime.now().month and self.start_date.day < datetime.now().day):
+        #     print(888)
+        #     self.is_archived = True
+        if self.category is None:
+            raise ValidationError("must assign a category to the activity")
+            
         super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
