@@ -79,13 +79,17 @@ class BudgetAdmin(admin.ModelAdmin):
     fields = ('budget' , 'point' , 'EGP')
     readonly_fields = ('year','budget_compare',)
     list_display = ['budget' , 'year' , 'EGP' , 'point']
-    def get_changeform_initial_data(self, request):
-        get_data = super(BudgetAdmin, self).get_changeform_initial_data(request)
-        
     
-        
-        return get_data
     
+    def get_queryset(self, request):
+        data = super().get_queryset(request)
+        to_archive = data.filter(year__lte=datetime.now().year)
+        if to_archive:
+
+            if datetime.now().year != to_archive[0].year:
+                to_archive.delete()
+            
+        return data
 
 admin.site.register(Suggest_vendor)
 

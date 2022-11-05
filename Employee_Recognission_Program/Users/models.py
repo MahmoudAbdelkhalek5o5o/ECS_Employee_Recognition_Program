@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 # from audit_log.models.managers import AuditLog
 # from audit_log.models.fields import LastUserField
 from auditlog.registry import auditlog
+from django.contrib.auth.hashers import make_password
 
 
 class Role(Enum):
@@ -53,11 +54,15 @@ class User(AbstractUser):
     email = models.EmailField(null = False, blank = False , unique = True , validators = [validate_domain])
     emp_id = models.IntegerField(null = False, blank = False , primary_key= True, unique = True,default=3324)
     img = models.ImageField(upload_to='images/', null = True , blank = True, default = 'images/plus.png')
-    role = models.CharField(max_length = 20 , choices = ROLE , null = False , default = ROLE[0])
+    role = models.CharField(max_length = 20 , choices = ROLE , null = False ,blank = False, default = ROLE[0][0])
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
     points = models.IntegerField(default=0)
     def clean(self, *args, **kwargs):
-        pass
+        if self.password is not None :
+            self.password = make_password(self.password)
+        if self.role == 'ADMIN' or self.role == 'Admin':
+            self.is_staff = True
+        super().clean(*args, **kwargs)
     
     
 

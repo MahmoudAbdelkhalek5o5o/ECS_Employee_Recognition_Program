@@ -16,12 +16,16 @@ class CategoryResource(resources.ModelResource):
     def before_import(self, dataset, using_transactions, dry_run, **kwargs):
         
         total = 0
-        Budget = budget.objects.filter(year = datetime.now().year)[0].budget
+        if budget.objects.filter(year = datetime.now().year):
+            Budget = budget.objects.filter(year = datetime.now().year)[0].budget
+            for row in dataset.dict:
+                total += row["total_budget"]
+                if total > Budget:
+                    raise ValidationError(_("Budget exceeded the limit"))
+        else:
+            error(_("please enter a budget before creating Activity Categories"))
 
-        for row in dataset.dict:
-            total += row["total_budget"]
-            if total > Budget:
-                raise ValidationError(_("Budget exceeded the limit"))
+        
             
 class ActivityResource(resources.ModelResource):
     class Meta:

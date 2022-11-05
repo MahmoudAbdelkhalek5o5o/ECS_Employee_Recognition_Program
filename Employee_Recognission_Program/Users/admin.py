@@ -6,8 +6,45 @@ from .models import User  , announcement , UserRegisterationRequest
 from .resources import UsersResource
 from django.contrib import messages
 from reversion.admin import VersionAdmin
+from django.utils.translation import gettext_lazy as _
+
 # from .forms import UserForm
 # Register your models here.
+class Filter(admin.SimpleListFilter):
+    title = _('Active')
+    parameter_name = 'is_active'
+    # default = 'Yes'
+    def lookups(self, request, model_admin):
+
+        return (
+            (None, _('Active')),
+            
+            ('yes', _('Archived')),
+
+            ("all",_('all')),
+        )
+
+
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        
+        if self.value() == 'yes':
+            return queryset.filter(is_active = False)  
+
+        elif self.value() == None:
+            return queryset.filter(is_active = True)
+
+
 
 @admin.action(description='Restore User')
 def AdminRestoreUser (modeladmin, request, queryset):
@@ -46,7 +83,15 @@ def Archive(self, request, queryset):
 class ViewAdmin(ImportExportModelAdmin):
     resource_class = UsersResource
     actions= [AdminRestoreUser,Archive]
-    list_filter = ('is_active',)
+    list_display = ['username' ,'emp_id' , 'first_name' , 'last_name' ,  'role']
+    fields = ('first_name', 'last_name' ,'emp_id' ,  'username' , 'email' ,'phone_number','role', 'groups', 'user_permissions','is_staff','is_active','password')
+    list_filter = (Filter,'role')
+    search_fields =  ('username','first_name','last_name')
+    resource_class = UsersResource
+
+
+
+       
     # form = UserForm
 
 

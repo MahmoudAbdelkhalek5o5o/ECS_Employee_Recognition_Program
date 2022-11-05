@@ -8,18 +8,18 @@ from django.db.models import Sum
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from Rewards.models import budget
-from datetime import datetime
+import datetime
 from distutils.log import error
 
 
 # Create your models here.
 def validate_date_of_action(value):
-    present = datetime.now()
+    present = datetime.datetime.now()
     if not value.date() <= present.date():
         raise ValidationError(_("You can not submit date of action with a future date."))
     
 def validate_year(value):
-    today = datetime.now()
+    today = datetime.datetime.now()
 
     year = today.year
     
@@ -44,10 +44,10 @@ def validate_exist(value):
     
         
 def validate_budget(value):
-    if not budget.objects.filter(year = datetime.now().year).exists():
+    if not budget.objects.filter(year = datetime.datetime.now().year).exists():
         raise ValidationError(_("Please add a budget before creating a Category"))
     else:
-        total_budget = budget.objects.filter(year = datetime.now().year)[0].budget
+        total_budget = budget.objects.filter(year = datetime.datetime.now().year)[0].budget
         used_budget = ActivityCategory.objects.aggregate(Sum('total_budget'))['total_budget__sum']
         if(not used_budget):
             used_budget = 0
@@ -61,8 +61,8 @@ class ActivityCategory(models.Model):
     category_name = models.CharField(max_length=30,null=False, blank= False, unique = True)
     description =  models.CharField(max_length=255,null=False, blank= False, default="")
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateField(editable=True, null = True, blank = True, default = datetime.now(), validators = [validate_year])
-    end_date = models.DateField(editable=True , null = True, blank = True ,  default = datetime(datetime.now().year, 12, 31), validators = [validate_year])
+    start_date = models.DateField(editable=True, null = True, blank = True, default = datetime.date.today(), validators = [validate_year])
+    end_date = models.DateField(editable=True , null = True, blank = True ,  default = datetime.date(datetime.datetime.now().year, 12, 31), validators = [validate_year])
     owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank = False, related_name="category_owner",validators = [validate_exist,validate_none])
     budget = models.IntegerField(null = True, blank = True)
     total_budget = models.IntegerField(null = False, blank = False,  validators = [validate_budget])
@@ -75,7 +75,7 @@ class ActivityCategory(models.Model):
         if self.start_date is None :
             raise ValidationError("Please enter required fields")
         
-        elif(self.start_date.month >= self.end_date.month and self.start_date.day > self.end_date.day):
+        elif(self.start_date >= self.end_date):
             raise ValidationError("Start Date must be before end date")
         # if (self.start_date.month <= datetime.now().month and self.start_date.day < datetime.now().day):
         #     print(888)
@@ -119,8 +119,8 @@ class Activity(models.Model):
     approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True , blank = True)
     evidence_needed =  models.CharField(max_length=1024,null=False, blank= False)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateField(default = datetime.now(), validators = [validate_year])
-    end_date = models.DateField(default = datetime(datetime.today().year, 12, 31) , null=True , validators = [validate_year])
+    start_date = models.DateField(default = datetime.date.today(), validators = [validate_year])
+    end_date = models.DateField(default = datetime.date(datetime.date.today().year, 12, 31) , null=True , validators = [validate_year])
     is_approved = models.BooleanField(null=False,blank = False , default=False)
     is_archived = models.BooleanField(null=False,blank = False , default=False)
     class Meta:
@@ -131,8 +131,8 @@ class Activity(models.Model):
             raise ValidationError("Start Date must be before end date")
         if self.category is not None:
             category_budget = self.category.total_budget
-            category_points = category_budget *  budget.objects.filter(year = datetime.now().year)[0].point
-            conversion_rate = budget.objects.filter(year = datetime.now().year)[0].EGP / budget.objects.filter(year = datetime.now().year)[0].point
+            category_points = category_budget *  budget.objects.filter(year = datetime.datetime.now().year)[0].point
+            conversion_rate = budget.objects.filter(year = datetime.datetime.now().year)[0].EGP / budget.objects.filter(year = datetime.datetime.now().year)[0].point
             if self.points > category_points:
                 raise ValidationError(_("points cannot have a higher value than the category threshhold"))
         if(self.start_date.month >= self.end_date.month and self.start_date.day > self.end_date.day):
