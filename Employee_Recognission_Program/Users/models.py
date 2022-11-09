@@ -60,6 +60,7 @@ class User(AbstractUser):
         pass
     
     
+    
 
     
 class announcement(models.Model):

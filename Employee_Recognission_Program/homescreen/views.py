@@ -11,8 +11,8 @@ from django import forms
 import pytz
 import json
 from django.core import serializers
-
-
+from django.http import JsonResponse
+import simplejson as json
 
 # Create your views here.
 
@@ -31,18 +31,11 @@ def index(request):
             announce.objects.filter(pk = announce.id).update(is_archived = True)
     #Creating list of creator names
     Announcements = announcement.objects.filter(is_archived = False).select_related("creator").order_by('-StartDate')
-    creators = []
-    for announce in Announcements:
-            print()
-            creators.append(str(User.objects.get(username = announce.creator.username).first_name)+str(User.objects.get(username = announce.creator.username).last_name))
+    data = format_announcements_for_react(Announcements)
 
     response_data = {}  
-    AnnouncementsSeralized = serializers.serialize('json', Announcements)
-    CreatorsSeralized = serializers.serialize('json', creators)
-    # print(AnnouncementsSeralized)
-    response_data['Creators']= CreatorsSeralized
-    response_data['Announcements'] = AnnouncementsSeralized
-    print(response_data)
+    response_data['AnnouncementsData'] = data
+    
     #Checking if user was authenticated.
 
     if request.user.is_authenticated and request.user.role == "Role.A":
@@ -52,18 +45,9 @@ def index(request):
         amount = request.user.points//egp.point
         print(egp.point)
         return HttpResponse(json.dumps(response_data), content_type="application/json")
-        # return render(request,'homescreen/index.html',{
-        #      "announcements": Announcements,
-        #      "user":request.user,
-        #      "amount":amount
-        #  })
     elif request.user.is_authenticated and not budget.objects.filter(year = int(datetime.datetime.now().year), is_active = True):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
-        # return render(request,'homescreen/index.html',{
-        #      "announcements": Announcements,
-        #      "user":request.user,
-             
-        #  })
+
     
         
          
@@ -72,7 +56,15 @@ def index(request):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
         # return redirect('login')
     
-    
+
+
+def format_announcements_for_react(Announcements):
+    data=[]
+    for announce in Announcements:
+        creator = announce.creator.first_name + " " + announce.creator.last_name
+        data.append({'announcement':serializers.serialize('json', [announce],ensure_ascii=False)[1:-1], 'creator_name':creator})
+    return data
+
     
 def announcement_view(request,anouncement_id):
     #grab the announcement by its Id
