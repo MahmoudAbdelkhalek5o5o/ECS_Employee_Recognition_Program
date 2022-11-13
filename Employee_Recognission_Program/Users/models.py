@@ -1,24 +1,22 @@
-from email.policy import default
-from msilib.schema import IniFile
-from wsgiref.validate import validator
+
 from django.contrib.auth.models import AbstractUser
 
 from django.db import models
-from enum import Enum
-from PIL import Image
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 # from audit_log.models.managers import AuditLog
 # from audit_log.models.fields import LastUserField
-from auditlog.registry import auditlog
-from django.contrib.auth.hashers import make_password
 
 
-class Role(Enum):
-     A = "Admin"
-     M = "Manager"
-     E = "Employee"
+
+ROLE = [
+        ("ADMIN" , "Admin"),
+        ("CATEGORYOWNER" , "CategoryOwner"),
+        ("EMPLOYEE" , "Employee"),
+
+              
+    ]
      
 def validate_domain(data):
     if '@' in data:
@@ -44,24 +42,20 @@ def validate_year(value):
 
 # Create your models here.
 class User(AbstractUser):
-    ROLE = [
-        ("ADMIN" , "Admin"),
-        ("CATEGORYOWNER" , "CategoryOwner"),
-        ("EMPLOYEE" , "Employee"),
-
-              
-    ]
+    
     email = models.EmailField(null = False, blank = False , unique = True , validators = [validate_domain])
     emp_id = models.IntegerField(null = False, blank = False , primary_key= True, unique = True,default=3324)
     img = models.ImageField(upload_to='images/', null = True , blank = True, default = 'images/plus.png')
     role = models.CharField(max_length = 20 , choices = ROLE , null = False ,blank = False, default = ROLE[0][0])
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
     points = models.IntegerField(default=0)
+    password = models.CharField(max_length=128, verbose_name='password' , blank = False , null = True)
     def clean(self, *args, **kwargs):
-        if self.password is not None :
-            self.password = make_password(self.password)
-        if self.role == 'ADMIN' or self.role == 'Admin':
+        
+        if self.role == [0][0]:
             self.is_staff = True
+        
+           
         super().clean(*args, **kwargs)
     
     

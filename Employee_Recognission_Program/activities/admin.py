@@ -5,7 +5,7 @@ from import_export.admin import ImportExportModelAdmin
 from numpy import rec
 from django.contrib.admin.models import LogEntry, CHANGE
 from .models import  Activity ,ActivitySuggestion , ActivityCategory  , ActivityRequest , ActivityRestorationRequest  
-from Users.models import User
+from Users.models import User , ROLE
 from django.utils.translation import gettext_lazy as _
 import datetime
 import pytz
@@ -62,8 +62,8 @@ def AdminArchiveCategory(modeladmin, request, queryset):
         Activity.objects.filter(category = category).update(is_archived = True)
         ActivityCategory.objects.filter(pk = category.id).update(is_archived = True)
         print (not ActivityCategory.objects.filter(owner = category.owner , is_archived = False).exists())
-        if not ActivityCategory.objects.filter(owner = category.owner , is_archived = False).exists() and ( User.objects.filter(pk = category.owner.emp_id)[0].role == "CategoryOwner" or   User.objects.filter(pk = category.owner.emp_id)[0].role == "CATEGORYOWNER"):
-            User.objects.filter(pk = category.owner.emp_id).update(role = "Employee")
+        if not ActivityCategory.objects.filter(owner = category.owner , is_archived = False).exists() and not ActivityCategory.objects.filter(owner = category.owner)[0].owner.role == ROLE[0][0]:
+            User.objects.filter(pk = category.owner.emp_id).update(role = ROLE[2][0])
         # ActivityRequest.objects.filter(category = category).update(is_archived = True)
     # messages.error(request, f'Activity cannot be restored after the end date of id {cat.id} with the name of {cat.activity_name}')  
     messages.success(request, f'Category(ies) Archived successfully')  
@@ -87,8 +87,8 @@ def AdminRestoreCategory (modeladmin, request, queryset):
             messages.error(request, f'Category {cat.category_name} cannot as category owner {obj.owner.first_name} {obj.owner.last_name} is not active.')
 
               
-        if obj.owner.role == "Employee" or obj.owner.role == "EMPLOYEE":
-            User.objects.filter(pk = obj.owner.emp_id).update(role = "CategoryOwner")
+        if obj.owner.role == ROLE[2][0]:
+            User.objects.filter(pk = obj.owner.emp_id).update(role = ROLE[1][0])
     if count != 0:
             messages.success(request, f'{count} Category(ies) restored successfully')
         
@@ -128,10 +128,10 @@ class ViewAdminCategory(ImportExportModelAdmin,admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     resource_class = CategoryResource
     actions = [AdminArchiveCategory, AdminRestoreCategory]
-    fields = ('category_name', 'description','owner','start_date','end_date','total_budget','budget','is_archived')
+    fields = ('category_name', 'description','owner','start_date','end_date','threshhold','is_archived')
     list_display = ["category_name","description","owner","start_date","end_date","is_archived"]
     list_filter = [Filter,"owner","start_date","end_date"]
-    search_fields = ["category_name"]
+    search_fields = ["category_name","owner__username"]
     readonly_fields = ['budget']
     # change_list_template: str
 

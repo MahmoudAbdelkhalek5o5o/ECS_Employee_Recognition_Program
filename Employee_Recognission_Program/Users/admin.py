@@ -84,11 +84,11 @@ class ViewAdmin(ImportExportModelAdmin):
     resource_class = UsersResource
     actions= [AdminRestoreUser,Archive]
     list_display = ['username' ,'emp_id' , 'first_name' , 'last_name' ,  'role']
-    fields = ('first_name', 'last_name' ,'emp_id' ,  'username' , 'email' ,'phone_number','role', 'groups', 'user_permissions','is_staff','is_active','password')
+    fields = ('first_name', 'last_name' ,'emp_id' ,  'username' , 'email' ,'phone_number','role', 'groups', 'user_permissions','is_staff','is_active')
     list_filter = (Filter,'role')
     search_fields =  ('username','first_name','last_name')
     resource_class = UsersResource
-
+    
 
 
        

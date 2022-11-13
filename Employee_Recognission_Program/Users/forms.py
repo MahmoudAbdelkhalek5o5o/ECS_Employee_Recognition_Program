@@ -2,7 +2,7 @@ from cProfile import label
 from distutils.command import upload
 from .models import User
 from django import forms
-from .models import Role
+from .models import ROLE
 from phonenumber_field.formfields import PhoneNumberField
 from django.utils.translation import gettext_lazy as _
 
@@ -21,7 +21,7 @@ class SignupForm(forms.Form):
     confirmation = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}), required=False, label = 'Confirm Password:')
     number = PhoneNumberField(region="CA",widget=PhoneNumberPrefixWidget(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}), required=False , label = "Phone Number:")
     emp_id = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'ID'}), required=False , label="Employee ID:")
-    role = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Role'}), choices=[(tag, tag.value) for tag in Role] , label="Role:")
+    role = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Role'}), choices=ROLE , label="Role:")
     img = forms.ImageField(widget=forms.ClearableFileInput(attrs = {'class':'form-control'}), required=False, label='Profile Picture:')
 
 
@@ -109,7 +109,7 @@ class CreateUserForm(forms.Form):
     confirmation = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}), required=False, label = 'Confirm Password')
     phone_number = PhoneNumberField(region="CA",widget=PhoneNumberPrefixWidget(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}), required=False)
     emp_id = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'ID'}), required=False)
-    role = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Role'}), choices=[(tag, tag.value) for tag in Role])
+    role = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Role'}), choices=ROLE)
     img = forms.ImageField(widget=forms.ClearableFileInput(attrs = {'class':'form-control'}), required=True, label='Profile Picture')
     role= forms.CharField(label='What is the Users Role?', widget=forms.Select(choices=Roles))
 

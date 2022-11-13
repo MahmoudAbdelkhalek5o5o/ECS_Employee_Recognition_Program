@@ -5,11 +5,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from datetime import datetime
-from tkinter import CASCADE
-from unittest.util import _MAX_LENGTH
-from xmlrpc.client import DateTime
 from django.db import models
-from Users.models import User, Role
+from Users.models import User, ROLE
 from django.core.exceptions import ValidationError
 import pytz
 
@@ -142,10 +139,16 @@ class budget(models.Model):
         
         if self.budget_compare is None:
             self.budget_compare = self.budget
+            budget_in_point.objects.create(current_budget = (self.budget * self.point)//self.EGP , total_budget = (self.budget * self.point)//self.EGP)
+
+        
         if budget.objects.filter(year = datetime.now().year).exists():
             if self.budget +  budget.objects.filter(year = datetime.now().year)[0].budget >= 0:
                 self.budget += budget.objects.filter(year = datetime.now().year)[0].budget
                 self.budget_compare = self.budget
+                if budget_in_point.objects.filter(year = datetime.now().year).exists():
+                    budget_in_point.objects.update(current_budget = (self.budget * self.point)//self.EGP , total_budget = (self.budget * self.point)//self.EGP)
+
             else:
                 raise ValidationError(_('budget can\'t be less than 0'))
                 
@@ -160,4 +163,25 @@ class budget(models.Model):
         return f'{self.year} , {self.budget}EGP'
     
     
+class budget_in_point(models.Model):
+    current_budget = models.IntegerField(null = False, blank = False)
+    total_budget = models.IntegerField(null = True, blank = False)
+    year = models.IntegerField(null = False , default= datetime.now().year , validators = [validate_year_forbudget])
+    start_date = models.DateTimeField(auto_now_add=True)
+    def clean(self, *args, **kwargs):
         
+        if not budget.objects.filter(year = datetime.now().year).exists():
+            raise ValidationError("Must enter a budget before adding points.")
+        else:
+            Budget = budget.objects.filter(year = datetime.now().year)[0]
+            if self.current_budget +  budget_in_point.objects.filter(year = datetime.now().year)[0].current_budget >= 0:
+                    self.current_budget += budget_in_point.objects.filter(year = datetime.now().year)[0].current_budget
+                    self.total_budget = self.current_budget 
+                    budget.objects.update(budget = (self.current_budget * Budget.EGP)//Budget.point)
+            else:
+                raise ValidationError(_('budget can\'t be less than 0'))
+                
+        super().clean(*args, **kwargs)
+        
+    def __str__(self):
+        return f"{self.current_budget}"

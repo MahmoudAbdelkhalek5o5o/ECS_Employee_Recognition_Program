@@ -1,9 +1,8 @@
 from datetime import datetime
-from typing_extensions import Self
 from django.contrib import admin
 
 from import_export.admin import ImportExportModelAdmin
-from .models import  Suggest_vendor , Redemption_Request  , budget , Vendor, Reward
+from .models import  Suggest_vendor , Redemption_Request  , budget , Vendor, Reward , budget_in_point
 from .resources import VendorResource , RewardResource
 import pytz
 from django.contrib import messages
@@ -78,7 +77,7 @@ class BudgetAdmin(admin.ModelAdmin):
    
     fields = ('budget' , 'point' , 'EGP')
     readonly_fields = ('year','budget_compare',)
-    list_display = ['budget' , 'year' , 'EGP' , 'point']
+    list_display = ['budget' , 'year' ,'point', 'EGP' ]
     
     
     def get_queryset(self, request):
@@ -87,11 +86,17 @@ class BudgetAdmin(admin.ModelAdmin):
         if to_archive:
 
             if datetime.now().year != to_archive[0].year:
-                to_archive.delete()
+                to_archive.update(is_archived = True)
             
         return data
 
 admin.site.register(Suggest_vendor)
 
 admin.site.register(Redemption_Request)
-
+@admin.register(budget_in_point)
+class budgetPointsAdmin(admin.ModelAdmin):
+    list_display = ['current_budget' ,'total_budget', 'year']
+    readonly_fields = ('year','total_budget',)
+    
+    def has_add_permission(self, request):
+        return False
