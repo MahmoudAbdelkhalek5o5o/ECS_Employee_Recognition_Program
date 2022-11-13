@@ -14,6 +14,7 @@ from pathlib import Path
 from tempfile import template
 from typing import Any
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,7 +68,7 @@ ROOT_URLCONF = 'Employee_Recognission_Program.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'ecs_front', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -152,3 +153,13 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+<<<<<<< Updated upstream
+=======
+
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'ecs_front', 'build', 'static')]
+>>>>>>> Stashed changes
