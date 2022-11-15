@@ -44,7 +44,7 @@ class User(AbstractUser):
         ("EMPLOYEE" , "Employee"),
     ]
     email = models.EmailField(null = False, blank = False , unique = True , validators = [validate_domain])
-    emp_id = models.IntegerField(null = False, blank = False , primary_key= True, unique = True,default=3324)
+    id = models.IntegerField(null = False, blank = False , primary_key= True, unique = True,default=3324)
     img = models.ImageField(upload_to='images/', null = True , blank = True, default = 'images/plus.png')
     role = models.CharField(max_length = 20 , choices = ROLE , null = False , default = ROLE[0][1])
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')

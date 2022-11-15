@@ -35,12 +35,13 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'),
          name='password_reset_complete'),
     path('admin/', admin.site.urls),
-    # path("", include("Users.urls")),
-    # path("", include("homescreen.urls")),
+    path("", include("Users.urls")),
+    path("", include("homescreen.urls")),
     
     path('activities/', include("activities.urls")),
     path('Rewards/', include("Rewards.urls")),
-    path("", front, name="front"),
+    # path('api/', include("api.urls"))
+    # path("", front, name="front"),
     # path("summernote/", include("django_summernote.urls")),
 
     

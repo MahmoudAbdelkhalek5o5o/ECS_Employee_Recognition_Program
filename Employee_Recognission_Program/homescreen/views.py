@@ -5,67 +5,74 @@ from django.shortcuts import render,redirect
 from Users.models import announcements,Role , User , UserRegisterationRequests
 # from activities.models import ActivityCategory , Activity , ActivityRequest , ActivitySuggestion ,Points
 
-# from Rewards.models import budget , Vendors , Vouchers , Redemption_Request , Suggest_Reward
+from Rewards.models import budget , Vendors , Redemption_Request
 from django import forms
+from django.http import HttpResponse
+
 import pytz
-<<<<<<< Updated upstream
 from django_summernote.widgets import SummernoteWidget
-=======
 import json
 from django.core import serializers
 import simplejson as json
->>>>>>> Stashed changes
 
 from datetime import date
+from Users.serializer import AnnouncementSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 # Create your views here.
-<<<<<<< Updated upstream
-=======
 
-def leaderboard(request):
-    users = User.objects.filter().order_by('points')[:20]
-    print(users)
-    response={}
-    data_serialized = serializers.serialize('json', users)
-    response['LeaderBoard'] = data_serialized
-    return HttpResponse(json.dumps(users), content_type="application/json")
-
-
-def index(request):
+# def leaderboard(request):
+#     users = User.objects.filter().order_by('points')[:20]
+#     print(users)
+#     response={}
+#     data_serialized = serializers.serialize('json', users)
+#     response['LeaderBoard'] = data_serialized
+#     return HttpResponse(json.dumps(users), content_type="application/json")
+@api_view(['GET'])
+def get_announcements(request):
     #Resetting the budget at the begining of the year
+    print(555555555)
     if (datetime.datetime.now().month == 1 and datetime.datetime.now().day == 1):
         budget.objects.filter(year = int(datetime.datetime.now().year), is_active = True).update(is_active = False)
         
-    Announcements = announcement.objects.filter().all().select_related("creator").order_by('-StartDate')
+    Announcements = announcements.objects.filter().all().select_related("creator").order_by('-StartDate')
     utc=pytz.UTC
     now = utc.localize(datetime.datetime.now())
     for announce in Announcements:
         if now > announce.EndDate:
             announce.objects.filter(pk = announce.id).update(is_archived = True)
     #Creating list of creator names
-    Announcements = announcement.objects.filter(is_archived = False).select_related("creator").order_by('-StartDate')
-    data = format_announcements_for_react(Announcements)
+    Announcements = announcements.objects.filter(is_archived = False).select_related("creator").order_by('-StartDate')
+    serializer = AnnouncementSerializer(Announcements, many=True)
+    return Response(serializer.data)
 
-    response_data = {}  
-    response_data['AnnouncementsData'] = data
+def index(request):
+
+    return render(request, "index.html")
+    # data = format_announcements_for_react(Announcements)
+
+    # response_data = {}  
+    # response_data['AnnouncementsData'] = data
     
     #Checking if user was authenticated.
 
-    if request.user.is_authenticated and request.user.role == "Role.A":
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
-    elif request.user.is_authenticated and budget.objects.filter(year = int(datetime.datetime.now().year), is_active = True):
-        egp = budget.objects.filter(year = int(datetime.datetime.now().year), is_active = True)[0]
-        amount = request.user.points//egp.point
-        print(egp.point)
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
-    elif request.user.is_authenticated and not budget.objects.filter(year = int(datetime.datetime.now().year), is_active = True):
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+    # if request.user.is_authenticated and request.user.role == "Role.A":
+    #     return HttpResponse(json.dumps(response_data), content_type="application/json")
+    # elif request.user.is_authenticated and budget.objects.filter(year = int(datetime.datetime.now().year), is_active = True):
+    #     egp = budget.objects.filter(year = int(datetime.datetime.now().year), is_active = True)[0]
+    #     amount = request.user.points//egp.point
+    #     print(egp.point)
+    #     return HttpResponse(json.dumps(response_data), content_type="application/json")
+    # elif request.user.is_authenticated and not budget.objects.filter(year = int(datetime.datetime.now().year), is_active = True):
+    #     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
     
         
          
-     #if the user was not authenticated then they should be redirected back to the login page
-    else:
-        return HttpResponse(json.dumps(response_data), content_type="application/json")
+    #  #if the user was not authenticated then they should be redirected back to the login page
+    # else:
+    #     return HttpResponse(json.dumps(response_data), content_type="application/json")
         # return redirect('login')
     
 
@@ -80,7 +87,7 @@ def format_announcements_for_react(Announcements):
     
 def announcement_view(request,anouncement_id):
     #grab the announcement by its Id
-    announcemnt = announcement.objects.get(pk = anouncement_id)
+    announcemnt = announcements.objects.get(pk = anouncement_id)
     
 
     #send the announcement to the announcement view page
@@ -116,7 +123,7 @@ def add_notifications(request):
                 Announcemnt_EndDate= request.POST["Notification_EndDate"]
                 Notification=request.POST["Notification"]
                 #save those data entries in the database
-                announcemnt=announcement(PostText = Notification,EndDate = Announcemnt_EndDate,creator = request.user)
+                announcemnt=announcements(PostText = Notification,EndDate = Announcemnt_EndDate,creator = request.user)
                 announcemnt.save()
             
     return redirect("users-home")
@@ -140,7 +147,7 @@ def view_archive(request, model_name):
                     })
                 
                 case 'Announcemnts':
-                    data = announcement.objects.filter(is_archived = True).all().select_related('creator')
+                    data = announcements.objects.filter(is_archived = True).all().select_related('creator')
                     if not data:
                         msg = "No Archived Announcements!"
                     return render (request,"homescreen/archive.html",{
@@ -149,7 +156,7 @@ def view_archive(request, model_name):
                         'no_announcemnts':msg
                     })
                 case 'Vendors':
-                    data = Vendor.objects.filter(is_archived = True).all()
+                    data = Vendors.objects.filter(is_archived = True).all()
                     if not data:
                         msg = "No Archived Vendors!"
                     return render (request,"homescreen/archive.html",{
@@ -158,9 +165,9 @@ def view_archive(request, model_name):
                         'no_vendors':msg
                     })
                 case 'Vouchers':
-                    data = Reward.objects.filter(is_archived = True).all()
-                    if not data:
-                        msg = "No Archived Vouchers!"
+                    # data = Rewards.objects.filter(is_archived = True).all()
+                    # if not data:
+                    #     msg = "No Archived Vouchers!"
                     return render (request,"homescreen/archive.html",{
                         'Vouchers':data,
                         'data':models_data,
@@ -176,45 +183,45 @@ def view_archive(request, model_name):
                         'no_redemption_requests':msg
                     })
                 case 'Reward Suggestions':
-                    data = Suggest_vendor.objects.filter(is_archived = True).all()
-                    if not data:
-                        msg = "No Archived Reward Suggestions!"
+                    # data = Suggest_vendors.objects.filter(is_archived = True).all()
+                    # if not data:
+                    #     msg = "No Archived Reward Suggestions!"
                     return render (request,"homescreen/archive.html",{
                         'Suggest_Rewards':data,
                         'data':models_data,
                         'no_reward_suggestions':msg
                     })
                 case 'Categories':
-                    data = ActivityCategory.objects.filter(is_archived = True).all().select_related('owner')
-                    if not data:
-                        msg = "No Archived Categories!"
+                    # data = ActivityCategory.objects.filter(is_archived = True).all().select_related('owner')
+                    # if not data:
+                    #     msg = "No Archived Categories!"
                     return render (request,"homescreen/archive.html",{
                         'Categories':data,
                         'data':models_data,
                         'no_categories':msg
                     })
                 case 'Activities':
-                    data = Activity.objects.filter(is_archived = True).all().select_related('category')
-                    if not data:
-                        msg = "No Archived Activities!"
+                    # data = Activity.objects.filter(is_archived = True).all().select_related('category')
+                    # if not data:
+                    #     msg = "No Archived Activities!"
                     return render (request,"homescreen/archive.html",{
                         'Activities':data,
                         'data':models_data,
                         'no_activities':msg
                     })
                 case 'Activity Requests':
-                    data = ActivityRequest.objects.filter(is_archived = True).all().select_related('emp','activity','category')
-                    if not data:
-                        msg = "No Archived Activity Requests!"
+                    # data = ActivityRequest.objects.filter(is_archived = True).all().select_related('emp','activity','category')
+                    # if not data:
+                    #     msg = "No Archived Activity Requests!"
                     return render (request,"homescreen/archive.html",{
                         'ActivityRequests':data,
                         'data':models_data,
                         'no_activity_requests':msg
                     })
                 case 'Activity Suggestions':
-                    data = ActivitySuggestion.objects.filter(is_archived = True).all().select_related('category')
-                    if not data:
-                        msg = "No Archived Activity Suggestions!"
+                    # data = ActivitySuggestion.objects.filter(is_archived = True).all().select_related('category')
+                    # if not data:
+                    #     msg = "No Archived Activity Suggestions!"
                     return render (request,"homescreen/archive.html",{
                         'ActivitySuggestions':data,
                         'data':models_data,
@@ -224,4 +231,3 @@ def view_archive(request, model_name):
             return redirect('users-home')
     else:
         return redirect('login')
->>>>>>> Stashed changes
