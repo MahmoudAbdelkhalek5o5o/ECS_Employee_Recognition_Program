@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from tablib import Dataset
 from .resources import UsersResource
 # from activities.models import ActivityCategory
-from .models import  User 
+from .models import  User , UserRegisterationRequest , ROLE
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from django.contrib.auth.forms import PasswordChangeForm
@@ -107,19 +107,19 @@ def register(request):
 
         # username already exists
         if not 'username' in error_messages:
-            if User.objects.filter(username=user["username"], is_active=False).exists() or  (UserRegisterationRequests.objects.filter(username=user["username"]).exists() and RejectedUserRegisterationRequests.objects.filter(username=user["username"]).exists()):
+            if User.objects.filter(username=user["username"], is_active=False).exists():
                 error_messages['username'] = "Username already exists"
         # ID already exists
         if not 'emp_id' in error_messages:
-            if User.objects.filter(emp_id=user["emp_id"], is_active=False).exists() or UserRegisterationRequests.objects.filter(emp_id=user["emp_id"]).exists():
+            if User.objects.filter(emp_id=user["emp_id"], is_active=False).exists() :
                 error_messages['emp_id'] = "ID already exists"
         # email already exists
         if not 'email' in error_messages:
-            if User.objects.filter(email=user["email"], is_active=False).exists() or UserRegisterationRequests.objects.filter(email=user["email"]).exists():
+            if User.objects.filter(email=user["email"], is_active=False).exists() :
                 error_messages['email'] = "Email already exists"
         # phone number already exists
         if not 'number' in error_messages:
-            if User.objects.filter(phone_number=user["phone_number"], is_active=False).exists() or UserRegisterationRequests.objects.filter(phone_number=user["phone_number"]).exists():
+            if User.objects.filter(phone_number=user["phone_number"], is_active=False).exists():
                 error_messages['number'] = "Phone number already exists"
             
         if not error_messages == {}:
@@ -131,7 +131,7 @@ def register(request):
         # Attempt to create new user
         try:
             # database constraints errors
-            UserRegisterationRequests.objects.create(**user)
+            UserRegisterationRequest.objects.create(**user)
             # user request created successfully
             send_mail(
                         'Registeration Request',
@@ -147,7 +147,7 @@ def register(request):
         except IntegrityError:
             # username already exists
             
-            if UserRegisterationRequests.objects.filter(emp_id=request.POST["emp_id"], is_archived=False).exists():
+            if UserRegisterationRequest.objects.filter(emp_id=request.POST["emp_id"], is_archived=False).exists():
                 return render(request, "accounts/sign_up.html", {
                     "message": "Your request is pending",
                     'form':form,
@@ -163,11 +163,22 @@ def login_view(request):
         # Attempt to sign user in
             username = request.POST["username"]
             password = request.POST["password"]
+            if User.objects.filter(username = username).exists():
+                
+                if User.objects.filter(username = username)[0].password is None:
+                    return render(request, "accounts/login.html", {
+                    "message": "Please activate your account by creating your password."
+                })
+                
+            
             user = authenticate(request, username=username, password=password)
         # Check if authentication successful
             if user is not None:
                 login(request, user)
-                return redirect("users-home")
+                if request.user.role == ROLE[0][0]:
+                    return redirect("/admin")
+                else:
+                    return redirect("users-home")
         #if authentication is not succesful an error message is displayed
             else:
                 return render(request, "accounts/login.html", {
@@ -188,18 +199,3 @@ def logout_view(request):
 
 
 
-def simple_upload(request):
-    if request.method == 'POST':
-        person_resource = UsersResource()
-        dataset = Dataset()
-        new_persons = request.FILES['myfile']
-
-        imported_data = dataset.load(new_persons.read())
-        result = person_resource.import_data(dataset, dry_run=True)  # Test the data import
-
-        if not result.has_errors():
-            person_resource.import_data(dataset, dry_run=False)  # Actually import now
-        else:
-            raise ValidationError("haha")
-
-    return render(request, 'accounts/import_users.html')

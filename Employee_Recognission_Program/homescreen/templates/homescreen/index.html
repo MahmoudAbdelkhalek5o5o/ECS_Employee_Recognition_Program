@@ -11,14 +11,26 @@
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap%27');
     @keyframes slideInFromLeft {
         0% {
-          transform: translateX(-100%);
+          transform: translateX(100%);
         }
         100% {
-          transform: translateX(0);
+          transform: translateX(0%);
         }
       }
-      
+      @keyframes slideInFromRight {
+        0% {
+          transform: translatey(100%);
+        }
      
+          100% {
+            transform: translatey(0%);
+          }
+      }
+      
+    .animation{
+        animation: 0.8s ease-in 0s 1 slideInFromRight;
+
+    }
     body {
         font-family: 'Cairo', sans-serif;
         
@@ -26,9 +38,11 @@
     }
     body,h1,h2,h3,h4,h5 {
         font-family: "Cairo", sans-serif;
-        animation: 1s ease-out 0s 1 slideInFromLeft;
 
     
+    }
+    h1,h2,h3,h4,h5,p,div {
+        animation: 1s ease-out 0s 1 slideInFromLeft;
     }
     body {font-size:16px;}
     .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
@@ -38,13 +52,13 @@
 <body>
 
 <!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold; background-color: #16558f;" id="mySidebar"><br>
+<nav class="w3-sidebar w3-collapse w3-top w3-large w3-padding animation" style="z-index:3;width:300px;font-weight:bold; background-color: #16558f;" id="mySidebar"><br>
   <a href="javascript:void(0)" onclick="w3_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
   <div class="w3-container">
     <h3 class="w3-padding-64" style="color:white;"><b>Loyalty<br>Program</b></h3>
   </div>
   <div class="w3-bar-block">
-    <a href="#" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Home</a> 
+    <a href="{% url 'users-home' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Home</a> 
     <a href="#showcase" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white ;">Activities</a> 
     <a href="#services" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Rewards</a> 
     <a href="#designers" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">User</a> 
@@ -66,12 +80,12 @@
 
   <!-- Header -->
   <div class="w3-container" style="margin-top:80px" id="showcase">
-    <h1 class="w3-xxxlarge " style="color: #16558f";><b>Vendors.</b></h1>
+    <h1 class="w3-xxxlarge " style="color: #16558f; animation: 1s ease-out 0s 1 slideInFromLeft;" ><b>Vendors.</b></h1>
   </div>
   
   <!-- Photo grid (modal) -->
   <div class="w3-row-padding">
-    <div class="w3-half">
+    <div class="w3-half" style="animation: 1s ease-out 0s 1 slideInFromLeft;"">
       {% for vendor in vendorsodd %}
       
       <img src="{{ vendor.img.url }}" style="width:25%" onclick="onClick(this)" alt="Windows for the atrium">
@@ -80,7 +94,7 @@
 
     </div>
 
-    <div class="w3-half">
+    <div class="w3-half" style="animation: 1s ease-out 0s 1 slideInFromLeft;">
         {% for vendor in vendorseven %}
       
       <img src="{{ vendor.img.url }}" style="width:25%" onclick="onClick(this)" alt="Windows for the atrium">
@@ -100,8 +114,8 @@
   </div>
 
   <!-- Services -->
-  <div class="w3-container" id="services" style="margin-top:75px">
-    <h1 class="w3-xxxlarge" style="color: #16558f";><b>About.</b></h1>
+  <div class="w3-container" id="services" style="margin-top:75px" style="animation: 1s ease-out 0s 1 slideInFromLeft;">
+    <h1 class="w3-xxxlarge" style="color: #16558f; animation: 1s ease-out 0s 1 slideInFromLeft;";><b>About.</b></h1>
     <p>Employee Loyalty Program aims to increase employee morale and loyalty to the company.</p>
     <p><h4> Eligibility for the program</h4>
         <ul>
@@ -113,7 +127,7 @@
     </p>
   </div>
   
-  <!-- Designers -->
+  <!-- Designers
   <div class="w3-container" id="designers" style="margin-top:75px">
     <h1 class="w3-xxxlarge" style="color: #16558f";><b>Designers.</b></h1>
     <p>The best team in the world.</p>
@@ -124,7 +138,7 @@
     <p><b>Our designers are thoughtfully chosen</b>:</p>
   </div>
 
-  <!-- The Team -->
+  The Team -->
   <div class="w3-row-padding w3-grayscale">
     <div class="w3-col m4 w3-margin-bottom">
       <div class="w3-light-grey">

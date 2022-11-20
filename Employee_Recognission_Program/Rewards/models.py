@@ -72,9 +72,13 @@ class Reward(models.Model):
     creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True, related_name="reward_creator")
     points_equivalent = models.IntegerField(null = False, blank = False)
     is_archived = models.BooleanField(default = False)
+   
+
     def clean(self, *args, **kwargs):
         if(self.start_date>self.end_date):
-            raise ValidationError("Start Date must be before end date")
+            raise ValidationError(_("Start Date must be before end date"))
+        if self.is_archived == False and self.vendor.accepts_voucher == False:
+            Vendor.objects.filter(pk = self.vendor.id).update(accepts_voucher = True)
         
 
 

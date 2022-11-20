@@ -5,9 +5,46 @@ from import_export.admin import ImportExportModelAdmin
 from .models import  Suggest_vendor , Redemption_Request  , budget , Vendor, Reward , budget_in_point
 from .resources import VendorResource , RewardResource
 import pytz
+from django.utils.translation import gettext_lazy as _
+
 from django.contrib import messages
 
 # Register your models here.
+class Filter(admin.SimpleListFilter):
+    title = _('Archived')
+    parameter_name = 'is_archived'
+    # default = 'Yes'
+    def lookups(self, request, model_admin):
+
+        return (
+            (None, _('Active')),
+            
+            ('yes', _('Archived')),
+
+            ("all",_('all')),
+        )
+
+
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        
+        if self.value() == 'yes':
+            return queryset.filter(is_archived=True)  
+
+        elif self.value() == None:
+            return queryset.filter(is_archived = False)
+
+
 
 @admin.action(description='Restore Vendor')
 def AdminRestoreVendor (modeladmin, request, queryset):
@@ -45,12 +82,21 @@ def AdminRestoreReward (modeladmin, request, queryset):
     if count != 0:
         messages.success(request, f'{count} Reward(s) restored successfully')
 
+from django.utils.html import format_html
+
 @admin.register(Vendor)
+
+class ImageAdmin(admin.ModelAdmin):
+
+    def image_tag(self, obj):
+        return format_html('<img src="{}" style="max-width:200px; max-height:200px"/>'.format(obj.img.url))
+
+    list_display = ['image_tag' , 'name','creator','start_date','end_date' , 'is_archived']
 class ViewAdmin(ImportExportModelAdmin):
       
-        list_display = ['name','creator','start_date','end_date']
-        list_filter = ['name','creator','start_date','is_archived']
-        search_fields = ['name']
+        list_display = ['name','creator','start_date','end_date' , 'is_archived' , 'image_tag']
+        list_filter = [Filter , 'name','start_date']
+        search_fields = ['name' , 'creator__username']
         readonly_fields = ['creator']
         def auto_archive(self):
             utc=pytz.UTC
@@ -64,7 +110,10 @@ class ViewAdmin(ImportExportModelAdmin):
 
 @admin.register(Reward)
 class View_Admin(ImportExportModelAdmin):
+    list_display = ['vendor','points_equivalent' , 'is_archived']
+    list_filter = [Filter]
     resource_class = RewardResource
+
     
 @admin.register(budget)
    
@@ -78,6 +127,7 @@ class BudgetAdmin(admin.ModelAdmin):
     fields = ('budget' , 'point' , 'EGP')
     readonly_fields = ('year','budget_compare',)
     list_display = ['budget' , 'year' ,'point', 'EGP' ]
+
     
     
     def get_queryset(self, request):

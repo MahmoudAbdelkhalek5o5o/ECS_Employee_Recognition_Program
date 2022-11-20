@@ -50,11 +50,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "django_summernote",
     'import_export',
     'auditlog',
-    'reversion',
+     'tabular_permissions',
+    
 ]
+TABULAR_PERMISSIONS_CONFIG = {
+    'template': 'tabular_permissions/admin/tabular_permissions.html',
+    'exclude': {
+        'override': True,
+        'apps': [],
+        'models': [],
+        'function':'tabular_permissions.helpers.dummy_permissions_exclude'
+    },
+    'auto_implement': True,
+    'use_for_concrete': False,
+    'custom_permission_translation': 'tabular_permissions.helpers.custom_permissions_translator',
+    'apps_customization_func': 'tabular_permissions.helpers.apps_customization_func',
+    'custom_permissions_customization_func': 'tabular_permissions.helpers.custom_permissions_customization_func',
+}
 AUDITLOG_INCLUDE_ALL_MODELS=True
 
 MIDDLEWARE = [
@@ -154,6 +168,7 @@ AUTH_USER_MODEL = 'Users.User'
 
 STATIC_URL = 'static/'
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+
 MEDIA_URL = '/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

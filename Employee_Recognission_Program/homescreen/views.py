@@ -14,22 +14,25 @@ from datetime import date
 # Create your views here.
 
 def index(request):
-    vendors = Vendor.objects.filter(is_archived = False)[:6]
-    vendorsodd = []
-    vendorseven = []
-    i = 0
-    for vendor in vendors:
-        if i % 2 == 0:
-            vendorseven.append(vendor)
-            i+=1
-            print(vendorseven[0].img)
-        else:
-            vendorsodd.append(vendor)
-            i+=1
+    if request.user.is_authenticated:
+        vendors = Vendor.objects.filter(is_archived = False)[:6]
+        vendorsodd = []
+        vendorseven = []
+        i = 0
+        for vendor in vendors:
+            if i % 2 == 0:
+                vendorseven.append(vendor)
+                i+=1
+                print(vendorseven[0].img)
+            else:
+                vendorsodd.append(vendor)
+                i+=1
 
-            
-    return render(request , "homescreen/index.html" , {
-        "vendorseven": vendorseven,
-        "vendorsodd": vendorsodd,
-        "vendors": vendors
-    })
+                
+        return render(request , "homescreen/index.html" , {
+            "vendorseven": vendorseven,
+            "vendorsodd": vendorsodd,
+            "vendors": vendors
+        })
+    else:
+        return redirect("login")
