@@ -78,13 +78,22 @@ def Archive(self, request, queryset):
     queryset.update(is_active = False)
 
 
+from django.utils.html import format_html
 
 @admin.register(User)
-class ViewAdmin(ImportExportModelAdmin):
+# class ImageAdmin(admin.ModelAdmin):
+
+#     def image_tag(self, obj):
+#         return format_html('<img src="{}" style="max-width:200px; max-height:200px"/>'.format(obj.img.url))
+
+#     list_display = ['image_tag' , 'username' ,'emp_id' , 'first_name' , 'last_name' ,  'role']
+class ViewAdmin(ImportExportModelAdmin , admin.ModelAdmin):
+    
+
     resource_class = UsersResource
     actions= [AdminRestoreUser,Archive]
     list_display = ['username' ,'emp_id' , 'first_name' , 'last_name' ,  'role']
-    fields = ('first_name', 'last_name' ,'emp_id' ,  'username' , 'email' ,'phone_number','role', 'groups', 'user_permissions','is_staff','is_active')
+    fields = ('first_name', 'last_name' ,'emp_id' ,  'username' , 'email' ,'phone_number','role','img', 'groups', 'user_permissions','is_staff','is_active')
     list_filter = (Filter,'role')
     search_fields =  ('username','first_name','last_name')
     resource_class = UsersResource

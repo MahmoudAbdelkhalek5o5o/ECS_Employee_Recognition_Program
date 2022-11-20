@@ -14,10 +14,12 @@ from datetime import date
 # Create your views here.
 
 def index(request):
+    announcements = announcement.objects.filter(is_archived = False).order_by("-StartDate")
     if request.user.is_authenticated:
         vendors = Vendor.objects.filter(is_archived = False)[:6]
         vendorsodd = []
         vendorseven = []
+        
         i = 0
         for vendor in vendors:
             if i % 2 == 0:
@@ -32,7 +34,8 @@ def index(request):
         return render(request , "homescreen/index.html" , {
             "vendorseven": vendorseven,
             "vendorsodd": vendorsodd,
-            "vendors": vendors
+            "vendors": vendors,
+            "announcements":announcements
         })
     else:
         return redirect("login")
