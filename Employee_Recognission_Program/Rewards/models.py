@@ -49,7 +49,6 @@ class Vendor(models.Model):
     is_archived = models.BooleanField(default = False)
     def clean(self, *args, **kwargs):
         utc=pytz.UTC
-        print(Vendor.objects.filter(pk = self.id)[0].is_archived)
 
         if(self.start_date>self.end_date):
             raise ValidationError("Start Date must be before end date")

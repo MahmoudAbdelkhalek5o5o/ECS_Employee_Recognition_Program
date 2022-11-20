@@ -39,7 +39,7 @@ JWT_EXP_DELTA_SECONDS = 86400  # token expiring time in seconds let's assign one
 
 INSTALLED_APPS = [
     'Users',
-    # 'homescreen',
+    'homescreen',
     'activities',
     'Rewards',
     "phonenumber_field",
