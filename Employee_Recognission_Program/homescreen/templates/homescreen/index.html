@@ -308,7 +308,7 @@
     <div class="w3-half" style="animation: 1s ease-out 0s 1 slideInFromLeft;">
       {% for vendor in vendorsodd %}
       
-      <img src="{{ vendor.img.url }}" style="width:25%" onclick="onClick(this)" alt="Windows for the atrium">
+      <img src="{{ vendor.img.url }}" style="width:20%; margin-right:20px;" onclick="onClick(this)" alt="Windows for the atrium">
 
       {% endfor %}
 
@@ -317,7 +317,7 @@
     <div class="w3-half" style="animation: 1s ease-out 0s 1 slideInFromLeft;">
         {% for vendor in vendorseven %}
       
-      <img src="{{ vendor.img.url }}" style="width:25%" onclick="onClick(this)" alt="Windows for the atrium">
+      <img src="{{ vendor.img.url }}" style="width:20%; margin-right:20px;" onclick="onClick(this)" alt="Windows for the atrium">
 
       {% endfor %}
         
@@ -496,8 +496,6 @@ function w3_close() {
 function onClick(element) {
   document.getElementById("img01").src = element.src;
   document.getElementById("modal01").style.display = "block";
-  var captionText = document.getElementById("caption");
-  captionText.innerHTML = element.alt;
 }
 </script>
 
