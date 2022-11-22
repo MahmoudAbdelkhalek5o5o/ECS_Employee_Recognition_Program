@@ -52,7 +52,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=128, verbose_name='password' , blank = False , null = True)
     def clean(self, *args, **kwargs):
         
-        if self.role == [0][0]:
+        if self.role == ROLE[0][0]:
             self.is_staff = True
         
            

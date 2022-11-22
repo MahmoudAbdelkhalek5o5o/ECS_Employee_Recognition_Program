@@ -167,7 +167,7 @@ def login_view(request):
                 
                 if User.objects.filter(username = username)[0].password is None:
                     return render(request, "accounts/login.html", {
-                    "message": "Please activate your account by creating your password."
+                    "message": "Please activate your account by clicking on activate account."
                 })
                 
             

@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+<link rel = "stylesheet" href="{% static 'homescreen/styles.css' %}">
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap%27');
     @keyframes slideInFromLeft {
@@ -46,7 +47,7 @@
     }
     body {
       font-size:16px;
-      height: 1050px;
+      height: 1100px;
     
     }
     .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
@@ -249,8 +250,9 @@
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-collapse w3-top w3-large w3-padding animation" style="z-index:3;width:300px;font-weight:bold; background-color: #16558f;" id="mySidebar"><br>
   <a href="javascript:void(0)" onclick="w3_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
-  <div class="w3-container" style="margin-top: -60px;">
-    <h3 class="w3-padding-64" style="color:white;"><b>Loyalty Program </h3>
+  <div class="w3-container" style="margin-top: 0px;">
+    <img src="../../media/images/white_logo.png" style="  width: 160.33.5px; height: 69.66px; margin-top: 10px;" style="width:20% ;" alt="logo"/>
+    <h3 class="w3-padding-32" style="color:white;"><b>Loyalty Program </h3>
   </div>
   <div class="w3-bar-block">
     <a href="{% url 'users-home' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Home</a> 
@@ -280,7 +282,6 @@
 
   <!-- Header -->
   <div class="Header-flex">
-    <img src="../../media/images/logo.png" style="  width: 100px; height: 100px; margin-top: 10px;"; alt="logo"/>
       <div class="image-class">
       <div class="image">
       <div class="circle-1"></div>
@@ -289,10 +290,10 @@
       </div>
       </div>
     <div>
-      <h1 class="text-1" style="color: #16558f; right: 50%;";><b>Hello,{{ request.user.username}}</b></h1>
+      <h1 class="text-1" style="color: #16558f; right: 50%;";><b>Hello, {{ request.user.first_name.capitalize }}</b></h1>
     </div>
     <div>
-      <h1 class="text-2" style="color: #16558f;margin-left: 60px;margin-top: 47px;font-size: large;";><b>{{ request.user.role.lower }}</b></h1>
+      <h1 class="text-2" style="color: #16558f;margin-left: 60px;margin-top: 47px;font-size: large;";><b>{{ request.user.role.lower.capitalize }}</b></h1>
     </div>
     <div>
       <h1 class="text-2" style="color: #16558f;margin-left: 60px;margin-top: 47px;font-size: large;";><b>{{request.user.points}} Points</b></h1>
