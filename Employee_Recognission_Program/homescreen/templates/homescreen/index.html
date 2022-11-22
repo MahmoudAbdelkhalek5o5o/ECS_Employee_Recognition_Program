@@ -54,7 +54,7 @@
     .w3-half img:hover{opacity:1}
     .image {
       position: relative;
-      right: 86%;
+      /* right: 86%; */
       width: 20px;
       height: 20px;
       margin: 38px auto 0 auto;
@@ -97,12 +97,16 @@
       position: relative;
       width: 50px;
       height: 50px;
-      left: 90%;
-      margin-bottom: 30px;
+
+      /* left: 90%;
+      margin-bottom: 30px; */
     }
     .text-1{
-      margin-left: 450px;
-      margin-top: 47px;
+      /* margin-left: 450px;
+      margin-top: 47px; */
+      font-size: large;
+    }
+    .text-2{
       font-size: large;
     }
     .Header-flex{
@@ -240,6 +244,12 @@
         margin-right: 40px;
       }
     }
+    .ul-list{     
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    
+    }
     
     
   
@@ -281,7 +291,21 @@
 <div class="w3-main" style="margin-left:340px;margin-right:40px">
 
   <!-- Header -->
-  <div class="Header-flex">
+  <ul class="ul-list">
+    <li style="float:right;display: inline;">      
+      <div class="image-class">
+        <div class="image">
+          <div class="circle-1"></div>
+          <div class="circle-2"></div>
+          <img src="{{ request.user.img.url }}" width="50" height="50" alt="Profile Photo"/>
+        </div> 
+      </div>
+    </li>
+    <li style="float:right;display: inline;"><h1 class="text-2" style="color: #16558f;padding: 30px;";><b>{{request.user.points}} Points</b></h1></li>
+    <li style="float:right;display: inline;"><h1 class="text-2" style="color: #16558f;padding: 30px;";><b>{{ request.user.role.lower.capitalize }}</b></h1></li>
+    <li style="float:right;display: inline;"><h1 class="text-1" style="color: #16558f;padding: 30px;";><b>Hello, {{ request.user.first_name.capitalize }}</b></h1></li>
+  </ul>
+  <!-- <div class="Header-flex">
       <div class="image-class">
       <div class="image">
       <div class="circle-1"></div>
@@ -298,7 +322,7 @@
     <div>
       <h1 class="text-2" style="color: #16558f;margin-left: 60px;margin-top: 47px;font-size: large;";><b>{{request.user.points}} Points</b></h1>
     </div>
-  </div>
+  </div> -->
   
   <div class="w3-container" style="margin-top:10px" id="showcase">
     <h1 class="w3-xxxlarge " style="color: #16558f; animation: 1s ease-out 0s 1 slideInFromLeft;" ><b>Vendors</b></h1>
