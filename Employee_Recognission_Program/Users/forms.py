@@ -8,6 +8,11 @@ from django.utils.translation import gettext_lazy as _
 
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
+class announcementForm(forms.ModelChoiceField):
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'owner':
+            return announcementForm(queryset=User.objects.filter(is_active = True))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 # accounts forms

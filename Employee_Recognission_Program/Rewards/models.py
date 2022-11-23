@@ -42,7 +42,7 @@ class Vendor(models.Model):
     start_date = models.DateTimeField(editable=True , null=False , default = datetime.now() ,validators = [validate_year])
     end_date = models.DateTimeField(editable = True , null = True ,default = datetime(datetime.today().year, 12, 31), validators = [validate_year])
     img = models.ImageField(upload_to='images/', null = False , blank = True)
-    creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True, default = User , editable = False ,related_name="vendor_creator")
+    creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True  ,related_name="vendor_creator")
     accepts_voucher = models.BooleanField(null=False , default = False)
     accepts_procurement = models.BooleanField(null=False , default = False)
     accepts_direct = models.BooleanField(null=False , default = False)

@@ -62,7 +62,9 @@ class User(AbstractUser):
 
     
 class announcement(models.Model):
-    creator = models.ForeignKey(User,on_delete=models.CASCADE,null=True,editable = False )
+    creator = models.ForeignKey(User,on_delete=models.CASCADE,null=True )
+    title = models.CharField(max_length=1024,null=False, blank= False)
+  
     PostText= models.CharField(max_length=1024,null=False, blank= False)
     StartDate= models.DateTimeField(editable=True,default = datetime.now())
     EndDate=models.DateTimeField(editable=True,default = datetime(datetime.today().year, 12, 31))
@@ -70,6 +72,9 @@ class announcement(models.Model):
     def clean(self, *args, **kwargs):
         if(self.StartDate>self.EndDate):
             raise ValidationError("Start Date must be before end date")
+    
+    def __str__(self):
+        return f"{self.id} {self.title}"
 
 class UserRegisterationRequest(models.Model):
     username = models.CharField(max_length=20, null = False , blank = False)

@@ -364,14 +364,14 @@
     </p>
   </div>
   <div class="container">
-    <h2  class="w3-xxxlarge" style="color: #16558f; animation: 1s ease-out 0s 1 slideInFromLeft; ">Announcements</h2>
+    <h2  class="w3-xxxlarge" style="color: #16558f;">Announcements</h2>
     <ul class="cards">
       {% for announcement in announcements %}
       <li class="card">
         <div>
           <h3 class="card-title">Mazen</h3>
           <div class="card-content">
-            <p>{{announcement.PostText}}</p>
+            <p>{{announcement.title}}</p>
           </div>
         </div>
         <div class="card-link-wrapper">

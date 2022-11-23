@@ -7,7 +7,8 @@ from .resources import UsersResource
 from django.contrib import messages
 from reversion.admin import VersionAdmin
 from django.utils.translation import gettext_lazy as _
-
+import datetime
+from .forms import announcementForm
 # from .forms import UserForm
 # Register your models here.
 class Filter(admin.SimpleListFilter):
@@ -44,6 +45,40 @@ class Filter(admin.SimpleListFilter):
         elif self.value() == None:
             return queryset.filter(is_active = True)
 
+
+class Filter2(admin.SimpleListFilter):
+    title = _('Active')
+    parameter_name = 'is_archived'
+    # default = 'Yes'
+    def lookups(self, request, model_admin):
+
+        return (
+            (None, _('Active')),
+            
+            ('yes', _('Archived')),
+
+            ("all",_('all')),
+        )
+
+
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        
+        if self.value() == 'yes':
+            return queryset.filter(is_archived = True)  
+
+        elif self.value() == None:
+            return queryset.filter(is_archived = False)
 
 
 @admin.action(description='Restore User')
@@ -102,9 +137,30 @@ class ViewAdmin(ImportExportModelAdmin , admin.ModelAdmin):
 
        
     # form = UserForm
+@admin.register(announcement)
+
+class View_announcements(admin.ModelAdmin):
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'owner':
+            return announcementForm(queryset=User.objects.filter(pk = request.user.emp_id))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    list_filter = [Filter2]
+    list_display = ['creator','title', 'StartDate' , 'EndDate' , 'is_archived']
+    search_fields = ['title','creator__username' , 'creator__first_name' , 'creator__last_name']
+    fields = ('creator','title', 'PostText' , 'StartDate' , 'EndDate' , 'is_archived')
+
+    def get_queryset(self, request):
+        data = super().get_queryset(request)
+        to_archive = data.filter(EndDate__lte=datetime.date.today())
+        to_archive.update(is_archived=True)
+        for ann in to_archive:
+            announcement.objects.filter(pk = ann.id).update(is_archived = True)
+          
+        return data
 
 
-admin.site.register(announcement)
+
+    
 admin.site.register(UserRegisterationRequest)
 
 
