@@ -47,7 +47,7 @@
     }
     body {
       font-size:16px;
-      height: 1100px;
+      height: 1050px;
     
     }
     .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
@@ -219,10 +219,15 @@
       .card {
         flex-basis: calc(50% - 10px);
       }
+      #title{
+        color: white;
+      }
     
       .card:not(:last-child) {
         margin-right: 20px;
       }
+      
+     
     }
     
     @media (min-width: 700px) {
@@ -232,6 +237,10 @@
     
       .card:not(:last-child) {
         margin-right: 30px;
+      }
+     
+      #title{
+        color: white;
       }
     }
     
@@ -243,15 +252,29 @@
       .card:not(:last-child) {
         margin-right: 40px;
       }
+      #title{
+        color: white;
+      }
+      
     }
-    .ul-list{     
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    
+    @media(max-width: 700px){
+      .ul-list{
+        width: 80%;
+        margin-top: 100px;
+        float: left;
+        padding: 2px;
+      }
+      .text-1{
+        display: none;
+      }
+     #title{
+      color: white;
+     }
+     .w3-button{
+      color: white;
+     }
     }
-    
-    
+  
   
 </style>
 </head>
@@ -280,8 +303,9 @@
 
 <!-- Top menu on small screens -->
 <header class="w3-container w3-top w3-hide-large  w3-xlarge w3-padding" style="background-color: #16558f;">
-  <a href="javascript:void(0)" class="w3-button  w3-margin-right" onclick="w3_open()" >☰</a>
-  <span>Loyalty Program</span>
+  <a href="javascript:void(0)" class="w3-button  w3-margin-right"  onclick="w3_open()" >☰</a>
+  <span  id="title">Loyalty Program</span>
+  
 </header>
 
 <!-- Overlay effect when opening sidebar on small screens -->

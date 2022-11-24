@@ -180,6 +180,14 @@ class ActivityRequest(models.Model):
     activity_approval_date = models.DateTimeField(auto_now_add=False, auto_now=False, null = True, blank = False)
     is_archived = models.BooleanField(default = False)
     def clean(self, *args, **kwargs):
+        if(self.start_date >= self.end_date):
+            raise ValidationError("Start Date must be before end date")
+        if self.category is not None:            
+            if self.points > self.category.threshhold:
+                raise ValidationError(_("points cannot have a higher value than the category threshhold"))
+
+        if self.category is None:
+            raise ValidationError("must assign a category to the activity")
         if(self.emp == self.category.owner or self.emp.role == "Admin"):
             raise ValidationError("You can't make an activity request")
        
@@ -193,8 +201,16 @@ class ActivitySuggestion(models.Model):
     activity_description = models.CharField(max_length=1024 , null = False, blank=False)
     justification = models.CharField(max_length=30 , null = True, blank=True)
     evidence_needed = models.CharField(max_length=1024 , null = True, blank=True)
-    is_archived = models.BooleanField(null=False , default = False)
+    points = models.IntegerField(null = False, blank = False)
+    start_date = models.DateField(default = datetime.date.today(), validators = [validate_year])
+    end_date = models.DateField(default = datetime.date(datetime.date.today().year, 12, 31) , null=True , validators = [validate_year])
+    is_accepted = models.BooleanField(null=False , default = False)
     
+    def clean(self, *args, **kwargs):
+        if self.is_accepted == True and not self.points is None:
+            Activity.objects.create(activity_name = self.activity_name , activity_description = self.activity_description , category = self.category ,  evidence_needed = self.evidence_needed , points = self.points , start_date = self.start_date , end_date = self.end_date)
+    def __str__(self):
+        return f"{self.activity_name}"
 class Points(models.Model):
     points = models.IntegerField(null = False, blank = False)
     amounts = models.IntegerField(null = False, blank = False)

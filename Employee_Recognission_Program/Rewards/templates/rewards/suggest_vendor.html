@@ -1,0 +1,58 @@
+{% extends "activities/layout.html" %}
+{% block body %}
+<html>
+  
+    <head>
+      <meta charset="utf-8">
+      <title>Suggest vendor</title>
+      <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    
+    <body>
+      <div class="login-root" style="margin-bottom: 300px;">
+        <div class="box-root flex-flex flex-direction--column" style="max-height: 100vh;flex-grow: 1;">
+          <div class="box-root flex-flex flex-direction--column" style="flex-grow: 1; z-index: 1;">
+            <div class="box-root flex-flex flex-justifyContent--center">
+              <h1 style="color: #16558f;">Suggest vendor</h1>
+            </div>
+            <div class="formbg-outer">
+              <div class="formbg">
+                <div class="formbg-inner padding-horizontal--48">
+                  <span class="padding-bottom--15">Suggest a vendor to be added!</span>
+                  <form id="stripe-login" method="POST">
+                    {% if suc_message %}
+                  <div class="alert alert-success alert-dismissible" role="alert">
+                     {{suc_message}}
+                  </div>
+                  {% elif err_message %}
+                  <div class="alert alert-danger alert-dismissible" role="alert">
+                    {{err_message}}
+                 </div>
+                  {% endif %}
+                    {% csrf_token %}                   
+                    <div class="field padding-bottom--24">
+                      <label for="name">Vendor name</label>
+                      <input type="text" name="vendor" id="vendor" placeholder="Vendor name" required = True>
+                    </div>
+                    <div class="field padding-bottom--24">
+                        <label for="Website">Website</label>
+                        <input type="text" name="website" id="website" placeholder="Website (link)" required = True >
+                    </div>
+                    <div class="field padding-bottom--24">
+                        <label for="reason">Justification</label>
+                        <input type="text" name="reason" id="reason" placeholder="Why do you think this will be useful to ECS?" required = True>
+                    </div>
+                    <div class="field padding-bottom--24">
+                      <input type="submit" name="submit" value="Submit">
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </body>
+    
+    </html>
+{% endblock %}

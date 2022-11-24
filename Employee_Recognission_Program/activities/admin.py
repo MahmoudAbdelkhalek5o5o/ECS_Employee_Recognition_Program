@@ -51,7 +51,40 @@ class Filter(admin.SimpleListFilter):
             return queryset.filter(is_archived = False)
 
 
+    
+class Filter2(admin.SimpleListFilter):
+    title = _('Accepted')
+    parameter_name = 'is_accepted'
+    # default = 'Yes'
+    def lookups(self, request, model_admin):
 
+        return (
+            ("no", _('Accepted')),
+            
+            ('yes', _('not accepted')),
+
+            (None,_('all')),
+        )
+
+
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        
+        if self.value() == 'yes':
+            return queryset.filter(is_accepted=False)  
+
+        elif self.value() == 'no':
+            return queryset.all()
 
 @admin.action(description='Archive Category')
 def AdminArchiveCategory(modeladmin, request, queryset):
@@ -172,9 +205,14 @@ class ViewAdmin(ImportExportModelAdmin):
           
         return data
 
+@admin.register(ActivitySuggestion)
+class Viewsuggestion(admin.ModelAdmin):
+    list_display = ("activity_name","category","activity_description","justification","is_accepted")
+    list_filter = [Filter2]
 
-
-
+    def has_add_permission(self, request):
+            
+        return False
+            
 
 admin.site.register(ActivityRequest)
-admin.site.register(ActivitySuggestion)
