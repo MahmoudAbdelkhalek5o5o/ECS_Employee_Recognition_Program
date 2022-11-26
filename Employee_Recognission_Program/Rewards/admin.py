@@ -44,6 +44,39 @@ class Filter(admin.SimpleListFilter):
         elif self.value() == None:
             return queryset.filter(is_archived = False)
 
+class Filter2(admin.SimpleListFilter):
+    title = _('Accepted')
+    parameter_name = 'is_accepted'
+    # default = 'Yes'
+    def lookups(self, request, model_admin):
+
+        return (
+            ("no", _('Accepted')),
+            
+            ('yes', _('not accepted')),
+
+            (None,_('all')),
+        )
+
+
+
+    def choices(self, cl):
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == lookup,
+                'query_string': cl.get_query_string({
+                    self.parameter_name: lookup,
+                }, []),
+                'display': title,
+            }
+
+    def queryset(self, request, queryset):
+        
+        if self.value() == 'yes':
+            return queryset.filter(is_accepted=False)  
+
+        elif self.value() == 'no':
+            return queryset.all()
 
 
 @admin.action(description='Restore Vendor')
@@ -88,23 +121,27 @@ from django.utils.html import format_html
 
 class ImageAdmin(admin.ModelAdmin):
 
-    def image_tag(self, obj):
+    def logo(self, obj):
         return format_html('<img src="{}" style="max-width:200px; max-height:200px"/>'.format(obj.img.url))
 
-    list_display = ['image_tag' , 'name','creator','start_date','end_date' , 'is_archived']
+    list_display = ['logo' , 'name','creator','start_date','end_date' , 'is_archived']
+    readonly_fields = ['creator']
+    def save_model(self, request, obj, form, change):
+        obj.creator = request.user
+        obj.save()
 class ViewAdmin(ImportExportModelAdmin):
       
-        list_display = ['name','creator','start_date','end_date' , 'is_archived' , 'image_tag']
-        list_filter = [Filter , 'name','start_date']
-        search_fields = ['name' , 'creator__username']
-        readonly_fields = ['creator']
-        def auto_archive(self):
-            utc=pytz.UTC
+    list_display = ['name','creator','start_date','end_date' , 'is_archived' , 'logo']
+    list_filter = [Filter , 'name','start_date']
+    search_fields = ['name' , 'creator__username' , 'creator__first_name', 'craetor__last_name']
+   
+    def auto_archive(self):
+        utc=pytz.UTC
 
-            if self.start_date >= utc.localize(datetime.now()):
-                self.is_archived = True
-                return self.is_archived
-        resource_class = VendorResource
+        if self.start_date >= utc.localize(datetime.now()):
+            self.is_archived = True
+            return self.is_archived
+    resource_class = VendorResource
 
 
 
@@ -140,7 +177,6 @@ class BudgetAdmin(admin.ModelAdmin):
             
         return data
 
-admin.site.register(Suggest_vendor)
 
 admin.site.register(Redemption_Request)
 @admin.register(budget_in_point)
@@ -149,4 +185,14 @@ class budgetPointsAdmin(admin.ModelAdmin):
     readonly_fields = ('year','total_budget',)
     
     def has_add_permission(self, request):
+        return False
+
+
+@admin.register(Suggest_vendor)
+class Viewsuggestion(admin.ModelAdmin):
+    list_display = ("vendor","reason","is_archived")
+    list_filter = [Filter]
+
+    def has_add_permission(self, request):
+            
         return False

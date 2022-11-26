@@ -103,19 +103,11 @@ class Redemption_Request(models.Model):
     
     
 class Suggest_vendor(models.Model):
-    STATUS = [
-        ("PENDING" , "Pending"),
-        ("ACCEPTED" , "Accpeted"),
-        ("REJECTED" , "Rejected"),
-        ("WITHDRAWN" , "Withdrawn"),
-
-              
-    ]
+    
     vendor = models.CharField(max_length=30,null=False, blank= False, unique = False)
     website = models.CharField(max_length=255,null=False, blank= False, unique = False)
     reason = models.CharField(max_length=1024,null=False, blank= False, unique = False)
     is_archived = models.BooleanField(null=False , default = False)
-    status = models.CharField(max_length=20, null = False , blank = False, choices=STATUS , default=STATUS[0])
     
 
 

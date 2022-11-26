@@ -79,6 +79,8 @@ class Filter2(admin.SimpleListFilter):
 
         elif self.value() == None:
             return queryset.filter(is_archived = False)
+        
+
 
 
 @admin.action(description='Restore User')
@@ -141,13 +143,16 @@ class ViewAdmin(ImportExportModelAdmin , admin.ModelAdmin):
 
 class View_announcements(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'owner':
+        if db_field.name == 'creator':
             return announcementForm(queryset=User.objects.filter(pk = request.user.emp_id))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     list_filter = [Filter2]
     list_display = ['creator','title', 'StartDate' , 'EndDate' , 'is_archived']
     search_fields = ['title','creator__username' , 'creator__first_name' , 'creator__last_name']
-    fields = ('creator','title', 'PostText' , 'StartDate' , 'EndDate' , 'is_archived')
+    fields = ('title', 'PostText' , 'StartDate' , 'EndDate' , 'is_archived')
+    def save_model(self, request, obj, form, change):
+        obj.creator = request.user
+        obj.save()
 
     def get_queryset(self, request):
         data = super().get_queryset(request)

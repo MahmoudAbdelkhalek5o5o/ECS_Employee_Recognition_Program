@@ -10,7 +10,7 @@ from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 class announcementForm(forms.ModelChoiceField):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'owner':
+        if db_field.name == 'creator':
             return announcementForm(queryset=User.objects.filter(is_active = True))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 

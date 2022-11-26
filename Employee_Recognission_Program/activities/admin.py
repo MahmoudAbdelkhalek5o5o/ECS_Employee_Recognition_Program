@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 import datetime
 import pytz
 from django import forms
-from .forms import CategoryForm
+from .forms import CategoryForm , ActivityForm
 from .resources import CategoryResource , ActivityResource
 
 # Register your models here.
@@ -187,7 +187,11 @@ def AdminArchiveActivity(modeladmin, request, queryset):
     messages.success(request, f'Activity(ies) Archived successfully')  
 
 @admin.register(Activity)
-class ViewAdmin(ImportExportModelAdmin):
+class ViewAdmin(ImportExportModelAdmin , admin.ModelAdmin):
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'category':
+            return ActivityForm(queryset = ActivityCategory.objects.filter(is_archived = False))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
     actions = [AdminRestoreActivity,AdminArchiveActivity]
     resource_class = ActivityResource
     fields = ('activity_name', 'category','activity_description','start_date','end_date','points','evidence_needed','is_archived','approved_by')

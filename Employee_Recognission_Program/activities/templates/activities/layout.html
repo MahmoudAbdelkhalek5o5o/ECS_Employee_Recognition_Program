@@ -30,7 +30,7 @@
     }
     
   .animation{
-      animation: 0.8s ease-in 0s 1 slideInFromRight;
+      animation: 0s ease-in 0s 1 slideInFromRight;
 
   }
   body {
@@ -44,13 +44,14 @@
   
   }
   h1,h2,h3,h4,h5,p,div {
-      animation: 1s ease-out 0s 1 slideInFromLeft;
+      animation: 0.8s ease-out 0s  slideInFromLeft;
   }
   body {
     font-size:16px;
     height: 1050px;
   
   }
+  
   .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
   .w3-half img:hover{opacity:1}
   .image {
@@ -112,7 +113,7 @@
   }
   .Header-flex{
     display: flex;
-    flex-direction: row;
+    flex-direction: row;
   }
 
 
@@ -218,7 +219,7 @@
   a:hover{
     text-decoration: none;
   }
-  
+
   @media (min-width: 500px) {
     .card {
       flex-basis: calc(50% - 10px);
@@ -361,9 +362,9 @@
     <li style="float:right;display: inline;"><h1 class="text-1" style="color: #16558f;padding: 30px;";><b>Hello, {{ request.user.first_name.capitalize }}</b></h1></li>
   </ul>
   {% block body %}
-
   {% endblock %}
 </div>
+
 
 <script>
 // Script to open and close sidebar

@@ -7,6 +7,12 @@ class CategoryForm(forms.ModelChoiceField):
         if db_field.name == 'owner':
             return CategoryForm(queryset=User.objects.filter(is_active = True))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    
+class ActivityForm(forms.ModelChoiceField):
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'category':
+            return ActivityForm(queryset=ActivityCategory.objects.filter(is_archived = True))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
             
 
