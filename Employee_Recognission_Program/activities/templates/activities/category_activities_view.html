@@ -1,0 +1,78 @@
+{% extends 'activities/layout.html'%}
+{% block body %}
+<style>
+    .activities-container {
+        font-family: 'Muli', sans-serif;
+        display: flex;
+        flex-direction: column;
+    }
+    .activity {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        max-width: 100%;
+        margin: 20px;
+        overflow: hidden;
+        width: 700px;
+        height: 250px
+    }
+
+    .activity h6 {
+        opacity: 0.6;
+        margin: 0;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .activity h2 {
+        letter-spacing: 1px;
+        margin: 10px 0;
+    }
+
+    .activity-preview {
+        background-color: #16558f;
+        color: #fff;
+        padding: 30px;
+        min-width: 250px;
+        max-width: 250px;
+    }
+    .activity-info {
+        padding: 30px;
+        position: relative;
+        top:15px;
+        width: 100%;
+        font-size: 14px;
+    }
+    .btn {
+        background-color: #16558f;
+        border: 0;
+        border-radius: 50px;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+        color: #fff;
+        font-size: 16px;
+        padding: 12px 25px;
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        letter-spacing: 1px;
+    }
+</style>
+<h1 style = "position: relative; left:20px">Activities</h1>
+<div class="activities-container">
+    {%for activity in activities%}
+	<div class="activity">
+		<div class="activity-preview">
+			<h2>{{activity.activity_name}}</h2>
+            <br><br>
+            <h3>{{activity.points}} Points</h3>
+		</div>
+		<div class="activity-info">
+			<h3>Description</h3>
+			<p>{{activity.activity_description}}</p>
+			<a href="{% url 'submit_activity_request' activity.id %}"><button class="btn">Proceed</button></a>
+		</div>
+	</div>
+    {% endfor %}
+</div>
+{% endblock %}
