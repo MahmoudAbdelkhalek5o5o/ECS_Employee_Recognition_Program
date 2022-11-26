@@ -40,4 +40,40 @@ def suggest_activity(request):
             'categories': categories,       
             })
             
+            
+def categories_view(request):
+    if(request.user.is_authenticated):
+        ActivityCategory.objects.filter(end_date__lt=date.today()).update(is_archived= True)
+        categories = ActivityCategory.objects.filter(is_archived = False).select_related("owner")
+        print(categories)
+        return render(request,"activities/categories_view.html",{
+            "categories":categories
+        })
+    else:
+        return redirect("users-home")
+    
+def category_activities_view(request,category_id):
+    if(request.user.is_authenticated):
+        Activity.objects.filter(end_date__lt=date.today()).update(is_archived= True)
+        activities = Activity.objects.filter(is_archived = False, category = ActivityCategory.objects.get(pk=category_id)).select_related("category")
+        print(activities)
+        return render(request,"activities/category_activities_view.html",{
+            "activities":activities
+        })
+    else:
+        return redirect("users-home")
+    
+def submit_activity_request(request, activity_id):
+    if(request.user.is_authenticated):
+        if(request.method == 'GET'):
+            activity = Activity.objects.filter(pk=activity_id).select_related('category')[0]
+            print(activity)
+            return render(request,"activities/submit_activity_request.html",{
+                "activity":activity
+            })
+        else:
+            pass # submit activity request to be done
+    else:
+        return redirect("users-home")
+            
 
