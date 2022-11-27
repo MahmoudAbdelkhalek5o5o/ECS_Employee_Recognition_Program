@@ -1,0 +1,207 @@
+{% extends "activities/layout.html" %}
+{% block body %}
+<style>
+  
+  .image-block {
+    background-color: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 350px;
+    height: 467px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow: hidden;
+    margin-left: 50px;
+    margin-top: 30px;
+  }
+  .image-block:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  }
+  .image-block:hover img {
+    transform: scale(1.25);
+  }
+  .image-block:hover .h1-vendor {
+    display: none;
+  }
+  .image-block:hover figcaption {
+    bottom: 0;
+  }
+  .image-block .h1-vendor {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    margin: 0;
+    padding: 0;
+    color: black;
+    font-size: 50px;
+    font-weight: 100;
+    line-height: 1;
+  }
+  .image-block img {
+    max-width:100%;
+	max-height:100%;
+    transition: 0.25s;
+  }
+  .image-block figcaption {
+    position: absolute;
+    bottom: -63%;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 30px;
+    background-color: #16558fe7;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    color: white;
+	font-size: 14px;
+    font-weight: 30;
+    line-height: 1;
+    transition: 0.25s;
+  }
+  .image-block figcaption h3 {
+    margin: 0 0 20px;
+    padding: 0;
+  }
+  .image-block figcaption p {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .image-block figcaption button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0 0;
+    padding: 10px 30px;
+    background-color:white;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    font-size: 14px;
+  }
+  .select-button{
+    cursor: pointer;
+  }
+  .select-button:hover{
+    background-color:#16558f;
+  }
+  .VendorPage-flex{
+    display: flex;
+    flex-direction: row;
+  }
+  .li_vendor{
+    width: 33%;
+  }
+</style>
+<div>
+<h1 style = "position: relative; left:15px; color:#16558f;">Vendors</h1>
+<h2 style = "position: relative; left:15px;color: #16558f;">Select your desired vendor!</h2>
+<div class="select" style="position:relative; left:40%;">
+	<select name="activity_category" id="mySelect">	
+		<option value="all" >All vendors</option>
+		<option value="voucher">voucher eligable</option>
+		<option value="procuerment">direct procuerment eligible</option>
+		</select>
+	<span class="focus"></span>
+  </div>
+<div class="container mt-5 mb-9">
+	<div  id="all">
+	<div class="row">
+	{% for vendor in vendors %}
+	<div class="col-md-4">
+		<figure class="image-block">
+			<h1 class="h1-vendor">{{vendor.name}}</h1>
+			<img src="{{ vendor.img.url }}" class='img-name' />
+			<figcaption>
+				<h3>
+					More Info
+				</h3>
+        		<li>Date of addition: {{vendor.creation_date}}</li>
+        		<li>Date of ending: {{vendor.end_date}}</li>
+        		<li>Eligible for vouchers: {% if vendor.accepts_voucher %} Yes {% else %} No {% endif %}</li>
+        		<li>Eligible for direct procurement: {% if vendor.accepts_procurement %} Yes {% else %} No {% endif %}</li>
+				<a href="{% url 'view_rewards' vendor.id %}">
+					<button class='select-button' type="submit">
+						Select Vendor
+					</button>
+				</a>
+			</figcaption>
+	</figure>
+	</div>
+{% endfor %}
+</div>
+</div>
+<div id="voucher" style="display: none;">
+<div class="row" >
+	{% for vendor in vendors %}
+	{% if vendor.accepts_voucher %}
+	<div class="col-md-4">
+		<figure class="image-block">
+			<h1 class="h1-vendor">{{vendor.name}}</h1>
+			<img src="{{ vendor.img.url }}" class='img-name' />
+			<figcaption>
+				<h3>
+					More Info
+				</h3>
+        		<li>Date of addition: {{vendor.creation_date}}</li>
+        		<li>Date of ending: {{vendor.end_date}}</li>
+        		<li>Eligible for vouchers: {% if vendor.accepts_voucher %} Yes {% else %} No {% endif %}</li>
+        		<li>Eligible for direct procurement: {% if vendor.accepts_procurement %} Yes {% else %} No {% endif %}</li>
+				<a href="{% url 'view_rewards' vendor.id %}">
+					<button class='select-button' type="submit">
+						Select Vendor
+					</button>
+				</a>
+			</figcaption>
+	</figure>
+	</div>
+	{% endif %}
+{% endfor %}
+</div>
+</div>
+<div id="procuerment" style="display: none;" >
+<div class="row">
+	{% for vendor in vendors %}
+	{% if vendor.accepts_procurement %}
+	<div class="col-md-4">
+		<figure class="image-block">
+			<h1 class="h1-vendor">{{vendor.name}}</h1>
+			<img src="{{ vendor.img.url }}" class='img-name' />
+			<figcaption>
+				<h3>
+					More Info
+				</h3>
+        		<li>Date of addition: {{vendor.creation_date}}</li>
+        		<li>Date of ending: {{vendor.end_date}}</li>
+        		<li>Eligible for vouchers: {% if vendor.accepts_voucher %} Yes {% else %} No {% endif %}</li>
+        		<li>Eligible for direct procurement: {% if vendor.accepts_procurement %} Yes {% else %} No {% endif %}</li>
+				<a href="{% url 'view_rewards' vendor.id %}">
+				<button class='select-button' type="submit">
+					Select Vendor
+				</button>
+				</a>
+			</figcaption>
+	</figure>
+	</div>
+	{% endif %}
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+<script>
+
+let current = document.getElementById('all');
+function changeSelect (idDivName) {
+        current.style.display = 'none';
+        current = document.getElementById(idDivName);
+        current.style.display = 'block';
+    }
+
+    document.getElementById('mySelect').addEventListener('change', function() {
+        changeSelect(this.value);
+    });
+</script>
+{% endblock %}

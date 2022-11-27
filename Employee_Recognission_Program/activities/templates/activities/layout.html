@@ -133,10 +133,13 @@
 
   
   .container {
-    max-width: 1400px;
+    max-width: 2500px;
     padding: 0 15px;
     margin: 0 auto;
   }
+  .wrapper{
+        display: grid;
+    }
   
   h2 {
     font-size: 32px;
@@ -322,7 +325,7 @@
   <div class="w3-bar-block">
     <a href="{% url 'users-home' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Home</a> 
     <a href="#showcase" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white ;">Activities</a> 
-    <a href="#services" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Rewards</a> 
+    <a href="{% url 'view-vendors' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Rewards</a> 
     <a href="#designers" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">User</a> 
     <a href="#packages" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Leader Board</a>
     {% if request.user.role ==  "ADMIN" %}
@@ -343,27 +346,35 @@
 <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:340px;margin-right:40px">
-
-  <!-- Header -->
-  <ul class="ul-list">
-    <li style="float:right;display: inline; margin-top:-10px;">
-      <div class="image-class">
-        <div class="image">
-          <div class="circle-1"></div>
-          <div class="circle-2"></div>
-          <img src="{{ request.user.img.url }}" width="50" height="50" alt="Profile Photo"/>
-        </div> 
-      </div>
-    </li>
-    <li style="float:right;display: inline;"><h1 class="text-2" style="color: #16558f;padding: 30px;";><b>{{request.user.points}} Points</b></h1></li>
-    <li style="float:right;display: inline;"><h1 class="text-2" style="color: #16558f;padding: 30px;";><b>{{ request.user.role.lower.capitalize }}</b></h1></li>
-    <li style="float:right;display: inline;"><h1 class="text-1" style="color: #16558f;padding: 30px;";><b>Hello, {{ request.user.first_name.capitalize }}</b></h1></li>
-  </ul>
-  {% block body %}
-
-  {% endblock %}
-</div>
+<div class = "container">
+  <div class="w3-main" style="margin-left:340px;margin-right:40px;">
+  
+    <!-- Header -->
+    <div class = "wrapper">
+      <div>
+    <ul class="ul-list">
+      <li style="float:right;display: inline;">      
+        <div class="image-class">
+          <div class="image">
+            <div class="circle-1"></div>
+            <div class="circle-2"></div>
+            <img src="{{ request.user.img.url }}" width="50" height="50" alt="Profile Photo"/>
+          </div> 
+        </div>
+      </li>
+      <li style="float:right;display: inline;"><h1 class="text-2" style="color: #16558f;padding: 30px;";><b>{{request.user.points}} Points</b></h1></li>
+      <li style="float:right;display: inline;"><h1 class="text-2" style="color: #16558f;padding: 30px;";><b>{{ request.user.role.lower.capitalize }}</b></h1></li>
+      <li style="float:right;display: inline;"><h1 class="text-1" style="color: #16558f;padding: 30px;";><b>Hello, {{ request.user.first_name.capitalize }}</b></h1></li>
+    </ul>
+    </div>
+    <div>
+      {% block body %}
+      {%endblock%}
+    </div>
+  
+  </div>
+  </div>
+  </div>
 
 <script>
 // Script to open and close sidebar
