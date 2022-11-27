@@ -43,6 +43,7 @@ def suggest_activity(request):
             
 def categories_view(request):
     if(request.user.is_authenticated):
+        
         ActivityCategory.objects.filter(end_date__lt=date.today()).update(is_archived= True)
         categories = ActivityCategory.objects.filter(is_archived = False).select_related("owner")
         print(categories)
