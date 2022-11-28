@@ -14,18 +14,19 @@ from datetime import date
 # Create your views here.
 
 def index(request):
-    announcements = announcement.objects.filter(is_archived = False).order_by("-StartDate")
-    archived_announcements = announcement.objects.filter(is_archived = True).order_by("-StartDate")
-    for Announcement in announcements:
-        if helpers.check_date(Announcement.StartDate) == False:
-            announcement.objects.filter(StartDate = Announcement.StartDate).update(is_archived = True)
-    for Announcement in archived_announcements:
-        if helpers.check_date(Announcement.StartDate) == True:
-            announcement.objects.filter(StartDate = Announcement.StartDate).update(is_archived = False)
-
- 
+    
         
     if request.user.is_authenticated:
+        announcements = announcement.objects.filter(is_archived = False).order_by("-StartDate")
+        archived_announcements = announcement.objects.filter(is_archived = True).order_by("-StartDate")
+        for Announcement in announcements:
+            if helpers.check_date(Announcement.StartDate) == False:
+                announcement.objects.filter(StartDate = Announcement.StartDate).update(is_archived = True)
+        for Announcement in archived_announcements:
+            if helpers.check_date(Announcement.StartDate) == True:
+                announcement.objects.filter(StartDate = Announcement.StartDate).update(is_archived = False)
+
+ 
         vendors = Vendor.objects.filter(is_archived = False)[:6]
         vendorsodd = []
         vendorseven = []

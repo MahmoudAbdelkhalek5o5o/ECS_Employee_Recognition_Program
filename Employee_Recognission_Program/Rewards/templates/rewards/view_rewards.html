@@ -1,0 +1,105 @@
+{% extends "activities/layout.html" %}
+{% block body %}
+<style>
+  .coupon{border-radius: 12px;box-shadow: 5px 8px 10px #16558f; background-color: #16558f;transform: scale(1.0);    transition: 0.25s; }
+  .coupon:hover{transform: scale(1.02);    transition: 0.25s;}
+  .code:hover{background: #16558f;color: #fff;cursor: pointer}
+  .image-voucher{ max-width:35%;max-height:35%;margin-top: 15px;}
+  @media(max-width: 700px){
+
+    *{
+        text-align: center;
+        margin-top: 10px;
+        
+    }
+    .code{
+        margin-top:20px;
+    }
+    body{
+        height:1550px;
+    }
+    label{
+
+
+        text-align: left;
+    
+    }
+   
+    .ul-list{     
+        list-style-type: none;
+        margin-top: 80px;
+        padding: 0;
+        
+        }
+        .circle-2{
+            display:none;
+        }
+        .circle-2 {
+            display: none;
+        }
+  }
+</style>
+{% if rewards1.vendor.accepts_procurement %}
+<h1 style = "position: relative; left:15px; color:#16558f;">Driect procuerment</h1>
+<h3 style = "position: relative; left:15px;color: #16558f;">Exchange reciepts for cashback!</h3>   
+<div class="container mt-5 mb-9">
+    <div class="row">
+        <div class="col-md-6"> 
+        <div class="field padding-bottom--24">
+            <label for="amount">Amount of equivalent points</label>
+            <input type="number" name="amount" id="amount" placeholder="Points Equivalent" required = True>
+        </div>
+        </div>
+        <div class="col-md-6"> 
+            <div class="field padding-bottom--24">
+                <label for="Link">Link of purchase</label>
+                <input type="text" name="evidence_link" id="evidence_link" placeholder="Link of purchase" required = True>
+        </div>
+        </div>
+        <div class="col-md-4"> 
+            <div class="field padding-bottom--24">
+                <label for="reason">Reciept of Purchase:</label>
+                <input type="File" name="Reciept" id="Reciept">
+                <input type="submit" name="submit" value="Submit" style="margin-top: 20px;">
+        </div>
+        </div>
+        <div class="col-md-4">
+       
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<h1 style = "position: relative; left:15px; color:#16558f;">Vouchers</h1>
+<h3 style = "position: relative; left:15px;color: #16558f;">Exchange Points for voucher from your selected vendor!</h3>    
+<div class="container mt-5 mb-9">
+<div class="row">
+    {% for reward in rewards %}
+        <div class="col-md-6"> 
+            <div class="coupon p-3 bg-white"> 
+                <div class="row no-gutters"> 
+                    <div class="col-md-4 border-right"> 
+                        <div class="d-flex flex-column align-items-center">
+                            <img src="{{ reward.vendor.img.url }}" class="image-voucher">
+                            <span class="d-block">{{ reward.vendor.name }}</span>
+                        </div> 
+                    </div> 
+                    <div class="col-md-8"> 
+                        <div> 
+                            <div class="d-flex flex-row justify-content-end off"> 
+                                <h1>{{reward.points_equivalent}}</h1>
+                                <span>Points</span>
+                            </div> 
+                            <div class="d-flex flex-row justify-content-between off px-3 p-2">
+                                <span style="font-size:15px ;">Expiration date: {{reward.end_date}}</span>
+                                <span class="border px-3 rounded code" >Select</span>
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div> 
+        </div>  
+{% endfor %}
+</div>
+</div>
+{% endblock %}

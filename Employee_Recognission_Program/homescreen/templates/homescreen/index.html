@@ -290,7 +290,7 @@
   <div class="w3-bar-block">
     <a href="{% url 'users-home' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Home</a> 
     <a href="{% url 'categories_view' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white ;">Activities</a> 
-    <a href="#services" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Rewards</a> 
+    <a href="{% url 'view-vendors' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Rewards</a> 
     <a href="#designers" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">User</a> 
     <a href="#packages" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Leader Board</a>
     {% if request.user.role ==  "ADMIN" %}

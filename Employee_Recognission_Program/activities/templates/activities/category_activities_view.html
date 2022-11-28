@@ -69,7 +69,7 @@
 		</div>
 		<div class="activity-info">
 			<h3>Description</h3>
-			<p>{{activity.activity_description}}</p>
+			<p>{{activity.activity_description}}. {{ activity.evidence_needed }}</p>
 			<a href="{% url 'submit_activity_request' activity.id %}"><button class="btn">Proceed</button></a>
 		</div>
 	</div>

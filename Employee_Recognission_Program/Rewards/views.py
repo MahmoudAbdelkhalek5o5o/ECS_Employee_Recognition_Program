@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render , redirect
 from .models import Suggest_vendor ,Vendor , Reward 
 from Users.models import User , ROLE
+from datetime import datetime
+import pytz
 # Create your views here.
 def suggest_vendor(request):
     if request.method== "POST":
@@ -20,3 +22,33 @@ def suggest_vendor(request):
     else:
                
         return render(request,"rewards/suggest_vendor.html")
+    
+    
+    
+def view_vendors(request):
+    if request.user.is_authenticated:
+        all_vendors = Vendor.objects.filter().all()
+        vendors = []
+        utc=pytz.UTC
+        now = utc.localize(datetime.now())
+        for vendor in all_vendors:
+            if vendor.start_date <= now:
+                vendors.append(vendor)
+        return render(request,"rewards/view_vendors.html",{
+            "vendors": vendors
+        })
+    else:
+        redirect("users-home")
+
+def view_rewards(request,vendor_id):
+    if request.user.is_authenticated:
+        Reward.objects.filter(end_date__lt=datetime.now()).update(is_archived= True)
+        rewards = Reward.objects.filter(is_archived = False, vendor = vendor_id)
+        rewards1 = Reward.objects.filter(is_archived = False, vendor = vendor_id)[0]
+        print(rewards1)
+        return render(request,"rewards/view_rewards.html",{
+            "rewards":rewards,
+            "rewards1":rewards1
+        })
+    else:
+        return redirect("users-home")

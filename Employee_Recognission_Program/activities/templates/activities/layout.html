@@ -10,250 +10,295 @@
 <link rel = "stylesheet" href="{% static 'homescreen/styles.css' %}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap%27');
-    @keyframes slideInFromLeft {
-        0% {
-          transform: translateX(100%);
-        }
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap%27');
+  @keyframes slideInFromLeft {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(0%);
+      }
+    }
+    @keyframes slideInFromRight {
+      0% {
+        transform: translatey(100%);
+      }
+   
         100% {
-          transform: translateX(0%);
+          transform: translatey(0%);
         }
-      }
-      @keyframes slideInFromRight {
-        0% {
-          transform: translatey(100%);
-        }
-     
-          100% {
-            transform: translatey(0%);
-          }
-      }
+    }
+    
+  .animation{
+      animation: 0.8s ease-in 0s 1 slideInFromRight;
+
+  }
+  body {
+      font-family: 'Cairo', sans-serif;
       
-    .animation{
-        animation: 0.8s ease-in 0s 1 slideInFromRight;
+      
+  }
+  body,h1,h2,h3,h4,h5 {
+      font-family: "Cairo", sans-serif;
 
-    }
-    body {
-        font-family: 'Cairo', sans-serif;
-        
-        
-    }
-    body,h1,h2,h3,h4,h5 {
-        font-family: "Cairo", sans-serif;
+  
+  }
+  h1,h2,h3,h4,h5,p,div {
+      animation: 1s ease-out 0s 1 slideInFromLeft;
+  }
+  body {
+    font-size:16px;
+    height: 1050px;
+  
+  }
+  .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
+  .w3-half img:hover{opacity:1}
+  .image {
+    position: relative;
+    /* right: 86%; */
+    width: 20px;
+    height: 20px;
+    margin: 38px auto 0 auto;
+  }
+  .image .circle-1,.image .circle-2 {
+    position: absolute;
+    box-sizing: border-box;
+    width: 56px;
+    height: 56px;
+    top: -3px;
+    left: -3px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #008cde #008cde #008cde transparent;
+    border-radius: 50%;
+    transition: all 1.5s ease-in-out;
+  }
+  .image .circle-2 {
+    width: 62px;
+    height: 62px;
+    top: -6px;
+    left: -6px;
+    border-color: #008cde transparent #008cde #008cde;
+  }
+  .image img {
+    display: block;
+    border-radius: 50%;
+    background: #F5E8DF;
+  }
+  .image:hover {
+    cursor: default;
+  }
+  .image:hover .circle-1,.image:hover .circle-2 {
+    transform: rotate(360deg);
+  }
+  .image:hover .circle-2 {
+    transform: rotate(-360deg);
+  }
+  .image-class{
+    position: relative;
+    width: 50px;
+    height: 50px;
 
-    
-    }
-    h1,h2,h3,h4,h5,p,div {
-        animation: 1s ease-out 0s 1 slideInFromLeft;
-    }
-    body {
-      font-size:16px;
-      height: 1100px;
-    
-    }
-    .w3-half img{margin-bottom:-6px;margin-top:16px;opacity:0.8;cursor:pointer}
-    .w3-half img:hover{opacity:1}
-    .image {
-      position: relative;
-      /* right: 86%; */
-      width: 20px;
-      height: 20px;
-      margin: 38px auto 0 auto;
-    }
-    .image .circle-1,.image .circle-2 {
-      position: absolute;
-      box-sizing: border-box;
-      width: 56px;
-      height: 56px;
-      top: -3px;
-      left: -3px;
-      border-width: 1px;
-      border-style: solid;
-      border-color: #008cde #008cde #008cde transparent;
-      border-radius: 50%;
-      transition: all 1.5s ease-in-out;
-    }
-    .image .circle-2 {
-      width: 62px;
-      height: 62px;
-      top: -6px;
-      left: -6px;
-      border-color: #008cde transparent #008cde #008cde;
-    }
-    .image img {
-      display: block;
-      border-radius: 50%;
-      background: #F5E8DF;
-    }
-    .image:hover {
-      cursor: default;
-    }
-    .image:hover .circle-1,.image:hover .circle-2 {
-      transform: rotate(360deg);
-    }
-    .image:hover .circle-2 {
-      transform: rotate(-360deg);
-    }
-    .image-class{
-      position: relative;
-      width: 50px;
-      height: 50px;
-
-      /* left: 90%;
-      margin-bottom: 30px; */
-    }
-    .text-1{
-      /* margin-left: 450px;
-      margin-top: 47px; */
-      font-size: large;
-    }
-    .text-2{
-      font-size: large;
-    }
-    .Header-flex{
-      display: flex;
-      flex-direction: row;
-    }
+    /* left: 90%;
+    margin-bottom: 30px; */
+  }
+  .text-1{
+    /* margin-left: 450px;
+    margin-top: 47px; */
+    font-size: large;
+  }
+  .text-2{
+    font-size: large;
+  }
+  .Header-flex{
+    display: flex;
+    flex-direction: row;
+  }
 
 
-    :root {
-      --red: #16558f;
-      --darkred: #0583d2;
-      --platinum: #e5e5e5;
-      --black: #2b2d42;
-      --white: #fff;
-      --thumb: #edf2f4;
-    }
-    
-    * {
-      box-sizing: border-box;
-      padding: 0;
-      margin: 0;
-    }
+  :root {
+    --red: #16558f;
+    --darkred: #0583d2;
+    --platinum: #e5e5e5;
+    --black: #2b2d42;
+    --white: #fff;
+    --thumb: #edf2f4;
+  }
+  
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
 
-    
-    .container {
-      max-width: 1400px;
-      padding: 0 15px;
-      margin: 0 auto;
-    }
-    .wrapper{
+  
+  .container {
+    max-width: 2500px;
+    padding: 0 15px;
+    margin: 0 auto;
+  }
+  .wrapper{
         display: grid;
     }
-    
-    h2 {
-      font-size: 32px;
-      margin-bottom: 1em;
-    }
-    
-    .cards {
-      display: flex;
-      padding: 25px 0px;
-      list-style: none;
-      overflow-x: scroll;
-      scroll-snap-type: x mandatory;
-    }
-    
+  
+  h2 {
+    font-size: 32px;
+    margin-bottom: 1em;
+  }
+  
+  .cards {
+    display: flex;
+    padding: 25px 0px;
+    list-style: none;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .card {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 100%;
+    padding: 20px;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 15%);
+    scroll-snap-align: start;
+    transition: all 0.2s;
+  }
+  
+  .card:not(:last-child) {
+    margin-right: 10px;
+  }
+  
+  .card:hover {
+    color: var(--white);
+    background: var(--red);
+  }
+  
+  .card .card-title {
+    font-size: 20px;
+  }
+  
+  .card .card-content {
+    margin: 20px 0;
+    max-width: 85%;
+  }
+  
+  .card .card-link-wrapper {
+    margin-top: auto;
+  }
+  
+  .card .card-link {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background: var(--red);
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  
+  .card:hover .card-link {
+    background: var(--darkred);
+  }
+  
+  .cards::-webkit-scrollbar {
+    height: 12px;
+  }
+  
+  .cards::-webkit-scrollbar-thumb,
+  .cards::-webkit-scrollbar-track {
+    border-radius: 92px;
+  }
+  
+  .cards::-webkit-scrollbar-thumb {
+    background: var(--darkred);
+  }
+  
+  .cards::-webkit-scrollbar-track {
+    background: var(--thumb);
+  }
+  a:hover{
+    text-decoration: none;
+  }
+  
+  @media (min-width: 500px) {
     .card {
-      display: flex;
-      flex-direction: column;
-      flex: 0 0 100%;
-      padding: 20px;
-      background: var(--white);
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 15%);
-      scroll-snap-align: start;
-      transition: all 0.2s;
+      flex-basis: calc(50% - 10px);
     }
-    
-    .card:not(:last-child) {
-      margin-right: 10px;
-    }
-    
-    .card:hover {
-      color: var(--white);
-      background: var(--red);
-    }
-    
-    .card .card-title {
-      font-size: 20px;
-    }
-    
-    .card .card-content {
-      margin: 20px 0;
-      max-width: 85%;
-    }
-    
-    .card .card-link-wrapper {
-      margin-top: auto;
-    }
-    
-    .card .card-link {
-      display: inline-block;
-      text-decoration: none;
+    #title{
       color: white;
-      background: var(--red);
-      padding: 6px 12px;
-      border-radius: 8px;
-      transition: background 0.2s;
+    }
+  
+    .card:not(:last-child) {
+      margin-right: 20px;
     }
     
-    .card:hover .card-link {
-      background: var(--darkred);
+   
+  }
+  
+  @media (min-width: 700px) {
+    .card {
+      flex-basis: calc(calc(100% / 3) - 20px);
+    }
+  
+    .card:not(:last-child) {
+      margin-right: 30px;
+    }
+   
+    #title{
+      color: white;
+    }
+  }
+  
+  @media (min-width: 1100px) {
+    .card {
+      flex-basis: calc(25% - 30px);
+    }
+  
+    .card:not(:last-child) {
+      margin-right: 40px;
+    }
+    #title{
+      color: white;
     }
     
-    .cards::-webkit-scrollbar {
-      height: 12px;
+  }
+  @media(max-width: 700px){
+    .ul-list{
+      width: 80%;
+      margin-top: 100px;
+      
     }
-    
-    .cards::-webkit-scrollbar-thumb,
-    .cards::-webkit-scrollbar-track {
-      border-radius: 92px;
+    .text-1{
+      display: none;
     }
-    
-    .cards::-webkit-scrollbar-thumb {
-      background: var(--darkred);
+   #title{
+    color: white;
+   }
+   .w3-button{
+    color: white;
+   }
+  .circle-1 , .circle-2{
+    display: none;
+  } 
+  }
+  @media (min-width: 1100px) {
+    .card {
+      flex-basis: calc(25% - 30px);
     }
-    
-    .cards::-webkit-scrollbar-track {
-      background: var(--thumb);
+  
+    .card:not(:last-child) {
+      margin-right: 40px;
     }
-    
-    @media (min-width: 500px) {
-      .card {
-        flex-basis: calc(50% - 10px);
-      }
-    
-      .card:not(:last-child) {
-        margin-right: 20px;
-      }
-    }
-    
-    @media (min-width: 700px) {
-      .card {
-        flex-basis: calc(calc(100% / 3) - 20px);
-      }
-    
-      .card:not(:last-child) {
-        margin-right: 30px;
-      }
-    }
-    
-    @media (min-width: 1100px) {
-      .card {
-        flex-basis: calc(25% - 30px);
-      }
-    
-      .card:not(:last-child) {
-        margin-right: 40px;
-      }
-    }
-    .ul-list{     
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    
-    }
+  
+  }
+  .ul-list{     
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  
+  }
     
     
   
@@ -268,7 +313,7 @@
     <img src="../../media/images/white_logo.png" style="  width: 160.33.5px; height: 69.66px; margin-top: 10px;" style="width:20% ;" alt="logo"/>
     <h3 class="w3-padding-32" style="color:white;"><b>Loyalty Program </h3>
   </div>
-  <div class="w3-bar-block">
+  <div class="w3-bar-block" style="margin: 0">
     <a href="{% url 'users-home' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Home</a> 
     <a href="{% url 'categories_view' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white ;">Activities</a> 
     <a href="#services" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Rewards</a> 
@@ -283,9 +328,9 @@
 </nav>
 
 <!-- Top menu on small screens -->
-<header class="w3-container w3-top w3-hide-large  w3-xlarge w3-padding" style="background-color: #16558f;">
+<header class="w3-container w3-top w3-hide-large  w3-xlarge w3-padding" style="background-color: #16558f; text-align:left; margin:0;">
   <a href="javascript:void(0)" class="w3-button  w3-margin-right" onclick="w3_open()" >☰</a>
-  <span>Loyalty Program</span>
+  <span style="text-align:left; color:white;">Loyalty Program</span>
 </header>
 
 <!-- Overlay effect when opening sidebar on small screens -->
@@ -324,7 +369,7 @@
 </div>
 
   <!-- Modal for full size images on click-->
-  <div id="modal01" class="w3-modal w3-black" style="padding-top:0" onclick="this.style.display='none'">
+  <div id="modal01" class="w3-modal w3-white" style="padding-top:0" onclick="this.style.display='none'">
     <span class="w3-button w3-black w3-xxlarge w3-display-topright">×</span>
     <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
       <img id="img01" class="w3-image">

@@ -13,7 +13,7 @@ from Users.models import User ,announcement , ROLE
 from Rewards.models import budget , Suggest_vendor
 import pytz
 from django.forms.models import model_to_dict
-
+from . import helpers
 # Create your views here.
 def suggest_activity(request):
         categories= ActivityCategory.objects.filter(is_archived = False)
@@ -43,9 +43,28 @@ def suggest_activity(request):
             
 def categories_view(request):
     if(request.user.is_authenticated):
-        
+        categories = ActivityCategory.objects.filter(is_archived = False)
+        archived_categories = ActivityCategory.objects.filter(is_archived = True)
+        for category in categories:
+            if helpers.check_date(category.start_date) == False or helpers.check_date(category.end_date) == True:
+                ActivityCategory.objects.filter(start_date = category.start_date).update(is_archived = True)
+        for category in archived_categories:
+            if helpers.check_date(category.start_date) == True and helpers.check_date(category.end_date) == False:
+                ActivityCategory.objects.filter(start_date = category.start_date).update(is_archived = False)
+        Activities = Activity.objects.filter(is_archived = False)
+        archived_Activities= Activity.objects.filter(is_archived = True)
+        for activity in Activities:
+            if helpers.check_date(activity.start_date) == False or helpers.check_date(activity.end_date) == True:
+                Activity.objects.filter(start_date = activity.start_date).update(is_archived = True)
+        for activity in archived_Activities:
+            if helpers.check_date(activity.start_date) == True and helpers.check_date(category.end_date) == False:
+                Activity.objects.filter(start_date = activity.start_date).update(is_archived = False)
+            
+    
+
+ 
         ActivityCategory.objects.filter(end_date__lt=date.today()).update(is_archived= True)
-        categories = ActivityCategory.objects.filter(is_archived = False).select_related("owner")
+        categories = ActivityCategory.objects.filter(is_archived = False)
         print(categories)
         return render(request,"activities/categories_view.html",{
             "categories":categories

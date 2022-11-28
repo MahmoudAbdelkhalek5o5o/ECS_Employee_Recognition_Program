@@ -14,6 +14,7 @@ from pathlib import Path
 from tempfile import template
 from typing import Any
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'import_export',
     'auditlog',
      'tabular_permissions',
+     'djangocms_admin_style',
     
 ]
 TABULAR_PERMISSIONS_CONFIG = {
@@ -88,7 +90,7 @@ ROOT_URLCONF = 'Employee_Recognission_Program.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
