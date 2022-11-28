@@ -31,7 +31,7 @@
     <div id="header" style="background-color:#16558f ;">
         <div id="branding">
         <!-- {% block branding %}dpdsinczodjsnc{% endblock %} -->
-        <img src="../../media/images/white_logo.png" style="  width: 160.33.5px; height: 69.66px;">
+        <img src="../../../../../media/images/white_logo.png" style="  width: 160.33.5px; height: 69.66px;">
         
         </div>
         {% block usertools %}
@@ -64,7 +64,7 @@
     {% endblock %}
     <!-- END Header -->
     {% block breadcrumbs %}
-    <div class="breadcrumbs">
+    <div class="breadcrumbs" >
     <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
     {% if title %} &rsaquo; {{ title }}{% endif %}
     </div>
@@ -88,7 +88,7 @@
         <!-- Content -->
         <div id="content" class="{% block coltype %}colM{% endblock %}" >
           {% block pretitle %}{% endblock %}
-          {% block content_title %}{% if title %}<h1 >{{ title }}</h1>{% endif %}{% endblock %}
+          {% block content_title %}{% if title %}<h1> Employee Loyalty Program</h1>{% endif %}{% endblock %}
           {% block content_subtitle %}{% if subtitle %}<h2>{{ subtitle }}</h2>{% endif %}{% endblock %}
           {% block content %}
             {% block object-tools %}{% endblock %}
