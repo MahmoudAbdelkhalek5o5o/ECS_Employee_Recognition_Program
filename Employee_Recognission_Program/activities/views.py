@@ -84,19 +84,19 @@ def submit_activity_request(request, activity_id):
     if(request.user.is_authenticated):
         
         activity = Activity.objects.filter(pk=activity_id).select_related('category')[0]
-        if activity.points - activity.category.threshhold > 0:
-            Activity.objects.filter(pk = activity.id).update(is_archived = True)
+        
         if(request.method == 'GET'):
             
             return render(request,"activities/submit_activity_request.html",{
                 "activity":activity
             })
         else:
-            if activity.is_archived == True:
+            if activity.points - activity.category.threshhold > 0:
+                Activity.objects.filter(pk = activity.id).update(is_archived = True)
                 return render(request,"activities/submit_activity_request.html",{
-                            "activity":activity,
-                            "err_message":"you can't submit a request for this category anymore.",
+                            "err_message":"you can't submit any request from this activity anymore.",
                         })
+                
             if datetime.strptime(request.POST["date"],'%Y-%m-%d')  > datetime.now():
                 return render(request,"activities/submit_activity_request.html",{
                             "activity":activity,

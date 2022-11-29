@@ -183,7 +183,7 @@ def AdminArchiveActivity(modeladmin, request, queryset):
     queryset.update(is_archived = True)
     
     for category in queryset:
-        Activity.objects.filter(category = category).update(is_archived = True)
+        Activity.objects.filter(pk = category.id).update(is_archived = True)
     messages.success(request, f'Activity(ies) Archived successfully')  
 
 @admin.register(Activity)
