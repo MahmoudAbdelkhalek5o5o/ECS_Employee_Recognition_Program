@@ -85,14 +85,42 @@ def category_activities_view(request,category_id):
     
 def submit_activity_request(request, activity_id):
     if(request.user.is_authenticated):
+        activity = Activity.objects.filter(pk=activity_id).select_related('category')[0]
         if(request.method == 'GET'):
-            activity = Activity.objects.filter(pk=activity_id).select_related('category')[0]
-            print(activity)
+            
             return render(request,"activities/submit_activity_request.html",{
                 "activity":activity
             })
         else:
-            pass # submit activity request to be done
+            
+            if request.user.role == ROLE[0][0] and not request.POST["submitted_to"]:
+                 return render(request,"activities/submit_activity_request.html",{
+                "activity":activity,
+                "err_message":"Admin can't submit activity requests.",
+            })
+            
+            elif request.POST["submitted_to"]:
+                # checks if user exists
+                if User.objects.filter(pk = request.POST["submitted_to"]).exists():
+                    #checks if user is not admin nor the category owner
+                    if not User.objects.filter(pk = request.POST["submitted_to"])[0].role == ROLE[0][0] and not int(request.POST["submitted_to"]) == activity.category.owner.emp_id:
+                        # creates the activity request 
+                        ActivityRequest.objects.create(emp = User.objects.filter(pk = request.POST["submitted_to"])[0]
+                                                    , date_of_action = request.POST["date"], proof_of_action = request.FILES["proof"] , 
+                                                    activity = activity ,category = activity.category)
+                        # update the category threshhold 
+                        ActivityCategory.objects.filter(activity = activity.id).update(threshhold = ActivityCategory.objects.filter(activity = activity.id)[0].threshhold - activity.points)
+
+                        return render(request,"activities/submit_activity_request.html",{
+                            "activity":activity,
+                            "suc_message":"Activity request successfully submitted.",
+                        })
+                    else:
+                        return render(request,"activities/submit_activity_request.html",{
+                            "activity":activity,
+                            "err_message":"you can't submit activity request for category owner",
+                        })
+                
     else:
         return redirect("users-home")
             

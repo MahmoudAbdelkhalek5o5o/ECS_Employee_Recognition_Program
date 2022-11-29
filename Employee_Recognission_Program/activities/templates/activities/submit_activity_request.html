@@ -379,7 +379,7 @@
   color: #fff;
 }
     </style>
-      <div class="login-root" style="margin-bottom: 300px;">
+      <div class="login-root" style="margin-bottom: 300px; height:120%;">
         <div class="box-root flex-flex flex-direction--column" style="max-height: 100vh;flex-grow: 1;">
           <div class="box-root flex-flex flex-direction--column" style="flex-grow: 1; z-index: 1;">
             <div class="box-root flex-flex flex-justifyContent--center">
@@ -388,7 +388,15 @@
             <div class="formbg-outer">
               <div class="formbg"  style="width:100%">
                 <div class="formbg-inner padding-horizontal--48">
-                    <center>
+                  {% if err_message %}
+                  <div class="alert alert-danger alert-dismissible" role="alert">
+                    {{err_message}}
+                 </div>
+                 {% elif suc_message %}
+                  <div class="alert alert-success alert-dismissible" role="alert">
+                     {{suc_message}}
+                  </div>
+                 {% endif %}
                         <div class="selectwrapper">
                             <input type="radio" name="select" id="option-1" checked onclick = "hide()">
                             <input type="radio" name="select" id="option-2" onclick = "show()" >
@@ -401,8 +409,8 @@
                                 <span>For someone</span>
                             </label>
                         </div>
-                    </center>
-                  <form id="stripe-login" method="POST">
+                 
+                  <form id="stripe-login" method="POST" action="" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="field padding-bottom--24">
                         <label for="name">Category</label>

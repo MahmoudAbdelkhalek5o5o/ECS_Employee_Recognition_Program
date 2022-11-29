@@ -173,7 +173,7 @@ class ActivityRequest(models.Model):
     date_of_action = models.DateTimeField(null = False , validators = [validate_date_of_action])
     category = models.ForeignKey(ActivityCategory, on_delete=models.CASCADE,  null=False, db_constraint= True)
     activity = models.ForeignKey(Activity, on_delete = models.CASCADE,  null=True, db_constraint= True)
-    status = models.CharField(max_length=10, null = False , blank = False, choices=STATUS, default=STATUS[0])
+    status = models.CharField(max_length=10, null = False , blank = False, choices=STATUS, default=STATUS[0][0])
     approved_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name="approver_of_upload")
     evidence_needed = models.CharField(max_length=1024,null=False, blank= False, default="Provide evidence please")
     proof_of_action = models.FileField(upload_to = "proofs/",null=False, blank= False)
