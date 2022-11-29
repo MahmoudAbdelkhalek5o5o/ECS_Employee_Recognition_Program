@@ -168,7 +168,8 @@ class ActivityRequest(models.Model):
 
               
     ]
-    emp = models.ForeignKey(User, on_delete = models.CASCADE, null=True,related_name = "original_uploader")
+    employee = models.ForeignKey(User, on_delete = models.CASCADE, null=True,related_name = "original_uploader")
+    submitter = models.ForeignKey(User, on_delete = models.CASCADE, null=True,related_name = "submitter")
     submission_date = models.DateTimeField(auto_now_add=True)
     date_of_action = models.DateTimeField(null = False , validators = [validate_date_of_action])
     category = models.ForeignKey(ActivityCategory, on_delete=models.CASCADE,  null=False, db_constraint= True)
