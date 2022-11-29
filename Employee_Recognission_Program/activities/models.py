@@ -200,7 +200,7 @@ class ActivityRequest(models.Model):
                     fail_silently=False,
                                         )
         elif self.status == STATUS[2][0]:
-            Activity.objects.filter(pk = self.activity.id).update(threshhold = self.activity.category.threshhold + self.activity.points)
+            Activity.objects.filter(pk = self.activity.id).update(points = self.activity.category.threshhold + self.activity.points)
        
     def __str__(self):
         return f"{self.employee}'s request"
