@@ -11,6 +11,7 @@ import pytz
 from django_summernote.widgets import SummernoteWidget
 from .import helpers
 from datetime import date
+from django.db.models import Q
 # Create your views here.
 
 def index(request):
@@ -47,5 +48,28 @@ def index(request):
             "vendors": vendors,
             "announcements":announcements
         })
+    else:
+        return redirect("login")
+
+
+def Leaderboard(request):
+    if request.user.is_authenticated:
+        first_place=User.objects.filter(~Q(role=ROLE[0][0] , is_active = True)).order_by("-points")[:1][0]
+        second_place=User.objects.filter(~Q(role=ROLE[0][0]  , is_active = True)).order_by("-points")[1:2][0]
+        third_place=User.objects.filter(~Q(role=ROLE[0][0]  , is_active = True)).order_by("-points")[2:3][0]
+        last_7=User.objects.filter(~Q(role=ROLE[0][0]  , is_active = True)).order_by("-points")[3:10]
+        top10=User.objects.filter(~Q(role=ROLE[0][0]  , is_active = True)).order_by("-points")[:10]
+        print(first_place)
+        print(second_place)
+        print(third_place)
+        print(last_7)
+        return render (request, "homescreen/leaderboard.html",{
+            "top10":top10,
+            "first_place":first_place,
+            "second_place":second_place,
+            "third_place":third_place,
+            "last_7":last_7
+        })
+    
     else:
         return redirect("login")
