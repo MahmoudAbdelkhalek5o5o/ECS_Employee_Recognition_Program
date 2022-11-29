@@ -125,6 +125,24 @@ def submit_activity_request(request, activity_id):
                             "activity":activity,
                             "err_message":"you can't submit activity request for category owner",
                         })
+                else:
+                    return render(request,"activities/submit_activity_request.html",{
+                            "activity":activity,
+                            "err_message":"Employee Doesn't exist.",
+                        })
+            else:
+                  # creates the activity request 
+                ActivityRequest.objects.create(employee = request.user
+                                               , date_of_action = request.POST["date"], proof_of_action = request.FILES["proof"] , 
+                                                activity = activity ,category = activity.category , submitter = request.user)
+                        # update the category threshhold 
+                ActivityCategory.objects.filter(activity = activity.id).update(threshhold = ActivityCategory.objects.filter(activity = activity.id)[0].threshhold - activity.points)
+
+                return render(request,"activities/submit_activity_request.html",{
+                    "activity":activity,
+                    "suc_message":"Activity request successfully submitted.",
+                })
+                      
                 
     else:
         return redirect("users-home")
