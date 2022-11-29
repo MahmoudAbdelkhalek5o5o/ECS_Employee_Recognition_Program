@@ -217,6 +217,19 @@ class Viewsuggestion(admin.ModelAdmin):
     def has_add_permission(self, request):
             
         return False
+    
+@admin.register(ActivityRequest)
+class Viewrequests(admin.ModelAdmin):
+    list_display = ("employee","submitter","submission_date","date_of_action","category", "activity","status")
+
+    readonly_fields = ["employee", "submitter","date_of_action", "category" , "activity", "approved_by" , "proof_of_action","activity_approval_date",]
+
+    list_filter = ['status']
+
+    def has_add_permission(self, request):
+            
+        return False
+    class Meta:
+        model= ActivityRequest
             
 
-admin.site.register(ActivityRequest)

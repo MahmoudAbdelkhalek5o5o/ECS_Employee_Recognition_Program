@@ -43,28 +43,21 @@ def suggest_activity(request):
             
 def categories_view(request):
     if(request.user.is_authenticated):
-        categories = ActivityCategory.objects.filter(is_archived = False)
-        archived_categories = ActivityCategory.objects.filter(is_archived = True)
-        for category in categories:
-            if helpers.check_date(category.start_date) == False or helpers.check_date(category.end_date) == True:
+        categoriess = ActivityCategory.objects.filter(is_archived = False)
+        for category in categoriess:
+            if helpers.check_date(category.end_date) == True:
                 ActivityCategory.objects.filter(start_date = category.start_date).update(is_archived = True)
-        for category in archived_categories:
-            if helpers.check_date(category.start_date) == True and helpers.check_date(category.end_date) == False:
-                ActivityCategory.objects.filter(start_date = category.start_date).update(is_archived = False)
-        Activities = Activity.objects.filter(is_archived = False)
-        archived_Activities= Activity.objects.filter(is_archived = True)
-        for activity in Activities:
+       
+        Activitiess = Activity.objects.filter(is_archived = False)
+        for activity in Activitiess:
             if helpers.check_date(activity.start_date) == False or helpers.check_date(activity.end_date) == True:
                 Activity.objects.filter(start_date = activity.start_date).update(is_archived = True)
-        for activity in archived_Activities:
-            if helpers.check_date(activity.start_date) == True and helpers.check_date(category.end_date) == False:
-                Activity.objects.filter(start_date = activity.start_date).update(is_archived = False)
+        
             
     
 
- 
-        ActivityCategory.objects.filter(end_date__lt=date.today()).update(is_archived= True)
-        categories = ActivityCategory.objects.filter(is_archived = False)
+        
+        categories = ActivityCategory.objects.filter(is_archived = False , start_date__lte = datetime.now())
         print(categories)
         return render(request,"activities/categories_view.html",{
             "categories":categories
@@ -73,10 +66,13 @@ def categories_view(request):
         return redirect("users-home")
     
 def category_activities_view(request,category_id):
+    activitiess = Activity.objects.filter(is_archived = False, category = ActivityCategory.objects.get(pk=category_id))
+    for activity in activitiess:
+        if activity.points - activity.category.threshhold > 0:
+            Activity.objects.filter(pk = activity.id).update(is_archived = True)
+        
     if(request.user.is_authenticated):
-        Activity.objects.filter(end_date__lt=date.today()).update(is_archived= True)
-        activities = Activity.objects.filter(is_archived = False, category = ActivityCategory.objects.get(pk=category_id)).select_related("category")
-        print(activities)
+        activities = Activity.objects.filter(is_archived = False, category = ActivityCategory.objects.get(pk=category_id) , start_date__lte = datetime.now())
         return render(request,"activities/category_activities_view.html",{
             "activities":activities
         })
@@ -84,14 +80,23 @@ def category_activities_view(request,category_id):
         return redirect("users-home")
     
 def submit_activity_request(request, activity_id):
+    
     if(request.user.is_authenticated):
+        
         activity = Activity.objects.filter(pk=activity_id).select_related('category')[0]
+        if activity.points - activity.category.threshhold > 0:
+            Activity.objects.filter(pk = activity.id).update(is_archived = True)
         if(request.method == 'GET'):
             
             return render(request,"activities/submit_activity_request.html",{
                 "activity":activity
             })
         else:
+            if activity.is_archived == True:
+                return render(request,"activities/submit_activity_request.html",{
+                            "activity":activity,
+                            "err_message":"you can't submit a request for this category anymore.",
+                        })
             if datetime.strptime(request.POST["date"],'%Y-%m-%d')  > datetime.now():
                 return render(request,"activities/submit_activity_request.html",{
                             "activity":activity,

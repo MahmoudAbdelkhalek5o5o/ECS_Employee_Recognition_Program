@@ -10,9 +10,17 @@ from django.utils.translation import gettext_lazy as _
 from Rewards.models import budget , budget_in_point
 import datetime
 from distutils.log import error
-
+from django.core.mail import send_mail
 
 # Create your models here.
+STATUS = [
+        ("PENDING" , "Pending"),
+        ("ACCEPTED" , "Accpeted"),
+        ("REJECTED" , "Rejected"),
+        ("WITHDRAWN" , "Withdrawn"),
+
+              
+    ]
 def validate_date_of_action(value):
     present = datetime.datetime.now()
     if not value.date() <= present.date():
@@ -160,39 +168,42 @@ class Activity(models.Model):
 
 
 class ActivityRequest(models.Model):
-    STATUS = [
-        ("PENDING" , "Pending"),
-        ("ACCEPTED" , "Accpeted"),
-        ("REJECTED" , "Rejected"),
-        ("WITHDRAWN" , "Withdrawn"),
-
-              
-    ]
-    employee = models.ForeignKey(User, on_delete = models.CASCADE, null=True,related_name = "original_uploader")
-    submitter = models.ForeignKey(User, on_delete = models.CASCADE, null=True,related_name = "submitter")
+    
+    employee = models.ForeignKey(User, on_delete = models.CASCADE, null=True,related_name = "original_uploader",  editable=False)
+    submitter = models.ForeignKey(User, on_delete = models.CASCADE, null=True,related_name = "submitter" ,  editable=False)
     submission_date = models.DateTimeField(auto_now_add=True)
-    date_of_action = models.DateTimeField(null = False , validators = [validate_date_of_action])
-    category = models.ForeignKey(ActivityCategory, on_delete=models.CASCADE,  null=False, db_constraint= True)
-    activity = models.ForeignKey(Activity, on_delete = models.CASCADE,  null=True, db_constraint= True)
+    date_of_action = models.DateTimeField(null = False , validators = [validate_date_of_action],  editable=False)
+    category = models.ForeignKey(ActivityCategory, on_delete=models.CASCADE,  null=False, db_constraint= True ,  editable=False)
+    activity = models.ForeignKey(Activity, on_delete = models.CASCADE,  null=True, db_constraint= True,  editable=False)
     status = models.CharField(max_length=10, null = False , blank = False, choices=STATUS, default=STATUS[0][0])
-    approved_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name="approver_of_upload")
+    approved_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name="approver_of_upload",  editable=False)
     evidence_needed = models.CharField(max_length=1024,null=False, blank= False, default="Provide evidence please")
-    proof_of_action = models.FileField(upload_to = "proofs/",null=False, blank= False)
-    activity_approval_date = models.DateTimeField(auto_now_add=False, auto_now=False, null = True, blank = False)
-    is_archived = models.BooleanField(default = False)
+    proof_of_action = models.FileField(upload_to = "proofs/",null=False, blank= False,  editable=False)
+    activity_approval_date = models.DateTimeField(auto_now_add=False, auto_now=False, null = True, blank = False, editable=False)
     def clean(self, *args, **kwargs):
-        if(self.start_date >= self.end_date):
-            raise ValidationError("Start Date must be before end date")
-        if self.category is not None:            
-            if self.points > self.category.threshhold:
-                raise ValidationError(_("points cannot have a higher value than the category threshhold"))
+        
 
         if self.category is None:
             raise ValidationError("must assign a category to the activity")
-        if(self.emp == self.category.owner or self.emp.role == "Admin"):
+        if(self.employee == self.category.owner or self.employee.role == ROLE[0][0]):
             raise ValidationError("You can't make an activity request")
+        
+        if self.status == STATUS[1][0]:
+            budget_in_point.objects.filter(year = datetime.datetime.now().year).update(current_budget = budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget - self.activity.points)
+            User.objects.filter(pk = self.employee.emp_id).update(points = User.objects.filter(pk = self.employee.emp_id)[0].points + self.activity.points)
+            budget.objects.update(budget = (budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget * budget.objects.filter(year = datetime.datetime.now().year)[0].EGP)// budget.objects.filter(year = datetime.datetime.now().year)[0].point)
+            send_mail(
+                    'Activity Request',
+                    'Your activity request has been accepted, the equivalent points have been added to your account',
+                    'muhammad.mazen4@gmail.com',
+                    [f'{self.employee.email}'],
+                    fail_silently=False,
+                                        )
+        elif self.status == STATUS[2][0]:
+            Activity.objects.filter(pk = self.activity.id).update(threshhold = self.activity.category.threshhold + self.activity.points)
        
-
+    def __str__(self):
+        return f"{self.employee}'s request"
 
     
     

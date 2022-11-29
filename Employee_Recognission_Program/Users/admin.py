@@ -11,6 +11,19 @@ import datetime
 from .forms import announcementForm
 # from .forms import UserForm
 # Register your models here.
+
+@admin.action(description='Restore')
+def AdminRestoreAnnouncement (modeladmin, request, queryset):
+    for obj in queryset:
+        if announcement.objects.filter(id = obj.id)[0].is_archived == True:
+
+            announcement.objects.filter(id = obj.id).update(is_archived = False)
+            
+            messages.success(request, f'{announcement.objects.filter(id = obj.id)[0].title} announcement restored successfully')
+        else:
+            messages.error(request, f'{announcement.objects.filter(id = obj.id)[0].title} announcement not archived')
+
+
 class Filter(admin.SimpleListFilter):
     title = _('Active')
     parameter_name = 'is_active'
@@ -150,6 +163,7 @@ class View_announcements(admin.ModelAdmin):
     list_display = ['creator','title', 'StartDate' , 'EndDate' , 'is_archived']
     search_fields = ['title','creator__username' , 'creator__first_name' , 'creator__last_name']
     fields = ('title', 'PostText' , 'StartDate' , 'EndDate' , 'is_archived')
+    actions = [AdminRestoreAnnouncement]
     def save_model(self, request, obj, form, change):
         obj.creator = request.user
         obj.save()
