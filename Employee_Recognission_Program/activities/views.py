@@ -148,3 +148,26 @@ def submit_activity_request(request, activity_id):
         return redirect("users-home")
             
 
+def view_activity_requests(request):
+    if request.user.is_authenticated:
+        if request.user.role == ROLE[1][0]:
+            categories = ActivityCategory.objects.filter(owner = request.user)
+            activity_requests = ActivityRequest.objects.filter(category__in = categories)
+            return render(request,"activities/view_activity_requests.html",{
+                "activity_requests": activity_requests
+            })
+        if request.user.role == ROLE[2][0]:
+            activity_requests = ActivityRequest.objects.filter(employee = request.user)
+            return render(request,"activities/view_activity_requests.html",{
+                "activity_requests": activity_requests
+            })
+        if request.user.role == ROLE[0][0]:
+            return redirect("users-home")
+    else:
+        return redirect("login")
+
+def accept_activity_request(request,request_id):
+    return redirect("view_activity_requests")
+    
+def decline_activity_request(request,request_id):
+    return redirect("view_activity_requests")

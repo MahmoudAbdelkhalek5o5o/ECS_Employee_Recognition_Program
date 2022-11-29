@@ -79,8 +79,10 @@ class ActivityCategory(models.Model):
         elif(self.start_date >= self.end_date):
             raise ValidationError("Start Date must be before end date")
         if not ActivityCategory.objects.filter(pk = self.id).exists():
-            if self.threshhold + ActivityCategory.objects.aggregate(Sum('threshhold'))['threshhold__sum'] > budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget:
-                
+            categories_sum = ActivityCategory.objects.aggregate(Sum('threshhold'))['threshhold__sum']
+            if not categories_sum:
+                categories_sum = 0
+            if self.threshhold + categories_sum > budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget:
                 raise ValidationError(_("Category threshhold exceeded the system budget"))
         else:
             if (ActivityCategory.objects.aggregate(Sum('threshhold'))['threshhold__sum'] - ActivityCategory.objects.filter(pk = self.id)[0].threshhold) + self.threshhold > budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget:
