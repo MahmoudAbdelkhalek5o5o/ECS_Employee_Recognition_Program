@@ -142,7 +142,7 @@ class budget(models.Model):
                 self.budget += budget.objects.filter(year = datetime.now().year)[0].budget
                 self.budget_compare = self.budget
                 if budget_in_point.objects.filter(year = datetime.now().year).exists():
-                    budget_in_point.objects.update(current_budget = (self.budget * self.point)//self.EGP , total_budget = (self.budget * self.point)//self.EGP)
+                    budget_in_point.objects.filter(year = datetime.now().year).update(current_budget = (self.budget * self.point)//self.EGP , total_budget = (self.budget * self.point)//self.EGP)
 
             else:
                 raise ValidationError(_('budget can\'t be less than 0'))
@@ -172,7 +172,7 @@ class budget_in_point(models.Model):
             if self.current_budget +  budget_in_point.objects.filter(year = datetime.now().year)[0].current_budget >= 0:
                     self.current_budget += budget_in_point.objects.filter(year = datetime.now().year)[0].current_budget
                     self.total_budget = self.current_budget 
-                    budget.objects.update(budget = (self.current_budget * Budget.EGP)//Budget.point)
+                    budget.objects.filter(year = datetime.now().year).update(budget = (self.current_budget * Budget.EGP)//Budget.point)
             else:
                 raise ValidationError(_('budget can\'t be less than 0'))
                 

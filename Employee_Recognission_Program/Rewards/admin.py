@@ -170,10 +170,10 @@ class BudgetAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         data = super().get_queryset(request)
         to_archive = data.filter(year__lte=datetime.now().year)
-        if to_archive:
+        # if to_archive:
 
-            if datetime.now().year != to_archive[0].year:
-                to_archive.update(is_archived = True)
+            # if datetime.now().year != to_archive[0].year:
+            #     to_archive.update(is_archived = True)
             
         return data
 

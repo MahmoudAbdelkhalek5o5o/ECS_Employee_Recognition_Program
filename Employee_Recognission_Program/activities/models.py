@@ -11,6 +11,8 @@ from Rewards.models import budget , budget_in_point
 import datetime
 from distutils.log import error
 from django.core.mail import send_mail
+from dateutil.relativedelta import relativedelta
+
 
 # Create your models here.
 STATUS = [
@@ -192,15 +194,24 @@ class ActivityRequest(models.Model):
             budget_in_point.objects.filter(year = datetime.datetime.now().year).update(current_budget = budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget - self.activity.points)
             User.objects.filter(pk = self.employee.emp_id).update(points = User.objects.filter(pk = self.employee.emp_id)[0].points + self.activity.points)
             budget.objects.update(budget = (budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget * budget.objects.filter(year = datetime.datetime.now().year)[0].EGP)// budget.objects.filter(year = datetime.datetime.now().year)[0].point)
+            Points.objects.create(points = self.activity.points , employee = self.employee , end_date = datetime.datetime.now() + relativedelta(months=+6), amounts = (self.activity.points * budget.objects.filter(year = datetime.datetime.now().year)[0].EGP)//budget.objects.filter(year = datetime.datetime.now().year)[0].point)
+
             send_mail(
                     'Activity Request',
-                    'Your activity request has been accepted, the equivalent points have been added to your account',
+                    'Your activity request has been accepted, the equivalent points have been added to your account and will expire in 6 months.',
                     'muhammad.mazen4@gmail.com',
                     [f'{self.employee.email}'],
                     fail_silently=False,
                                         )
         elif self.status == STATUS[2][0]:
             Activity.objects.filter(pk = self.activity.id).update(points = self.activity.category.threshhold + self.activity.points)
+            send_mail(
+                    'Activity Request',
+                    'Your activity request has been rejected.',
+                    'muhammad.mazen4@gmail.com',
+                    [f'{self.employee.email}'],
+                    fail_silently=False,
+                                        )
        
     def __str__(self):
         return f"{self.employee}'s request"

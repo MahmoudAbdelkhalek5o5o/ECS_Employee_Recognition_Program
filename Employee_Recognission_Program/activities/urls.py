@@ -9,5 +9,9 @@ urlpatterns = [
     path("view_activity_requests", views.view_activity_requests, name = "view_activity_requests"),
     path("accept_activity_request/<int:request_id>", views.accept_activity_request, name = "accept_activity_request"),
     path("decline_activity_request/<int:request_id>", views.decline_activity_request, name = "decline_activity_request"),
+    path("withdraw_activity_request/<int:request_id>", views.withdraw_activity_request, name = "withdraw_activity_request"),
+    path("view_my_requests", views.view_my_requests, name = "view_my_requests"),
+
+
 
 ]
