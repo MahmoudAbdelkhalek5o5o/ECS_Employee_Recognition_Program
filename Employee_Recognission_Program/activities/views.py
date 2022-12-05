@@ -129,7 +129,7 @@ def submit_activity_request(request, activity_id):
                     else:
                         return render(request,"activities/submit_activity_request.html",{
                             "activity":activity,
-                            "err_message":"you can't submit activity request for category owner",
+                            "err_message":"you can't submit activity request for category owner or admin",
                         })
                 else:
                     return render(request,"activities/submit_activity_request.html",{

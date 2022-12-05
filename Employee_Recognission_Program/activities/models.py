@@ -82,6 +82,8 @@ class ActivityCategory(models.Model):
         verbose_name_plural = "Categories"
 
     def clean(self, *args, **kwargs):
+        if self.owner.role == ROLE[2][0]:
+            User.objects.filter(pk = self.owner.emp_id).update(role = ROLE[1][0])
         
         if self.start_date is None :
             raise ValidationError("Please enter required fields")
@@ -90,7 +92,10 @@ class ActivityCategory(models.Model):
             raise ValidationError("Start Date must be before end date")
         if not ActivityCategory.objects.filter(pk = self.id).exists():
             if budget_in_point.objects.filter(year = datetime.datetime.now().year):
-                if self.threshhold + ActivityCategory.objects.aggregate(Sum('threshhold'))['threshhold__sum'] > budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget:
+                categories_sum = ActivityCategory.objects.aggregate(Sum('threshhold'))['threshhold__sum']
+                if categories_sum == None:
+                    categories_sum =0
+                if self.threshhold + categories_sum > budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget:
                 
                     raise ValidationError(_("Category threshhold exceeded the system budget"))
             else:
