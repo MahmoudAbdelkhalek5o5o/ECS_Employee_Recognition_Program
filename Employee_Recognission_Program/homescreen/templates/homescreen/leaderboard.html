@@ -154,27 +154,35 @@
     </header>
     
     <main class="leaderboard__profiles">
+      {% for user in top10 %}
+      {% if forloop.counter == 1 %}
         <article class="leaderboard__profile" style="background: linear-gradient(to right, #fefcea 1%,#f1da36 39%,#f1da36 39%);max-height:76px;">
-            <img src="{{ first_place.img.url }}" alt="Profile name" class="leaderboard__picture" style="height:60px;">
-            <span class="leaderboard__name"style="color:white;">{{first_place.first_name}} {{first_place.last_name}}<span style="color:white; font-size: 40px;">1st</span></span>
-            <span class="leaderboard__value"style="color:white;">{{first_place.points}}<span style="color:white;">Points</span></span>
+            <img src="{{ user.img.url }}" alt="Profile name" class="leaderboard__picture" style="height:60px;">
+            <span class="leaderboard__name"style="color:white;">{{user.first_name}} {{user.last_name}}<span style="color:white; font-size: 40px;">1st</span></span>
+            <span class="leaderboard__value"style="color:white;">{{user.points}}<span style="color:white;">Points</span></span>
         </article>
+        {% endif %}
+        {% if forloop.counter == 2 %}
         <article class="leaderboard__profile" style=" background: linear-gradient(to right, #cedce7 1%,#596a72 78%);max-height:76px;">
-            <img src="{{ second_place.img.url }}" alt="Profile name" class="leaderboard__picture"style="height:60px;">
-            <span class="leaderboard__name" style="color:white;">{{second_place.first_name}} {{second_place.last_name}}<span style="color:white;font-size: 25px;">2nd</span></span>
-            <span class="leaderboard__value"style="color:white;">{{second_place.points}}<span style="color:white;">Points</span></span>
+            <img src="{{ user.img.url }}" alt="Profile name" class="leaderboard__picture"style="height:60px;">
+            <span class="leaderboard__name" style="color:white;">{{user.first_name}} {{user.last_name}}<span style="color:white;font-size: 25px;">2nd</span></span>
+            <span class="leaderboard__value"style="color:white;">{{user.points}}<span style="color:white;">Points</span></span>
         </article>
+        {% endif %}
+        {% if forloop.counter == 3 %}
         <article class="leaderboard__profile" style="background: linear-gradient(to right, #f0b7a1 0%,#8c3310 42%,#752201 100%,#bf6e4e 100%);max-height:76px;">
-            <img src="{{ third_place.img.url }}" alt="Profile name" class="leaderboard__picture"style="height:60px;">
-            <span class="leaderboard__name"style="color:white;">{{third_place.first_name}} {{third_place.last_name}}<span style="color:white;font-size: 15px;">3rd</span></span>
-            <span class="leaderboard__value" style="color:white;">{{third_place.points}}<span style="color:white;">Points</span></span>
+            <img src="{{ user.img.url }}" alt="Profile name" class="leaderboard__picture"style="height:60px;">
+            <span class="leaderboard__name"style="color:white;">{{user.first_name}} {{user.last_name}}<span style="color:white;font-size: 15px;">3rd</span></span>
+            <span class="leaderboard__value" style="color:white;">{{user.points}}<span style="color:white;">Points</span></span>
         </article>
-        {% for user in last_7 %}
+        {% endif %}
+        {% if forloop.counter > 3 %}
             <article class="leaderboard__profile">
                 <img src="{{ user.img.url }}" alt="Profile name" class="leaderboard__picture">
                 <span class="leaderboard__name">{{user.first_name}} {{user.last_name}}</span>
                 <span class="leaderboard__value">{{user.points}}<span>Points</span></span>
             </article>
+        {% endif %}
         {% endfor %}
     </main>
   </div>
