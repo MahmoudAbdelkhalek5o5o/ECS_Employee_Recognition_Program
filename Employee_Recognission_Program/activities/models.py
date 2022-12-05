@@ -184,7 +184,8 @@ class ActivityRequest(models.Model):
     activity_approval_date = models.DateTimeField(auto_now_add=False, auto_now=False, null = True, blank = False, editable=False)
     def clean(self, *args, **kwargs):
         
-
+        if self.status == STATUS[3][0]:
+            raise ValidationError(_("You can't withdraw a request you didn't make."))
         if self.category is None:
             raise ValidationError("must assign a category to the activity")
         if(self.employee == self.category.owner or self.employee.role == ROLE[0][0]):

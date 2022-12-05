@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.http import HttpResponse
 # from .resources import UsersResource
+import pytz
 from tablib import Dataset
 from .resources import UsersResource
 # from activities.models import ActivityCategory
@@ -23,8 +24,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
 from tablib import Dataset
-
-
+from activities.models import Points
+from datetime import datetime
 from .forms import UpdateUserForm
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     
@@ -199,3 +200,119 @@ def logout_view(request):
 
 
 
+def userEdit(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            user_form = UpdateUserForm(request.POST , request.FILES, instance=request.user)
+            
+            if user_form.is_valid():
+              
+                # if not user_form.validate_phone_number() and  request.user.phone_number == user_form.validate_phone_number():
+                 
+                #     return render(request, 'accounts/useredit_form.html', {
+                #         'user_form': user_form,
+                #         'message':'Phone number already exists'
+                #     }
+                #     )
+                   
+                if not user_form.clean_username():
+                     return render(request, 'accounts/useredit_form.html', {
+                        'user_form': user_form,
+                           'message':'Username already exists'
+                    }
+                           )
+                    
+                    
+                    
+             
+                else:   
+                    user_form.save('user_form.is_valid()')
+                
+    
+                    messages.success(request, 'Your profile is updated successfully')
+                    return redirect(to='users-home')
+            else:
+                return render(request, 'accounts/useredit_form.html', {
+                        'user_form': user_form,
+                           'message':'Username or mobile already exists!'
+                    }
+                           )
+        else:
+            user_form = UpdateUserForm(instance=request.user)
+       
+
+        return render(request, 'accounts/useredit_form.html', {'user_form': user_form})
+    else:
+        return redirect("login")
+    
+
+def change_password(request):
+    if request.user.is_authenticated:
+        form = change_password_form()
+
+        if request.method == 'POST':
+            form = change_password_form(request.POST)
+            if form.is_valid():
+                password = request.POST["password"]
+                user = authenticate(username=request.user.username, password=password) #authenticates if the old password entered is correct
+                if user is not None:
+                    if not form.validate_password():
+                        return render(request,'accounts/change.html', {
+                            'form': form,
+                            'err_message':"Password must contains digits, uppercase and lowercase letter" # if confirmation and new password are not equivelant generate a message to enter passwords that match
+                    })
+                    new_password=request.POST["New_password"] #if old password is correct the user should enter the new password
+                    confirmation = request.POST["confirmation"] #the user should confirm the new password entered and write it again
+                    if new_password == confirmation:
+                        create_password = make_password(new_password) # if the confirmed password entered is the same as the new password update the password
+                        User.objects.filter(pk = request.user.emp_id).update(password = create_password)
+                        #logout(request,request.user)
+                        return redirect('login') #redirects the user to the login page to login with the new password
+                    else:
+                        return render(request,'accounts/change.html', {
+                            'form': form,
+                            'err_message':"passwords don't match" # if confirmation and new password are not equivelant generate a message to enter passwords that match
+                        })
+
+                else:
+                
+                    return render(request,'accounts/change.html', {
+                        'form': form,
+                        'message':"Old password is incorrect" #if old password is incorrect generate a message to tell the user to enter the correct old password
+
+        })
+        
+  
+        else:
+            print(8)
+            return render(request,'accounts/change.html', {
+                    'form': form, 
+                    
+        })
+    else:
+        return redirect("login")
+
+def points_about_expire(request):
+    if not request.user.role == "Role.A":
+        result = []
+        points_categorized = []
+        utc=pytz.UTC
+        now = utc.localize(datetime.now())  
+        points = Points.objects.filter(employee = request.user)
+        expired_points = Points.objects.filter(employee=request.user,is_used = False)
+        used_points=Points.objects.filter(employee=request.user, is_used=True)
+      
+        for point in expired_points:
+            if now > point.end_date:
+                 points_categorized.append(point)
+        for point in points:
+            delta = point.end_date - now
+            if delta.days <= 30 and point.is_used == False and delta.days > 0:
+                result.append(point)
+        return render(request,"accounts/Points_view.html",{
+            "points":result,
+            "used_points":used_points,
+            "expired_points": points_categorized,
+        })
+    else:
+        return redirect("login")

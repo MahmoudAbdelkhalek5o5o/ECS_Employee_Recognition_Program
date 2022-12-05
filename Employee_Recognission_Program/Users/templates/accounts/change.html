@@ -1,24 +1,48 @@
-{% extends "homescreen/layout.html" %}
+{% extends "accounts/layout2.html" %}
 
 
 {% block body %}
-  <center>
-    {% if message %}
-    <div class="alert alert-danger" role="alert">
-      {{message}}
-    </div>
-    {% endif %}
-        <h1> Change Password</h1>
-      </center>
-      <div class="glow">
-        <br>
-        <form method="post" action="{% url 'change_password' %}">
-            {% csrf_token %}
-            
-            {{ form }}
-            <br>
-            <button type="submit">Save changes</button>
-          </form>
-        </div>
+
+        <div class="login-root" style="margin-bottom: 300px; height:120%;" >
+          <div class="box-root flex-flex flex-direction--column" style="max-height: 100vh;flex-grow: 1;">
+            <div class="box-root flex-flex flex-direction--column" style="flex-grow: 1; z-index: 1;">
+              <div class="box-root flex-flex flex-justifyContent--center">
+                <h1 style="color: #16558f;">Change Password</h1>
+              </div>
+              <div class="formbg-outer">
+                <div class="formbg">
+                  <div class="formbg-inner padding-horizontal--48">
+                    {% if suc_message %}
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                       {{suc_message}}
+                    </div>
+                    {% elif err_message %}
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                      {{err_message}}
+                   </div>
+                    {% endif %}
+          
+          {% if message %}
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                 {{message}}
+              </div>
+          {% endif %}
+              
+                  <div class="">
+                      
+                    <form method="post" action="{% url 'change_password' %}">
+                      {% csrf_token %}
+                      
+                      {{ form }}
+                      <br>
+                      <button type="submit" class="btn" style="background-color: #16558f ; color:white;">Save Changes</button>
+
+                    </form>
+                              
+                        
+               
+          </div>
+      </div>
+      
 
 {% endblock %}

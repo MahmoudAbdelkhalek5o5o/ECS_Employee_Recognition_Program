@@ -1,4 +1,4 @@
-{% extends "activities/layout.html" %}
+{% extends "rewards/layout.html" %}
 {% block body %}
 <style>
   .coupon{border-radius: 12px;box-shadow: 5px 8px 10px #16558f; background-color: #16558f;transform: scale(1.0);    transition: 0.25s; }
@@ -39,10 +39,18 @@
         }
   }
 </style>
-{% if rewards1.vendor.accepts_procurement %}
+
+{% if messages %}
+    {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}danger{% else %}{{ message.tags }}{% endif %}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+{% if rewards1.accepts_procurement == True %}
 <h1 style = "position: relative; left:15px; color:#16558f;">Driect procurment</h1>
 <h3 style = "position: relative; left:15px;color: #16558f;">Exchange reciepts for cashback!</h3>   
 <div class="container mt-5 mb-9">
+    <form action="{% url 'redeem_procurement' rewards1.id %}" method="post">
+        {% csrf_token %}
     <div class="row">
         <div class="col-md-6"> 
         <div class="field padding-bottom--24">
@@ -61,6 +69,7 @@
                 <label for="reason">Reciept of Purchase:</label>
                 <input type="File" name="Reciept" id="Reciept">
                 <input type="submit" name="submit" value="Submit" style="margin-top: 20px;">
+                </form>
         </div>
         </div>
         <div class="col-md-4">
@@ -68,9 +77,10 @@
         </div>
     </div>
 </div>
-{% endif %}
 
+{% endif %}
 <h1 style = "position: relative; left:15px; color:#16558f;">Vouchers</h1>
+{% if rewards %}
 <h3 style = "position: relative; left:15px;color: #16558f;">Exchange Points for voucher from your selected vendor!</h3>    
 <div class="container mt-5 mb-9">
 <div class="row">
@@ -92,14 +102,20 @@
                             </div> 
                             <div class="d-flex flex-row justify-content-between off px-3 p-2">
                                 <span style="font-size:15px ;">Expiration date: {{reward.end_date}}</span>
-                                <span class="border px-3 rounded code" style="margin-top: 20px;">Select</span>
+                                <form action="{% url 'redeem_rewards' reward.id %}" method="post">
+                                    {% csrf_token %}
+                                <span><button class="border px-3 rounded code" type ="submit" style="margin-top: 20px;">Select</button></span>
+                            </form>
                             </div> 
                         </div> 
                     </div> 
                 </div> 
             </div> 
-        </div>  
+        </div>
 {% endfor %}
 </div>
+{% else %}
+<h3 style = "position: relative; left:15px; color:#16558f;">There are no available vouchers for this vendor.</h3>
+{% endif %}
 </div>
 {% endblock %}

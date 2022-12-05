@@ -33,8 +33,9 @@ ALLOWED_HOSTS = []
 JWT_SECRET = SECRET_KEY  # use settings secret key for JWT secret
 JWT_ALGORITHM = 'HS256'
 JWT_EXP_DELTA_SECONDS = 86400  # token expiring time in seconds let's assign one day
-
-
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+import socket
+EMAIL_HOST = socket.gethostbyname('smtp.gmail.com')
 
 # Application definition
 

@@ -3,7 +3,7 @@ import datetime
 from dateutil import parser
 from django.shortcuts import render,redirect
 from Users.models import announcement , ROLE , User , UserRegisterationRequest
-# from activities.models import ActivityCategory , Activity , ActivityRequest , ActivitySuggestion ,Points
+from activities.models import ActivityCategory , Activity , ActivityRequest , ActivitySuggestion ,Points
 
 from Rewards.models import budget , Vendor , Reward , Redemption_Request , Suggest_vendor
 from django import forms
@@ -26,7 +26,10 @@ def index(request):
 
         
         announcements = announcement.objects.filter(is_archived = False, StartDate__lte = datetime.datetime.now()).order_by("-StartDate")
-
+        print(request.user.role == ROLE[1][0])
+        if request.user.role == ROLE[1][0]:
+            if not ActivityCategory.objects.filter(owner = request.user , is_archived = False):
+                User.objects.filter(pk = request.user.emp_id).update(role = ROLE[2][0])
         vendors = Vendor.objects.filter(is_archived = False)[:6]
         vendorsodd = []
         vendorseven = []

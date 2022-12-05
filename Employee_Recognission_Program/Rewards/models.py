@@ -9,11 +9,18 @@ from django.db import models
 from Users.models import User, ROLE
 from django.core.exceptions import ValidationError
 import pytz
-
+from django.core.mail import send_mail
 
 
 from enum import Enum
+STATUS = [
+        ("PENDING" , "Pending"),
+        ("ACCEPTED" , "Accpeted"),
+        ("REJECTED" , "Rejected"),
+        ("WITHDRAWN" , "Withdrawn"),
 
+              
+    ]
 # Create your models here.
 def validate_admin(value):
     employee = User.objects.get(pk = value)
@@ -45,7 +52,6 @@ class Vendor(models.Model):
     creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True  ,related_name="vendor_creator")
     accepts_voucher = models.BooleanField(null=False , default = False)
     accepts_procurement = models.BooleanField(null=False , default = False)
-    accepts_direct = models.BooleanField(null=False , default = False)
     is_archived = models.BooleanField(default = False)
     def clean(self, *args, **kwargs):
         utc=pytz.UTC
@@ -80,24 +86,39 @@ class Reward(models.Model):
         if self.is_archived == False and self.vendor.accepts_voucher == False:
             Vendor.objects.filter(pk = self.vendor.id).update(accepts_voucher = True)
         
-
+    def __str__(self):
+        return f"{self.points_equivalent} Points from {self.vendor.name}"
 
 class Redemption_Request(models.Model):
-    STATUS = [
-        ("PENDING" , "Pending"),
-        ("ACCEPTED" , "Accpeted"),
-        ("REJECTED" , "Rejected"),
-        ("WITHDRAWN" , "Withdrawn"),
-
-              
-    ]
-    employee = models.ForeignKey(User , on_delete = models.CASCADE, null = True , related_name="employee" , validators = [validate_admin])
+    
+    employee = models.ForeignKey(User , on_delete = models.CASCADE, null = True , related_name="employee" , validators = [validate_admin] ,editable = False)
     voucher = models.ForeignKey(Reward,on_delete=models.CASCADE , null=False , blank=False)
-    status = models.CharField(max_length=10, null = False , blank = False, choices=STATUS, default=STATUS[0][1])
-    approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name="admin")
-    request_date = models.DateTimeField(auto_now_add=True,editable=False)
-    approved_date = models.DateTimeField(null=True,default = datetime.now())
-  
+    status = models.CharField(max_length=10, null = False , blank = False, choices=STATUS, default=STATUS[1][0])
+    approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name="admin" , editable = False)
+    request_date = models.DateTimeField(auto_now_add=True,editable=False )
+    approved_date = models.DateTimeField(null=True,default = datetime.now() , editable=False)
+    
+    def clean(self, *args, **kwargs):
+        if self.status == STATUS[1][0]:
+            self.approved_date = datetime.now()
+        elif self.status == STATUS[3][0]:
+            raise ValidationError(_("You can't withdraw a request you didn't make."))
+        elif self.status == STATUS[2][0]:
+            self.approved_date = datetime.now()
+            User.objects.filter(pk = self.employee.emp_id).update(points = self.employee.points - self.voucher.points_equivalent)
+            # send_mail(
+            #         'Redemption Request',
+            #         'Admin has rejected your redemption request and the equivlent points were returned to your acoount.',
+            #         'muhammad.mazen4@gmail.com',
+            #         [f'{self.employee.email}'],
+            #         fail_silently=False,
+            #                             )
+            
+    def __str__(self):
+        return f"{self.employee}'s redemption request"
+    
+    class Meta:
+        verbose_name_plural = "redemption request" 
 
 
     

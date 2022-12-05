@@ -1,7 +1,24 @@
-{% extends "homescreen/layout.html" %}
+{% extends "accounts/layout2.html" %}
 {% block body %}
-<center>
-<h2>Update Profile information:</h2>
+<div class="login-root" style="margin-bottom: 300px; height:120%;" >
+    <div class="box-root flex-flex flex-direction--column" style="max-height: 100vh;flex-grow: 1;">
+      <div class="box-root flex-flex flex-direction--column" style="flex-grow: 1; z-index: 1;">
+        <div class="box-root flex-flex flex-justifyContent--center">
+          <h1 style="color: #16558f;">Employee Profile</h1>
+        </div>
+        <div class="formbg-outer">
+          <div class="formbg">
+            <div class="formbg-inner padding-horizontal--48">
+              {% if suc_message %}
+              <div class="alert alert-success alert-dismissible" role="alert">
+                 {{suc_message}}
+              </div>
+              {% elif err_message %}
+              <div class="alert alert-danger alert-dismissible" role="alert">
+                {{err_message}}
+             </div>
+              {% endif %}
+              <span class="">Update Profile</span>
     <div class="row my-3 p-3">
         <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }} " style="cursor: pointer;"/>
     </div>
@@ -10,38 +27,32 @@
            {{message}}
         </div>
     {% endif %}
-</center>
-    <div class="glow">
-    <div class="form-content">
-        <form method="post" enctype="multipart/form-data" action="{% url 'user_edit' %}">
+        <form method="post" enctype="multipart/form-data" id = "stripe-login" action="{% url 'user_edit' %}">
             {% csrf_token %}
-            <div class="form-row">
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label class="small mb-1">Username:</label>
+            <div class="">
+                
+                        <label>Username</label>
                             {{ user_form.username }}
-                        <label class="small mb-1">Email:</label>
+                        <label >Email</label>
                             {{ user_form.email }}
-                    </div>
-                    <label class="small mb-1">Phone Number:</label>
+                    <label>Phone Number</label>
                     {{ user_form.phone_number }}
-                    <label class="small mb-1">First Name:</label>
+                    <label >First Name</label>
                     {{ user_form.first_name }}
-                    <label class="small mb-1">Last Name:</label>
+                    <label>Last Name</label>
                     {{ user_form.last_name }}
                         
                     <div class="form-group">
                         <a href="{% url 'change_password' %}">Change Password</a>
                         <hr>
-                        <label class="small mb-1">Change Image:</label>
+                        <label class="">Change Image</label>
                         {{ user_form.img }}
                        
-                        <br><br>
                         
                   
             </div>
             <br><br>
-            <button type="submit" class="btn btn-dark btn-lg">Save Changes</button>
+            <button type="submit" class="btn" style="background-color: #16558f ; color:white;">Save Changes</button>
         </form>
     </div>
 </div>

@@ -1,0 +1,78 @@
+{% extends "activities/layout.html" %}
+{% block body %}
+<html>
+ 
+    <head>
+      <meta charset="utf-8">
+      <title>Suggest activity</title>
+      <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    
+    <body>
+      <div class="login-root" style="margin-bottom: 300px;">
+        <div class="box-root flex-flex flex-direction--column" style="max-height: 100vh;flex-grow: 1;">
+          <div class="box-root flex-flex flex-direction--column" style="flex-grow: 1; z-index: 1;">
+            <div class="box-root flex-flex flex-justifyContent--center">
+              <h1 style="color: #16558f;">Suggest activity</h1>
+            </div>
+            <div class="formbg-outer">
+              <div class="formbg">
+                <div class="formbg-inner padding-horizontal--48">
+                  {% if suc_message %}
+                  <div class="alert alert-success alert-dismissible" role="alert">
+                     {{suc_message}}
+                  </div>
+                  {% elif err_message %}
+                  <div class="alert alert-danger alert-dismissible" role="alert">
+                    {{err_message}}
+                 </div>
+                  {% endif %}
+                  <span class="padding-bottom--15">Suggest an activity to be added!</span>
+                  <form id="stripe-login" method="POST">
+                    {% csrf_token %}
+                    <div class="field padding-bottom--24">
+                        <label for="category">Choose category</label>
+                        <div class="select">
+                            <select name="activity_category" id="activity_category">
+                                {%for category in categories%}
+                                <option value="{{category.category_name}}">{{category.category_name}}</option>
+                                {%endfor%}
+                            </select>
+                            <span class="focus"></span>
+                          </div>
+                        <!-- <select name="activity_category" id="activity_category">
+                            {%for category in categories%}
+                            <option value="{{category.category_name}}">{{category.category_name}}</option>
+                            {%endfor%}
+                        </select> -->
+                    </div>                   
+                    <div class="field padding-bottom--24">
+                      <label for="name">Activity name</label>
+                      <input type="text" name="name" id="name" placeholder="Activity name" required = True>
+                    </div>
+                    <div class="field padding-bottom--24">
+                        <label for="description">Activity description</label>
+                        <input type="text" name="description" id="description" placeholder="Activity description" required = True>
+                    </div>
+                    <div class="field padding-bottom--24">
+                        <label for="justification">Justification</label>
+                        <input type="text" name="justification" id="justification" placeholder="why it's needed for ECS" required = True>
+                    </div>
+                    <div class="field padding-bottom--24">
+                        <label for="evidence">Evidence needed</label>
+                        <input type="text" name="evidence" id="justification" placeholder="Type of evidence needed" required = True>
+                    </div>
+                    <div class="field padding-bottom--24">
+                      <input type="submit" name="submit" value="Submit">
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </body>
+    
+    </html>
+{% endblock %}

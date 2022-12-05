@@ -2,13 +2,20 @@ from datetime import datetime
 from django.contrib import admin
 
 from import_export.admin import ImportExportModelAdmin
-from .models import  Suggest_vendor , Redemption_Request  , budget , Vendor, Reward , budget_in_point
+from .models import  Suggest_vendor , Redemption_Request  , budget , Vendor, Reward , budget_in_point ,STATUS
 from .resources import VendorResource , RewardResource
 import pytz
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
+from django import forms
 
 from django.contrib import messages
 
+class redemptionForm(forms.ModelChoiceField):
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'status':
+            return redemptionForm(queryset=Redemption_Request.objects.filter(status=STATUS[0][0]))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 # Register your models here.
 class Filter(admin.SimpleListFilter):
     title = _('Archived')
@@ -178,7 +185,6 @@ class BudgetAdmin(admin.ModelAdmin):
         return data
 
 
-admin.site.register(Redemption_Request)
 @admin.register(budget_in_point)
 class budgetPointsAdmin(admin.ModelAdmin):
     list_display = ['current_budget' ,'total_budget', 'year']
@@ -193,6 +199,26 @@ class Viewsuggestion(admin.ModelAdmin):
     list_display = ("vendor","reason","is_archived")
     list_filter = [Filter]
 
+    def has_add_permission(self, request):
+            
+        return False
+@admin.display(description='Status')
+def owner(obj):
+    return Redemption_Request.objects.filter(status=STATUS[3][0])
+@admin.register(Redemption_Request)
+class ViewRedemption(admin.ModelAdmin):
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'status':
+            print(status=STATUS[3][0])
+            return redemptionForm(queryset=Redemption_Request.objects.filter(status=STATUS[0][0]))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    list_display = ("employee" , "voucher" , "request_date" , "status")
+    readonly_fields = ["employee", "approved_by" , "request_date" ]
+    list_filter = ["status"]
+    search_fields = ["employee__username" , "employee__first_name", "employee__last_name" , "voucher__vendor__name"]    
+    def save_model(self, request, obj, form, change):
+        obj.approved_by = request.user
+        obj.save()
     def has_add_permission(self, request):
             
         return False

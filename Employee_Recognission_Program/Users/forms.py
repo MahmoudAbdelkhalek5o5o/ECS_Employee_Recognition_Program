@@ -72,7 +72,7 @@ class UpdateUserForm(forms.ModelForm):
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True,
                              widget=forms.TextInput(attrs={'class': 'form-control'}))
-    phone_number = PhoneNumberField(region="CA",widget=PhoneNumberPrefixWidget(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}), required=False)
+    phone_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}), required=False)
     first_name = forms.CharField(max_length=20,
                                required=True,
                                widget=forms.TextInput(attrs={'class': 'form-control'}))

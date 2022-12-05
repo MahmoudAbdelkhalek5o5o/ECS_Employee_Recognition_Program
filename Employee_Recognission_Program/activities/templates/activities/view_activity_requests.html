@@ -142,6 +142,7 @@
   
     <ul class="responsive-table">
       <li class="table-header">
+        <div class="col col-5">Category</div>
         <div class="col col-5">Activity</div>
         <div class="col col-5">Status</div>
         <div class="col col-5"> Proof </div>
@@ -150,6 +151,8 @@
       </li>
       {% for activity_request in activity_requests%}
       <li class="table-row">
+        <div class="col col-5" >{{activity_request.category.category_name}}</div>
+
         <div class="col col-5" >{{activity_request.activity.activity_name}}</div>
         <div class="col col-5" >{{activity_request.status}}</div>
         <div  class="col col-5"><a href="{{ activity_request.proof_of_action.url }}" download> Download </a></div>
@@ -182,8 +185,6 @@
             <p id = "req0">Request ID: </p>
             <p id = "req3">Activity: </p>
             <p id = "req4">Category: </p>
-            <p id = "req67">Submitter: </p>
-            <p id = "req12">Done_by: </p>
             <p id = "req5">Status: </p>
             <p id = "req8">Evidence Needed: </p>
             <p id = "req10">Date of Action: </p>
@@ -222,11 +223,11 @@
             // display info
             document.getElementById("req0").innerHTML = "Request ID: " + req[0]
             document.getElementById("req3").innerHTML = "Activity: " + req[3]
-            document.getElementById("req4").innerHTML = "Category: " + req[4]
-            document.getElementById("req5").innerHTML = "Status: " + req[5]
-            document.getElementById("req8").innerHTML = "Evidence Needed: " + req[8]
-            document.getElementById("req10").innerHTML = "Date of Action: " + req[10]
-            document.getElementById("req11").innerHTML = "Submission Date: " + req[11];
+            document.getElementById("req4").innerHTML = "Category: " + req[2]
+            document.getElementById("req5").innerHTML = "Status: " + req[3]
+            document.getElementById("req8").innerHTML = "Evidence Needed: " + req[5]
+            document.getElementById("req10").innerHTML = "Date of Action: " + req[6]
+            document.getElementById("req11").innerHTML = "Submission Date: " + req[7];
             document.getElementById("accept").href = "http://localhost:8000/activities/accept_activity_request/" + req[0]
             document.getElementById("decline").href = "http://localhost:8000/activities/decline_activity_request/" + req[0]
             if(btn.dataset.status!="PENDING"){
