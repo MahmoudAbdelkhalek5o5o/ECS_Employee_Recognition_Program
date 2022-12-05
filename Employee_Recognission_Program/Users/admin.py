@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from import_export.admin import ImportExportModelAdmin
 from activities.models import Activity, ActivityCategory
-from .models import User  , announcement , UserRegisterationRequest 
+from .models import User  , announcement , UserRegisterationRequest  , ROLE
 from .resources import UsersResource
 from django.contrib import messages
 from reversion.admin import VersionAdmin
@@ -146,6 +146,15 @@ class ViewAdmin(ImportExportModelAdmin , admin.ModelAdmin):
     fields = ('first_name', 'last_name' ,'emp_id' ,  'username' , 'email' ,'phone_number','role','img', 'groups', 'user_permissions','is_staff','is_active')
     list_filter = (Filter,'role')
     search_fields =  ('username','first_name','last_name')
+    def get_queryset(self, request):
+        data = super().get_queryset(request)
+        to_archive = data.filter(role = ROLE[0][0], is_staff = False)
+        to_archive.update(is_staff = True)
+        for category in to_archive:
+            Activity.objects.filter(category = category).update(is_archived = True)
+            ActivityCategory.objects.filter(pk = category.id).update(is_archived = True)
+        return data
+        
     resource_class = UsersResource
     
 

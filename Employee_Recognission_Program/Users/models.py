@@ -7,7 +7,9 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 # from audit_log.models.managers import AuditLog
 # from audit_log.models.fields import LastUserField
+from django.contrib.auth.models import Group
 
+Group.add_to_class('description', models.CharField(max_length=180,null=True, blank=True))
 
 
 ROLE = [
@@ -22,15 +24,19 @@ def validate_domain(data):
     if '@' in data:
         domain = data.split('@')[1]
         ecsDomain = "ecs-co.com"
-        if len(data.split('@')[0])<3:
-            return False
+        
         if domain != ecsDomain:
            
             raise ValidationError(
                 _('Please enter an ecs domain. ex: example@ecs-co.com'),
                 params={'value': data},
                 )
-    return False
+    else:
+        raise ValidationError(
+                _('Please enter an ecs domain. ex: example@ecs-co.com'),
+                params={'value': data},
+                )
+        
 
 def validate_year(value):
     today = datetime.now()
@@ -50,6 +56,7 @@ class User(AbstractUser):
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
     points = models.IntegerField(default=0)
     password = models.CharField(max_length=128, verbose_name='password' , blank = False , null = True)
+    
     def clean(self, *args, **kwargs):
         
         if self.role == ROLE[0][0]:

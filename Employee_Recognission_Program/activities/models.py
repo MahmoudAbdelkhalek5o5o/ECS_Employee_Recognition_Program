@@ -89,12 +89,15 @@ class ActivityCategory(models.Model):
         elif(self.start_date >= self.end_date):
             raise ValidationError("Start Date must be before end date")
         if not ActivityCategory.objects.filter(pk = self.id).exists():
-            if self.threshhold + ActivityCategory.objects.aggregate(Sum('threshhold'))['threshhold__sum'] > budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget:
+            if budget_in_point.objects.filter(year = datetime.datetime.now().year):
+                if self.threshhold + ActivityCategory.objects.aggregate(Sum('threshhold'))['threshhold__sum'] > budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget:
                 
-                raise ValidationError(_("Category threshhold exceeded the system budget"))
+                    raise ValidationError(_("Category threshhold exceeded the system budget"))
+            else:
+                raise ValidationError(_("You must set a budget for the system first before adding categories"))
         else:
             if (ActivityCategory.objects.aggregate(Sum('threshhold'))['threshhold__sum'] - ActivityCategory.objects.filter(pk = self.id)[0].threshhold) + self.threshhold > budget_in_point.objects.filter(year = datetime.datetime.now().year)[0].current_budget:
-                raise ValidationError(_("Category threshhold exceeded the system budget"))
+                    raise ValidationError(_("Category threshhold exceeded the system budget"))
         # if (self.start_date.month <= datetime.now().month and self.start_date.day < datetime.now().day):
         #     print(888)
         #     self.is_archived = True
