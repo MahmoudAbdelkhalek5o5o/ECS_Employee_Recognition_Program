@@ -149,7 +149,7 @@ class Activity(models.Model):
     activity_name = models.CharField(max_length=30,null=False, blank= False, unique=True)
     activity_description = models.CharField(max_length=1024,null=False, blank= True)
     category = models.ForeignKey(ActivityCategory,on_delete=models.CASCADE,null=True , blank = False)
-    points = models.IntegerField(null = False, blank = False , validators=[validate_negative])
+    points = models.IntegerField(null = False, blank = False , validators=[validate_negative], default = 0)
     approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True , blank = True)
     evidence_needed =  models.CharField(max_length=1024,null=False, blank= False)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
@@ -163,7 +163,7 @@ class Activity(models.Model):
     def clean(self, *args, **kwargs):
         if(self.start_date >= self.end_date):
             raise ValidationError("Start Date must be before end date")
-        if self.category is not None:            
+        if self.category is not None:          
             if self.points > self.category.threshhold:
                 raise ValidationError(_("points cannot have a higher value than the category threshhold"))
 

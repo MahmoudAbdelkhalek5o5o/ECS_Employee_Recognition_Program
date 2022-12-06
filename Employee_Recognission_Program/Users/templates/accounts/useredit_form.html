@@ -18,9 +18,9 @@
                 {{err_message}}
              </div>
               {% endif %}
-              <span class="">Update Profile</span>
-    <div class="row my-3 p-3">
-        <img class="rounded-circle account-img" src="{{ user.profile.avatar.url }} " style="cursor: pointer;"/>
+              <span class="">Update your Profile!</span>
+    <div class="row my-3 p-3" style="align-items:center;">
+        <img class="rounded-circle account-img" src="{{ user.img.url }} " style="cursor: pointer; width:40%;"/>
     </div>
     {% if message %}
         <div class="alert alert-danger alert-dismissible" role="alert">
@@ -52,7 +52,9 @@
                   
             </div>
             <br><br>
-            <button type="submit" class="btn" style="background-color: #16558f ; color:white;">Save Changes</button>
+            <div class="field padding-bottom--24">
+              <input type="submit" name="submit" value="Submit">
+            </div>
         </form>
     </div>
 </div>

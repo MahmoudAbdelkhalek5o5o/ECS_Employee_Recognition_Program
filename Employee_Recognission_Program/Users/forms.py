@@ -52,11 +52,11 @@ class RegisterForm(SignupForm):
 
 
 class change_password_form(forms.Form):
-    password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={'style':"width:250px",
+    password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={'style':"width:100%",
         'class': 'form-control mb-4', 'placeholder': 'Enter your password here', 'required': 'True'}),min_length=8, max_length=16)
-    New_password = forms.CharField(required=False,widget=forms.PasswordInput(attrs={'style':"width:250px",
+    New_password = forms.CharField(required=False,widget=forms.PasswordInput(attrs={'style':"width:100%",
         'class': 'form-control mb-4', 'placeholder': 'Enter your new password here', 'required': 'True'}),min_length=8, max_length=16)
-    confirmation = forms.CharField(required=False,widget=forms.PasswordInput(attrs={'style':"width:250px",
+    confirmation = forms.CharField(required=False,widget=forms.PasswordInput(attrs={'style':"width:100%",
         'class': 'form-control', 'placeholder': 'Re-enter your new password', 'required': 'True'}))
     def validate_password(self):
         password = self.cleaned_data['New_password']
