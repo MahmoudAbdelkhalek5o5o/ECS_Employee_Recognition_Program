@@ -359,9 +359,9 @@
     {% endif %}
     <a href="{% url 'view-vendors' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Rewards</a> 
     <a href="{% url 'user_edit' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">User</a> 
-    <a href="{% url 'leaderboard' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Leader Board</a>
+    <a href="{% url 'leaderboard' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">LeaderBoard</a>
     {% if request.user.role ==  "ADMIN" %}
-    <a href="/admin" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Admin Pannel</a>
+    <a href="/admin" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Admin Panel</a>
     {% endif %}
     <a href="{% url 'logout' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Logout</a> 
   
