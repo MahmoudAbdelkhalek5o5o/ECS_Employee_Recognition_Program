@@ -212,6 +212,7 @@ class ViewAdmin(ImportExportModelAdmin , admin.ModelAdmin):
 @admin.register(ActivitySuggestion)
 class Viewsuggestion(admin.ModelAdmin):
     list_display = ("activity_name","category","activity_description","justification","is_accepted")
+    readonly_fields = ["category"]
     list_filter = [Filter2]
 
     def has_add_permission(self, request):

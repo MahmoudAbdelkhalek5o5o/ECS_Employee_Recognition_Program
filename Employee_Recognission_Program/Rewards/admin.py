@@ -164,8 +164,11 @@ class View_Admin(ImportExportModelAdmin):
 class BudgetAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         if  not budget.objects.filter(year = datetime.now().year).exists():
+            if budget_in_point.objects.filter(year = datetime.now().year).exists():
+                budget_in_point.objects.filter(year = datetime.now().year).delete()
             return True
         else:
+           
             return False
    
     fields = ('budget' , 'point' , 'EGP')
@@ -192,7 +195,8 @@ class budgetPointsAdmin(admin.ModelAdmin):
     
     def has_add_permission(self, request):
         return False
-
+    def has_delete_permission(self , request , obj=None):
+        return False
 
 @admin.register(Suggest_vendor)
 class Viewsuggestion(admin.ModelAdmin):

@@ -15,7 +15,9 @@ from django.db.models import Q
 # Create your views here.
 
 def index(request):
-    
+    if request.user.role == ROLE[1][0]:
+        if not ActivityCategory.objects.filter(owner = request.user , is_archived = False):
+            User.objects.filter(pk = request.user.emp_id).update(role = ROLE[2][0])
         
     if request.user.is_authenticated:
         announcementss = announcement.objects.filter(is_archived = False).order_by("-StartDate")
@@ -26,10 +28,7 @@ def index(request):
 
         
         announcements = announcement.objects.filter(is_archived = False, StartDate__lte = datetime.datetime.now()).order_by("-StartDate")
-        print(request.user.role == ROLE[1][0])
-        if request.user.role == ROLE[1][0]:
-            if not ActivityCategory.objects.filter(owner = request.user , is_archived = False):
-                User.objects.filter(pk = request.user.emp_id).update(role = ROLE[2][0])
+     
         vendors = Vendor.objects.filter(is_archived = False)[:6]
         vendorsodd = []
         vendorseven = []

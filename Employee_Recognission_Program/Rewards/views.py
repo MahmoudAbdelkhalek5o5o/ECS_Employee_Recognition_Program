@@ -7,6 +7,7 @@ from django.urls import reverse
 from datetime import datetime
 import pytz
 from django.contrib import messages
+from activities import helpers
 
 def is_expired(end_date):
     utc=pytz.UTC
@@ -39,7 +40,9 @@ def suggest_vendor(request):
     
 def view_vendors(request):
     if request.user.is_authenticated:
-        all_vendors = Vendor.objects.filter().all()
+        Vendor.objects.filter(is_archived = False , end_date__lt = datetime.now()).update(is_archived = True)
+        
+        all_vendors = Vendor.objects.filter(is_archived = False).all()
         vendors = []
         utc=pytz.UTC
         now = utc.localize(datetime.now())

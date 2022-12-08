@@ -41,6 +41,9 @@ def validate_year_forbudget(value):
     
     if not value == int(year):
         raise ValidationError("You can not submit date that exceeds current year.")
+def validate_ratio(value):
+    if value <= 0:
+        raise ValidationError(_("EGP and Point values can't be 0 or less"))
 
 class Vendor(models.Model):
     name = models.CharField(max_length=30,null=False, blank= False, unique = True)
@@ -133,7 +136,9 @@ class Suggest_vendor(models.Model):
 
 
     
-
+    class Meta:
+        
+        verbose_name_plural = "Vendor suggestions"
 
 
 
@@ -143,8 +148,8 @@ class Suggest_vendor(models.Model):
 class budget(models.Model):
     budget = models.IntegerField(null = False, blank = False)
     admin = models.ForeignKey(User, on_delete = models.CASCADE , null=True)
-    point = models.IntegerField(null = False, blank = False)
-    EGP = models.IntegerField(null = False, blank = False)
+    point = models.IntegerField(null = False, blank = False , validators = [validate_ratio])
+    EGP = models.IntegerField(null = False, blank = False , validators=[validate_ratio])
     budget_compare = models.IntegerField(null = True, blank = False)
     year = models.IntegerField(null = False , default= datetime.now().year , validators = [validate_year_forbudget])
     start_date = models.DateTimeField(auto_now_add=True)
@@ -152,7 +157,8 @@ class budget(models.Model):
     is_active = models.BooleanField(null=False , default=True)
     
     def clean(self, *args, **kwargs):
-        
+        if self.EGP <=0 or self.point <= 0:
+            raise ValidationError(_("EGP and point values can't be Zero or less"))
         if self.budget_compare is None:
             self.budget_compare = self.budget
             budget_in_point.objects.create(current_budget = (self.budget * self.point)//self.EGP , total_budget = (self.budget * self.point)//self.EGP)
@@ -198,6 +204,8 @@ class budget_in_point(models.Model):
                 raise ValidationError(_('budget can\'t be less than 0'))
                 
         super().clean(*args, **kwargs)
+    class Meta:
+        verbose_name_plural = "Budget in points"
         
     def __str__(self):
         return f"{self.current_budget}"

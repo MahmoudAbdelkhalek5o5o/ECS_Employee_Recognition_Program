@@ -43,11 +43,17 @@ def validate_none(value):
 def validate_exist(value):
     if not User.objects.filter(pk = value).exists():
         raise ValidationError(_('Employee Doesn\'t exist'))
-        
+    
+    
+def validate_threshhold(value):
+    if value <= 0:
+        raise ValidationError(_("Category threshhold cannot be 0 or less."))
     
 
    
-  
+def validate_negative(value):
+    if value <= 0:
+        raise ValidationError(_("Points value can't be zero or less"))
 
 
     
@@ -76,12 +82,14 @@ class ActivityCategory(models.Model):
     end_date = models.DateField(editable=True , null = False, blank = False ,  default = datetime.date(datetime.datetime.now().year, 12, 31), validators = [validate_year])
     owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank = False, related_name="category_owner",validators = [validate_exist,validate_none])
     budget = models.IntegerField(null = True, blank = True)
-    threshhold = models.IntegerField(null = False, blank = False,  validators = [validate_budget])
+    threshhold = models.IntegerField(null = False, blank = False,  validators = [validate_budget , validate_threshhold])
     is_archived = models.BooleanField(null=False,blank = False , default=False)
     class Meta:
         verbose_name_plural = "Categories"
 
     def clean(self, *args, **kwargs):
+        if self.is_archived == True:
+            Activity.objects.filter(category = self.id).update(is_archived = True)
         if self.owner.role == ROLE[2][0]:
             User.objects.filter(pk = self.owner.emp_id).update(role = ROLE[1][0])
         
@@ -141,7 +149,7 @@ class Activity(models.Model):
     activity_name = models.CharField(max_length=30,null=False, blank= False, unique=True)
     activity_description = models.CharField(max_length=1024,null=False, blank= True)
     category = models.ForeignKey(ActivityCategory,on_delete=models.CASCADE,null=True , blank = False)
-    points = models.IntegerField(null = False, blank = False)
+    points = models.IntegerField(null = False, blank = False , validators=[validate_negative])
     approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True , blank = True)
     evidence_needed =  models.CharField(max_length=1024,null=False, blank= False)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
@@ -229,7 +237,7 @@ class ActivityRequest(models.Model):
     
 class ActivitySuggestion(models.Model):
     activity_name = models.CharField(max_length=30 , null = False, blank=False)
-    category = models.ForeignKey(ActivityCategory , on_delete=models.CASCADE , null=False)
+    category = models.ForeignKey(ActivityCategory , on_delete=models.CASCADE , null=False , editable = False)
     activity_description = models.CharField(max_length=1024 , null = False, blank=False)
     justification = models.CharField(max_length=30 , null = True, blank=True)
     evidence_needed = models.CharField(max_length=1024 , null = True, blank=True)
