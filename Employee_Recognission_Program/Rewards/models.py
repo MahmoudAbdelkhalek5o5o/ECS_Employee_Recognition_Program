@@ -84,6 +84,7 @@ class Reward(models.Model):
    
 
     def clean(self, *args, **kwargs):
+        
         if(self.start_date>self.end_date):
             raise ValidationError(_("Start Date must be before end date"))
         if self.is_archived == False and self.vendor.accepts_voucher == False:
@@ -109,13 +110,13 @@ class Redemption_Request(models.Model):
         elif self.status == STATUS[2][0]:
             self.approved_date = datetime.now()
             User.objects.filter(pk = self.employee.emp_id).update(points = self.employee.points - self.voucher.points_equivalent)
-            # send_mail(
-            #         'Redemption Request',
-            #         'Admin has rejected your redemption request and the equivlent points were returned to your acoount.',
-            #         'muhammad.mazen4@gmail.com',
-            #         [f'{self.employee.email}'],
-            #         fail_silently=False,
-            #                             )
+            send_mail(
+                    'Redemption Request',
+                    'Admin has rejected your redemption request and the equivlent points were returned to your acoount.',
+                    'muhammad.mazen4@gmail.com',
+                    [f'{self.employee.email}'],
+                    fail_silently=False,
+                                        )
             
     def __str__(self):
         return f"{self.employee}'s redemption request"
