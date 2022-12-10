@@ -44,19 +44,6 @@ def suggest_activity(request):
             
 def categories_view(request):
     if(request.user.is_authenticated):
-        categoriess = ActivityCategory.objects.filter(is_archived = False)
-        for category in categoriess:
-            if helpers.check_date(category.end_date) == True:
-                ActivityCategory.objects.filter(start_date = category.start_date).update(is_archived = True)
-       
-        Activitiess = Activity.objects.filter(is_archived = False)
-        for activity in Activitiess:
-            if helpers.check_date(activity.start_date) == False or helpers.check_date(activity.end_date) == True:
-                Activity.objects.filter(start_date = activity.start_date).update(is_archived = True)
-        
-            
-    
-
         
         categories = ActivityCategory.objects.filter(is_archived = False , start_date__lte = datetime.now())
         print(categories)

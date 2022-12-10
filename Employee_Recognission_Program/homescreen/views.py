@@ -13,21 +13,52 @@ from .import helpers
 from datetime import date
 from django.db.models import Q
 # Create your views here.
+from datetime import datetime
+from threading import Timer
 
+x=datetime.now()
+y=x.replace(day=x.day+1, hour=1, minute=0, second=0, microsecond=0)
+delta_t=y-x
+
+secs=delta_t.seconds+1
+
+def expired():
+    announcementss = announcement.objects.filter(is_archived = False).order_by("-StartDate")
+    for Announcement in announcementss:
+        if helpers.check_date(Announcement.EndDate) == False:
+            announcement.objects.filter(EndDate = Announcement.StartDate).update(is_archived = True)
+    categoriess = ActivityCategory.objects.filter(is_archived = False)
+    for category in categoriess:
+        if helpers.check_date(category.end_date) == True:
+            ActivityCategory.objects.filter(start_date = category.start_date).update(is_archived = True)
+       
+    Activitiess = Activity.objects.filter(is_archived = False)
+    for activity in Activitiess:
+        if helpers.check_date(activity.start_date) == False or helpers.check_date(activity.end_date) == True:
+            Activity.objects.filter(start_date = activity.start_date).update(is_archived = True)
+    
+    vendors = Vendor.objects.filter(is_archived = False)   
+    for vendor in vendors:
+        if helpers.check_date(vendor.start_date) == False or helpers.check_date(vendor.end_date) == True:
+            Vendor.objects.filter(start_date = vendor.start_date).update(is_archived = True)
+    
+    rewards = Reward.objects.filter(is_archived = False)   
+    for reward in rewards:
+        if helpers.check_date(reward.start_date) == False or helpers.check_date(reward.end_date) == True:
+            Reward.objects.filter(start_date = reward.start_date).update(is_archived = True)
+
+t = Timer(secs, expired)
+t.start()
 def index(request):
-    if request.user.role == ROLE[1][0]:
-        if not ActivityCategory.objects.filter(owner = request.user , is_archived = False):
-            User.objects.filter(pk = request.user.emp_id).update(role = ROLE[2][0])
+    
+   
         
     if request.user.is_authenticated:
-        announcementss = announcement.objects.filter(is_archived = False).order_by("-StartDate")
-        for Announcement in announcementss:
-            if helpers.check_date(Announcement.EndDate) == False:
-                announcement.objects.filter(EndDate = Announcement.StartDate).update(is_archived = True)
+        
         
 
         
-        announcements = announcement.objects.filter(is_archived = False, StartDate__lte = datetime.datetime.now()).order_by("-StartDate")
+        announcements = announcement.objects.filter(is_archived = False, StartDate__lte = datetime.today()).order_by("-StartDate")
      
         vendors = Vendor.objects.filter(is_archived = False)[:6]
         vendorsodd = []
@@ -42,7 +73,9 @@ def index(request):
             else:
                 vendorsodd.append(vendor)
                 i+=1
-
+        if request.user.role == ROLE[1][0]:
+            if not ActivityCategory.objects.filter(owner = request.user , is_archived = False):
+                User.objects.filter(pk = request.user.emp_id).update(role = ROLE[2][0])
                 
         return render(request , "homescreen/index.html" , {
             "vendorseven": vendorseven,

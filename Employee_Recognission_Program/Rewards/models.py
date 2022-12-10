@@ -52,7 +52,7 @@ class Vendor(models.Model):
     start_date = models.DateTimeField(editable=True , null=False , default = datetime.now() ,validators = [validate_year])
     end_date = models.DateTimeField(editable = True , null = True ,default = datetime(datetime.today().year, 12, 31), validators = [validate_year])
     img = models.ImageField(upload_to='images/', null = False , blank = True)
-    creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True  ,related_name="vendor_creator")
+    creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True  ,related_name="vendor_creator" )
     accepts_voucher = models.BooleanField(null=False , default = False)
     accepts_procurement = models.BooleanField(null=False , default = False)
     is_archived = models.BooleanField(default = False)
@@ -78,7 +78,7 @@ class Reward(models.Model):
     creation_day = models.DateTimeField(auto_now_add=True,editable=False)
     start_date = models.DateTimeField(editable=True , default = datetime.now() ,validators = [validate_year])
     end_date = models.DateTimeField(editable=True , default = datetime(datetime.today().year, 12, 31),validators = [validate_year])
-    creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True, related_name="reward_creator")
+    creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True, related_name="reward_creator" , editable= False)
     points_equivalent = models.IntegerField(null = False, blank = False)
     is_archived = models.BooleanField(default = False)
    

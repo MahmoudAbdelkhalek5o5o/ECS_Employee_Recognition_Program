@@ -155,8 +155,13 @@ class ViewAdmin(ImportExportModelAdmin):
 @admin.register(Reward)
 class View_Admin(ImportExportModelAdmin):
     list_display = ['vendor','points_equivalent' , 'is_archived']
+    readonly_fields = ['creator']
     list_filter = [Filter]
     resource_class = RewardResource
+    def save_model(self, request, obj, form, change):
+        obj.creator = request.user
+        obj.save()
+        
 
     
 @admin.register(budget)
