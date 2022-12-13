@@ -1,0 +1,256 @@
+{% extends "activities/layout.html" %}
+{% block body %}
+<style>
+    .accordion{
+        max-width: 800px;
+    }
+    .container {
+	 max-width: 1600px;
+	 margin-left: auto;
+	 margin-right: auto;
+	 padding-left: 10px;
+	 padding-right: 10px;
+}
+ h2 {
+	 font-size: 26px;
+	 margin: 20px 0;
+	 text-align: center;
+}
+ h2 small {
+	 font-size: 0.5em;
+}
+ .responsive-table li {
+	 border-radius: 3px;
+	 padding: 25px 30px;
+	 display: flex;
+	 justify-content: space-between;
+	 margin-bottom: 25px;
+}
+ .responsive-table .table-header {
+	 background-color: #16558f;
+     color: white;
+	 font-size: 14px;
+	 text-transform: uppercase;
+	 letter-spacing: 0.03em;
+}
+ .responsive-table .table-row {
+	 background-color: #fff;
+	 box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+ .responsive-table .col-1 {
+	 flex-basis: 10%;
+}
+ .responsive-table .col-2 {
+	 flex-basis: 30%;
+}
+ .responsive-table .col-3 {
+	 flex-basis: 25%;
+}
+ .responsive-table .col-4 {
+	 flex-basis: 15%;
+}
+.responsive-table .col-5 {
+	 flex-basis: 20%;
+}
+/* modal */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 100; /* Sit on top */
+  left: 0;
+  top: 0px;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  top: -150px;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%; /* Could be more or less, depending on screen size */
+  
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+ @media all and (max-width: 767px) {
+	 .responsive-table .table-header {
+		 display: none;
+	}
+	 .responsive-table li {
+		 display: block;
+	}
+	 .responsive-table .col {
+		 flex-basis: 100%;
+	}
+	 .responsive-table .col {
+		 display: flex;
+		 padding: 10px 0;
+	}
+	 .responsive-table .col:before {
+		 color: #6c7a89;
+		 padding-right: 10px;
+		 content: attr(data-label);
+		 flex-basis: 50%;
+		 text-align: right;
+	}
+    .responsive-table .col-1 {
+	 display: None;
+}
+ .responsive-table .col-2 {
+	 flex-basis: 50%;
+}
+ .responsive-table .col-3 {
+    display: None;
+}
+ .responsive-table .col-4 {
+    display: None;
+}
+.responsive-table .col-5 {
+	 flex-basis: 50%;
+}
+.responsive-table{
+    max-width: 414;
+}
+}
+ 
+</style>
+<div>
+  <div class="box-root flex-flex flex-justifyContent--left">
+    <h1 style="margin-left: 40px;">Activity Requests</h1>
+</div>
+<br>
+<div class="container">
+  
+    <ul class="responsive-table">
+      <li class="table-header">
+        <div class="col col-5">Category</div>
+        <div class="col col-5">Activity</div>
+        <div class="col col-5">Status</div>
+        <div class="col col-5"> Proof </div>
+        <div class="col col-5" style="justify-content: center; align-items:center">More Details</div>
+
+      </li>
+      {% for activity_request in activity_requests%}
+      <li class="table-row">
+        <div class="col col-5" >{{activity_request.category.category_name}}</div>
+
+        <div class="col col-5" >{{activity_request.activity.activity_name}}</div>
+        <div class="col col-5" >{{activity_request.status}}</div>
+        <div  class="col col-5"><a href="{{ activity_request.proof_of_action.url }}" download> Download </a></div>
+        <div class="col col-5">
+            <button type="button" id = "{{activity_request.id}}" onClick="openModal(this.id)" data-request =
+            "{{activity_request.id}}|{{activity_request.activity.activity_name}}|{{activity_request.category.category_name}}|{{activity_request.status}}|{{activity_request.evidence_needed}}|{{activity_request.proof_of_action.url }}|{{activity_request.date_of_action}}|{{activity_request.submission_date}}|{{activity_request.activity_approval_date}}|{{activity_request.approver.first_name}}|{{activity_request.approver.last_name}}"
+             class="btn btn-light more-info" data-status = "{{activity_request.status}}">More Info</button>
+             {% if request.user.role == 'EMPLOYEE' and activity_request.status == 'PENDING' %}
+            <a id = "withdraw" href = "{% url 'withdraw_activity_request' activity_request.id %}"><button type="button" class="btn btn-danger" style="margin-left:10px;">withdraw</button></a>
+            {% endif %}
+        </div>
+      </li>
+      {% endfor%}
+    </ul>
+  </div>
+</div>
+<!-- Button trigger modal -->
+
+  
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Request Details</h2>
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-body" id = "activity_details" value = "">
+            <p id = "req0">Request ID: </p>
+            <p id = "req3">Activity: </p>
+            <p id = "req4">Category: </p>
+            <p id = "req5">Status: </p>
+            <p id = "req8">Evidence Needed: </p>
+            <p id = "req10">Date of Action: </p>
+            <p id = "req11">Submission Date: </p>
+        </div>
+        <div class="modal-footer">
+          {% if request.user.role == 'CATEGORYOWNER' or request.user.role == 'ADMIN'  %}
+            <a id = "accept" href = ""><button type="button" style="background-color: #16558f; color: white;" class="btn btn-light">Accept</button></a>
+            <a id = "decline" href = ""><button type="button" style = "color: #fff;" class="btn btn-danger">Decline</button></a>
+          {% endif %}
+        </div>
+      </div>
+
+</div>
+  <script>
+    window.onload = function() {
+        var els = document.getElementsByClassName("more-info");
+
+        Array.prototype.forEach.call(els, function(el) {
+        openModal(el.id)
+});
+    };
+    function openModal(id){
+        var modal = document.getElementById("myModal");
+        // Get the button that opens the modal
+        var btn = document.getElementById(id);
+        var modalContent = document.getElementById("activity_details")
+        console.log(btn.dataset.request)
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+        var req = btn.dataset.request.split("|");
+
+        // When the user clicks on the button, open the modal
+        btn.onclick = function() {
+            modal.style.display = "block";
+            // display info
+            document.getElementById("req0").innerHTML = "Request ID: " + req[0]
+            document.getElementById("req3").innerHTML = "Activity: " + req[1]
+            document.getElementById("req4").innerHTML = "Category: " + req[2]
+            document.getElementById("req5").innerHTML = "Status: " + req[3]
+            document.getElementById("req8").innerHTML = "Evidence Needed: " + req[4]
+            document.getElementById("req10").innerHTML = "Date of Action: " + req[6]
+            document.getElementById("req11").innerHTML = "Submission Date: " + req[7];
+            document.getElementById("accept").href = "http://localhost:8000/activities/accept_activity_request/" + req[0]
+            document.getElementById("decline").href = "http://localhost:8000/activities/decline_activity_request/" + req[0]
+            if(btn.dataset.status!="PENDING"){
+                document.getElementById("accept").style.visibility = "hidden";
+                document.getElementById("decline").style.visibility = "hidden";
+            }
+            else{
+                document.getElementById("accept").style.visibility = "visible";
+                document.getElementById("decline").style.visibility = "visible";
+            }
+        }
+        
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        }
+    }
+  </script>
+{% endblock %}

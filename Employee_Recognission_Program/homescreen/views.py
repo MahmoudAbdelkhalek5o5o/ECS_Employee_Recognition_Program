@@ -13,6 +13,42 @@ from .import helpers
 from datetime import date
 # Create your views here.
 
+<<<<<<< Updated upstream
+=======
+# x=datetime.now()
+# y=x.replace(day=x.day+1, hour=1, minute=0, second=0, microsecond=0)
+# delta_t=y-x
+
+# secs=delta_t.seconds+1
+
+# def expired():
+#     announcementss = announcement.objects.filter(is_archived = False).order_by("-StartDate")
+#     for Announcement in announcementss:
+#         if helpers.check_date(Announcement.EndDate) == False:
+#             announcement.objects.filter(EndDate = Announcement.StartDate).update(is_archived = True)
+#     categoriess = ActivityCategory.objects.filter(is_archived = False)
+#     for category in categoriess:
+#         if helpers.check_date(category.end_date) == True:
+#             ActivityCategory.objects.filter(start_date = category.start_date).update(is_archived = True)
+       
+#     Activitiess = Activity.objects.filter(is_archived = False)
+#     for activity in Activitiess:
+#         if helpers.check_date(activity.start_date) == False or helpers.check_date(activity.end_date) == True:
+#             Activity.objects.filter(start_date = activity.start_date).update(is_archived = True)
+    
+#     vendors = Vendor.objects.filter(is_archived = False)   
+#     for vendor in vendors:
+#         if helpers.check_date(vendor.start_date) == False or helpers.check_date(vendor.end_date) == True:
+#             Vendor.objects.filter(start_date = vendor.start_date).update(is_archived = True)
+    
+#     rewards = Reward.objects.filter(is_archived = False)   
+#     for reward in rewards:
+#         if helpers.check_date(reward.start_date) == False or helpers.check_date(reward.end_date) == True:
+#             Reward.objects.filter(start_date = reward.start_date).update(is_archived = True)
+
+# t = Timer(secs, expired)
+# t.start()
+>>>>>>> Stashed changes
 def index(request):
     announcements = announcement.objects.filter(is_archived = False).order_by("-StartDate")
     archived_announcements = announcement.objects.filter(is_archived = True).order_by("-StartDate")
