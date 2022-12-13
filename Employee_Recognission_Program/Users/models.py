@@ -62,7 +62,8 @@ class User(AbstractUser):
         if self.role == ROLE[0][0]:
             self.is_staff = True
         
-           
+        if User.objects.filter(username = self.username).exists():
+            raise ValidationError('username already exists')
         super().clean(*args, **kwargs)
     
     
@@ -87,10 +88,19 @@ class UserRegisterationRequest(models.Model):
     username = models.CharField(max_length=20, null = False , blank = False)
     first_name = models.CharField(max_length=20, null = False , blank = False)
     last_name = models.CharField(max_length=20, null = False , blank = False)
-    password = models.CharField(max_length=100, null = False , blank = False, default='123456Abc')
+    password = models.CharField(max_length=100, null = False , blank = False, default='123456Abc' , editable = False)
     email = models.EmailField(null = False, blank = False)
     emp_id = models.IntegerField(null = False, blank = False , primary_key= True, unique = True)
     img = models.ImageField(upload_to='images/', null = True , blank = True, default = 'Logo.png')
     phone_number = models.CharField(null = False, blank= False, max_length= 20,default ='01001234567')
+    accept_user = models.BooleanField(default = False)
+    def clean(self, *args, **kwargs):
+        if self.accept_user == True:
+            User.objects.create(emp_id = self.emp_id , username = self.username , first_name = self.first_name , 
+            last_name = self.last_name , password = self.password , email = self.email , 
+            phone_number = self.phone_number , role = ROLE[2][0] , img = self.img)
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}'s request"
 
 

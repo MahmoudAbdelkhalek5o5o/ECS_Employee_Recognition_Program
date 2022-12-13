@@ -186,12 +186,11 @@
             <p id = "req3">Activity: </p>
             <p id = "req4">Category: </p>
             <p id = "req5">Status: </p>
-            <p id = "req8">Evidence Needed: </p>
             <p id = "req10">Date of Action: </p>
             <p id = "req11">Submission Date: </p>
         </div>
         <div class="modal-footer">
-          {% if request.user.role == 'CATEGORYOWNER' %}
+          {% if request.user.role == 'CATEGORYOWNER'  or request.user.role == 'ADMIN'%}
             <a id = "accept" href = ""><button type="button" style="background-color: #16558f; color: white;" class="btn btn-light">Accept</button></a>
             <a id = "decline" href = ""><button type="button" style = "color: #fff;" class="btn btn-danger">Decline</button></a>
           {% endif %}
@@ -222,10 +221,9 @@
             modal.style.display = "block";
             // display info
             document.getElementById("req0").innerHTML = "Request ID: " + req[0]
-            document.getElementById("req3").innerHTML = "Activity: " + req[3]
+            document.getElementById("req3").innerHTML = "Activity: " + req[1]
             document.getElementById("req4").innerHTML = "Category: " + req[2]
             document.getElementById("req5").innerHTML = "Status: " + req[3]
-            document.getElementById("req8").innerHTML = "Evidence Needed: " + req[5]
             document.getElementById("req10").innerHTML = "Date of Action: " + req[6]
             document.getElementById("req11").innerHTML = "Submission Date: " + req[7];
             document.getElementById("accept").href = "http://localhost:8000/activities/accept_activity_request/" + req[0]

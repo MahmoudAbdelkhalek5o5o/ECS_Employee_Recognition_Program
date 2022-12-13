@@ -1,5 +1,5 @@
 from django.shortcuts import render , redirect
-from .models import Suggest_vendor ,Vendor , Reward  ,Redemption_Request
+from .models import Suggest_vendor ,Vendor , Reward  , Redemption_Request ,budget
 from activities.models import Points
 from Users.models import User , ROLE
 from django.http import HttpResponseRedirect 
@@ -61,11 +61,19 @@ def view_rewards(request,vendor_id):
         rewards = Reward.objects.filter(is_archived = False, vendor = vendor_id)
         
         vendors = Vendor.objects.filter(is_archived = False, pk = vendor_id)[0]
-        print(vendors)
-        return render(request,"rewards/view_rewards.html",{
+        if budget.objects.filter(year = datetime.now().year):
+            Budget = budget.objects.filter(year = datetime.now().year)[0]
+           
+            return render(request,"rewards/view_rewards.html",{
             "rewards":rewards,
-            "rewards1":vendors
+            "rewards1":vendors,
+            "rate": Budget
         })
+        else:
+            return render(request,"rewards/view_rewards.html",{
+                "rewards":rewards,
+                "rewards1":vendors
+            })
     else:
         return redirect("users-home")
     

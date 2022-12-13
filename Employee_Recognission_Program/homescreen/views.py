@@ -15,12 +15,11 @@ from django.db.models import Q
 # Create your views here.
 from datetime import datetime
 from threading import Timer
+import schedule
+import time
 
-x=datetime.now()
-y=x.replace(day=x.day+1, hour=1, minute=0, second=0, microsecond=0)
-delta_t=y-x
 
-secs=delta_t.seconds+1
+
 
 def expired():
     announcementss = announcement.objects.filter(is_archived = False).order_by("-StartDate")
@@ -46,9 +45,8 @@ def expired():
     for reward in rewards:
         if helpers.check_date(reward.start_date) == False or helpers.check_date(reward.end_date) == True:
             Reward.objects.filter(start_date = reward.start_date).update(is_archived = True)
+schedule.every().day.at("10:30").do(expired)
 
-# t = Timer(secs, expired)
-# t.start()
 def index(request):
     
    
@@ -69,20 +67,29 @@ def index(request):
             if i % 2 == 0:
                 vendorseven.append(vendor)
                 i+=1
-                print(vendorseven[0].img)
             else:
                 vendorsodd.append(vendor)
                 i+=1
         if request.user.role == ROLE[1][0]:
             if not ActivityCategory.objects.filter(owner = request.user , is_archived = False):
                 User.objects.filter(pk = request.user.emp_id).update(role = ROLE[2][0])
-                
-        return render(request , "homescreen/index.html" , {
+        if budget.objects.filter(year = datetime.now().year):
+            Budget = budget.objects.filter(year = datetime.now().year)[0]
+            rate = request.user.points * Budget.EGP // Budget.point
+            return render(request , "homescreen/index.html" , {
+            "vendorseven": vendorseven,
+            "vendorsodd": vendorsodd,
+            "vendors": vendors,
+            "announcements":announcements,
+            "rate":rate
+        })
+        else:
+            return render(request , "homescreen/index.html" , {
             "vendorseven": vendorseven,
             "vendorsodd": vendorsodd,
             "vendors": vendors,
             "announcements":announcements
-        })
+            })
     else:
         return redirect("login")
 

@@ -25,11 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-nb%mi^sfyv)4nfmun-jy645&^3%#hmwt%0qmhsbd%$j-i!2vh7'
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT =os.path.join(BASE_DIR, 'staticfiles')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 JWT_SECRET = SECRET_KEY  # use settings secret key for JWT secret
 JWT_ALGORITHM = 'HS256'
 JWT_EXP_DELTA_SECONDS = 86400  # token expiring time in seconds let's assign one day

@@ -90,12 +90,17 @@ def submit_activity_request(request, activity_id):
                             "activity":activity,
                             "err_message":"you cant submit a request with a future date.",
                         })
-                
+            if request.user.emp_id == activity.category.owner.emp_id:
+                    return render(request,"activities/submit_activity_request.html",{
+                "activity":activity,
+                "err_message":"Category Owner can't submit an activity requests to categories they own.",
+            })
             if request.user.role == ROLE[0][0] and not request.POST["submitted_to"]:
                  return render(request,"activities/submit_activity_request.html",{
                 "activity":activity,
-                "err_message":"Admin can't submit activity requests.",
+                "err_message":"Admin can't submit an activity requests.",
             })
+
             
             elif request.POST["submitted_to"]:
                 # checks if user exists
@@ -162,7 +167,7 @@ def view_activity_requests(request):
 
 def accept_activity_request(request,request_id):
     if request.user.is_authenticated:
-        if request.user.role == ROLE[1][0]:
+        if request.user.role == ROLE[1][0] or request.user.role == ROLE[0][0]:
             activity_request = ActivityRequest.objects.filter(pk = request_id)[0]
             if activity_request.category.owner == request.user:
                 ActivityRequest.objects.filter(pk = request_id).update(status = STATUS[1][0])
@@ -184,7 +189,7 @@ def accept_activity_request(request,request_id):
     
 def decline_activity_request(request,request_id):
     if request.user.is_authenticated:
-        if request.user.role == ROLE[1][0]:
+        if request.user.role == ROLE[1][0] or request.user.role == ROLE[0][0]:
             activity_request = ActivityRequest.objects.filter(pk = request_id).select_related('category')[0]
             if activity_request.category.owner == request.user:
                 ActivityRequest.objects.filter(pk = request_id).update(status = STATUS[2][0])

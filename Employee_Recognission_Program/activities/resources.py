@@ -19,18 +19,7 @@ class CategoryResource(resources.ModelResource):
     def before_import(self, dataset, using_transactions, dry_run, **kwargs):
         
         total = 0
-        if budget_in_point.objects.filter(year = datetime.now().year):
-            Budget = budget_in_point.objects.filter(year = datetime.now().year)[0].current_budget
-            for row in dataset.dict:
-                total += row["threshhold"]
-                if total > Budget:
-                    raise ValidationError(_("Category threshhold can't exceed system budget."))
-            if total + ActivityCategory.objects.aggregate(Sum('threshhold'))['threshhold__sum'] > Budget:
-                error(_("Category threshhold can't exceed system budget."))
-                
-        else:
-            error(_("please enter a budget before creating Activity Categories."))
-
+        
         
             
 class ActivityResource(resources.ModelResource):

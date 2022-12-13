@@ -97,7 +97,6 @@ def register(request):
         user['phone_number'] = user['number_0'] + " " + user["number_1"]
         # form constraints
         error_messages = get_error_messages_register(user)
-        user["role"] = "Role.E"
         user.pop('number_0')
         user.pop('number_1')
         user.pop('confirmation')
