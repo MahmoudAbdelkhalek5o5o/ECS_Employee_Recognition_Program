@@ -47,8 +47,8 @@ def expired():
         if helpers.check_date(reward.start_date) == False or helpers.check_date(reward.end_date) == True:
             Reward.objects.filter(start_date = reward.start_date).update(is_archived = True)
 
-t = Timer(secs, expired)
-t.start()
+# t = Timer(secs, expired)
+# t.start()
 def index(request):
     
    
