@@ -194,6 +194,7 @@ def decline_activity_request(request,request_id):
             if activity_request.category.owner == request.user:
                 ActivityRequest.objects.filter(pk = request_id).update(status = STATUS[2][0])
                 ActivityCategory.objects.filter(pk = activity_request.activity.category.id).update(threshhold = activity_request.activity.category.threshhold + activity_request.activity.points)
+            
             # send_mail(
             #         'Activity Request',
             #         'Your activity request has been rejected.',

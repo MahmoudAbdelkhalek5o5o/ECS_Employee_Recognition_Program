@@ -15,9 +15,10 @@ from tempfile import template
 from typing import Any
 from decouple import config
 import os
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,9 +28,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nb%mi^sfyv)4nfmun-jy645&^3%#hmwt%0qmhsbd%$j-i!2vh7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 JWT_SECRET = SECRET_KEY  # use settings secret key for JWT secret
 JWT_ALGORITHM = 'HS256'
 JWT_EXP_DELTA_SECONDS = 86400  # token expiring time in seconds let's assign one day
@@ -102,7 +103,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Employee_Recognission_Program.wsgi.application'
+# WSGI_APPLICATION = 'Employee_Recognission_Program.wsgi.application'
 
 
 # Database
@@ -110,12 +111,8 @@ WSGI_APPLICATION = 'Employee_Recognission_Program.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'HOST':config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-        'USER':config('DB_USER'),
-        'PASSWORD': config('password')
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3'
     }
 }
 #Authentication backends
@@ -161,7 +158,7 @@ USE_TZ = True
 
 AUTH_USER_MODEL = "users_management.UserManage" 
 AUTH_USER_MODEL = 'Users.User'
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JavaScript, Images ),
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 # email configs
 #EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
