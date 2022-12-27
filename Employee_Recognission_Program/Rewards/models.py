@@ -10,7 +10,7 @@ from Users.models import User, ROLE
 from django.core.exceptions import ValidationError
 import pytz
 from django.core.mail import send_mail
-
+from django.utils import timezone
 
 from enum import Enum
 STATUS = [
@@ -49,7 +49,7 @@ class Vendor(models.Model):
     name = models.CharField(max_length=30,null=False, blank= False, unique = True)
     vendor_policy = models.CharField(max_length=5000 , null = True)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True , null=False , default = datetime.now() ,validators = [validate_year])
+    start_date = models.DateTimeField(editable=True , null=False , default = timezone.now ,validators = [validate_year])
     end_date = models.DateTimeField(editable = True , null = True ,default = datetime(datetime.today().year, 12, 31), validators = [validate_year])
     img = models.ImageField(upload_to='images/', null = False , blank = True)
     creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True  ,related_name="vendor_creator" )
@@ -76,7 +76,7 @@ class Vendor(models.Model):
 class Reward(models.Model):
     vendor = models.ForeignKey(Vendor,on_delete=models.CASCADE,null=False , blank = False)
     creation_day = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateTimeField(editable=True , default = datetime.now() ,validators = [validate_year])
+    start_date = models.DateTimeField(editable=True , default = timezone.now ,validators = [validate_year])
     end_date = models.DateTimeField(editable=True , default = datetime(datetime.today().year, 12, 31),validators = [validate_year])
     creator = models.ForeignKey(User,on_delete=models.CASCADE , null = True, related_name="reward_creator" , editable= False)
     points_equivalent = models.IntegerField(null = False, blank = False)
@@ -100,7 +100,7 @@ class Redemption_Request(models.Model):
     status = models.CharField(max_length=10, null = False , blank = False, choices=STATUS, default=STATUS[1][0])
     approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name="admin" , editable = False)
     request_date = models.DateTimeField(auto_now_add=True,editable=False )
-    approved_date = models.DateTimeField(null=True,default = datetime.now() , editable=False)
+    approved_date = models.DateTimeField(null=True,default = timezone.now , editable=False)
     
     def clean(self, *args, **kwargs):
         if self.status == STATUS[1][0]:

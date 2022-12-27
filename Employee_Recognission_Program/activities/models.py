@@ -12,6 +12,7 @@ import datetime
 from distutils.log import error
 from django.core.mail import send_mail
 from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 
 
 # Create your models here.
@@ -78,7 +79,7 @@ class ActivityCategory(models.Model):
     category_name = models.CharField(max_length=30,null=False, blank= False, unique = True)
     description =  models.CharField(max_length=255,null=False, blank= False, default="")
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateField(editable=True, null = False, blank = False, default = datetime.date.today(), validators = [validate_year])
+    start_date = models.DateField(editable=True, null = False, blank = False, default = timezone.now, validators = [validate_year])
     end_date = models.DateField(editable=True , null = False, blank = False ,  default = datetime.date(datetime.datetime.now().year, 12, 31), validators = [validate_year])
     owner = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank = False, related_name="category_owner",validators = [validate_exist,validate_none])
     budget = models.IntegerField(null = True, blank = True)
@@ -137,7 +138,7 @@ class Activity(models.Model):
     approved_by = models.ForeignKey(User,on_delete=models.CASCADE,null=True , blank = True)
     evidence_needed =  models.CharField(max_length=1024,null=False, blank= False)
     creation_date = models.DateTimeField(auto_now_add=True,editable=False)
-    start_date = models.DateField(default = datetime.date.today(), validators = [validate_year])
+    start_date = models.DateField(default =timezone.now, validators = [validate_year])
     end_date = models.DateField(default = datetime.date(datetime.date.today().year, 12, 31) , null=True , validators = [validate_year])
     is_approved = models.BooleanField(null=False,blank = False , default=False)
     is_archived = models.BooleanField(null=False,blank = False , default=False)
@@ -226,7 +227,7 @@ class ActivitySuggestion(models.Model):
     justification = models.CharField(max_length=30 , null = True, blank=True)
     evidence_needed = models.CharField(max_length=1024 , null = True, blank=True)
     points = models.IntegerField(null = False, blank = False)
-    start_date = models.DateField(default = datetime.date.today(), validators = [validate_year])
+    start_date = models.DateField(default =timezone.now, validators = [validate_year])
     end_date = models.DateField(default = datetime.date(datetime.date.today().year, 12, 31) , null=True , validators = [validate_year])
     is_accepted = models.BooleanField(null=False , default = False)
     

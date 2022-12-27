@@ -5,10 +5,9 @@ from django.db import models
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-# from audit_log.models.managers import AuditLog
 # from audit_log.models.fields import LastUserField
 from django.contrib.auth.models import Group
-
+from django.utils import timezone
 Group.add_to_class('description', models.CharField(max_length=180,null=True, blank=True))
 
 
@@ -74,7 +73,7 @@ class announcement(models.Model):
     title = models.CharField(max_length=1024,null=False, blank= False)
   
     PostText= models.CharField(max_length=1024,null=False, blank= False)
-    StartDate= models.DateTimeField(editable=True,default = datetime.now())
+    StartDate= models.DateTimeField(editable=True,default = timezone.now)
     EndDate=models.DateTimeField(editable=True,default = datetime(datetime.today().year, 12, 31))
     is_archived = models.BooleanField(null=False , default = False)
     def clean(self, *args, **kwargs):

@@ -6,7 +6,7 @@ from .models import ROLE
 from phonenumber_field.formfields import PhoneNumberField
 from django.utils.translation import gettext_lazy as _
 
-from phonenumber_field.widgets import PhoneNumberPrefixWidget
+# from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 class announcementForm(forms.ModelChoiceField):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -24,7 +24,7 @@ class SignupForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'}), required=False,label="Email:")
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}), required=False,label='Password:')
     confirmation = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}), required=False, label = 'Confirm Password:')
-    number = PhoneNumberField(region="CA",widget=PhoneNumberPrefixWidget(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}), required=False , label = "Phone Number:")
+    # number = PhoneNumberField(region="CA",widget=PhoneNumberPrefixWidget(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}), required=False , label = "Phone Number:")
     emp_id = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'ID'}), required=False , label="Employee ID:")
     role = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Role'}), choices=ROLE , label="Role:")
     img = forms.ImageField(widget=forms.ClearableFileInput(attrs = {'class':'form-control'}), required=False, label='Profile Picture:')
@@ -112,7 +112,7 @@ class CreateUserForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'}), required=False)
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}), required=False)
     confirmation = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}), required=False, label = 'Confirm Password')
-    phone_number = PhoneNumberField(region="CA",widget=PhoneNumberPrefixWidget(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}), required=False)
+    # phone_number = PhoneNumberField(region="CA",widget=PhoneNumberPrefixWidget(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}), required=False)
     emp_id = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'ID'}), required=False)
     role = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Role'}), choices=ROLE)
     img = forms.ImageField(widget=forms.ClearableFileInput(attrs = {'class':'form-control'}), required=True, label='Profile Picture')

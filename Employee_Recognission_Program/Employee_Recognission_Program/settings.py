@@ -17,7 +17,7 @@ from decouple import config
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = BASE_DIR / "static"
 
 
 
@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
-    'auditlog',
+    # 'auditlog',
      'tabular_permissions',
      'djangocms_admin_style',
     
@@ -71,7 +71,7 @@ TABULAR_PERMISSIONS_CONFIG = {
     'apps_customization_func': 'tabular_permissions.helpers.apps_customization_func',
     'custom_permissions_customization_func': 'tabular_permissions.helpers.custom_permissions_customization_func',
 }
-AUDITLOG_INCLUDE_ALL_MODELS=True
+# AUDITLOG_INCLUDE_ALL_MODELS=True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -81,7 +81,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'auditlog.middleware.AuditlogMiddleware',
+    # 'audit_log.middleware.UserLoggingMiddleware',
     
 ]
 
@@ -103,7 +103,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'Employee_Recognission_Program.wsgi.application'
+WSGI_APPLICATION = 'Employee_Recognission_Program.wsgi.application'
 
 
 # Database
@@ -165,7 +165,7 @@ AUTH_USER_MODEL = 'Users.User'
 #EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
 STATIC_URL = 'static/'
-MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT =  BASE_DIR / "media"
 
 MEDIA_URL = '/media/'
 # Default primary key field type
