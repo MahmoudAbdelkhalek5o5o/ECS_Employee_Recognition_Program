@@ -362,7 +362,7 @@
     <a href="{% url 'categories_view' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white ;">Activities</a> 
     <a href="{% url 'view-vendors' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Rewards</a> 
     <a href="{% url 'user_edit' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">User</a> 
-    <a href="{% url 'leaderboard' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Leader Board</a>
+    <a href="{% url 'leaderboard' %}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">LeaderBoard</a>
     {% if request.user.role ==  "ADMIN" %}
     <a href="/admin" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white" style="color:white;">Admin Pannel</a>
     {% endif %}

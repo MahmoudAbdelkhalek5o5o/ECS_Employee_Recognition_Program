@@ -28,7 +28,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 SECRET_KEY = 'django-insecure-nb%mi^sfyv)4nfmun-jy645&^3%#hmwt%0qmhsbd%$j-i!2vh7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 JWT_SECRET = SECRET_KEY  # use settings secret key for JWT secret

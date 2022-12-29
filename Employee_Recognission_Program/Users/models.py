@@ -62,8 +62,7 @@ class User(AbstractUser):
         if self.role == ROLE[0][0]:
             self.is_staff = True
         
-        if User.objects.filter(username = self.username).exists():
-            raise ValidationError('username already exists')
+        
         super().clean(*args, **kwargs)
     
     

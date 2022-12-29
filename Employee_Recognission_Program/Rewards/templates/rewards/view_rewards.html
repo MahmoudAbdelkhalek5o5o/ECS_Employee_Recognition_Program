@@ -46,7 +46,7 @@
     {% endfor %}
 {% endif %}
 {% if rewards1.accepts_procurement == True %}
-<h1 style = "position: relative; left:15px; color:#16558f;">Driect procurment</h1>
+<h1 style = "position: relative; left:15px; color:#16558f;">Driect procurement</h1>
 <h3 style = "position: relative; left:15px;color: #16558f;">Exchange reciepts for cashback!</h3>   
 <div class="container mt-5 mb-9">
     <form action="{% url 'redeem_procurement' rewards1.id %}" method="post">
@@ -85,7 +85,7 @@
 <div class="container mt-5 mb-9">
 <div class="row">
     {% for reward in rewards %}
-        <div class="col-md-6"> 
+        <div class="col-md-6" style="margin-bottom: 15px;"> 
             <div class="coupon p-3 bg-white"> 
                 <div class="row no-gutters"> 
                     <div class="col-md-4 border-right"> 
