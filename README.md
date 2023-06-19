@@ -40,8 +40,7 @@ The ECS Employee Recognition Program is a web-based application that allows mana
 <p align="center">Login Portal</p>
 
 <p align="center">
-  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
-/WhatsApp Image 2023-06-20 at 1.41.28 AM.jpeg" alt="Login Portal" width="400">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/WhatsApp%20Image%202023-06-20%20at%201.41.28%20AM.jpeg" alt="Login Portal" width="400">
 </p>
 
 <br><p align="center">Signup Portal</p>
