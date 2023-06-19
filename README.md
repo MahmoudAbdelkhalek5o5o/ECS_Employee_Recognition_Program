@@ -42,3 +42,4 @@ The ECS Employee Recognition Program is a web-based application that allows mana
 To install and set up the ECS Employee Recognition Program, follow these steps:
 
 1. Clone the repository:
+   git clone https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program.git
