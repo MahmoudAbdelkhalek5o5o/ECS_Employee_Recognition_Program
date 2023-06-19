@@ -35,6 +35,43 @@ The ECS Employee Recognition Program is a web-based application that allows mana
   - Generate reports on recognition trends and statistics.
   - Analyze recognition data to identify top-performing employees or teams.
 
+## ECS Employee Recognition Program
+
+<p align="center">Login Portal</p>
+
+<p align="center">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
+/WhatsApp Image 2023-06-20 at 1.41.28 AM.jpeg" alt="Login Portal" width="400">
+</p>
+
+<br><p align="center">Signup Portal</p>
+
+<p align="center">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
+/WhatsApp Image 2023-06-20 at 1.43.42 AM.jpeg" alt="Signup Portal" width="400">
+</p>
+
+<br><p align="center">Creating a New Flight (exclusive for admins only)</p>
+
+<p align="center">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
+/WhatsApp Image 2023-06-20 at 1.43.59 AM.jpeg" alt="Creating a New Flight" width="400">
+</p>
+
+
+<br><p align="center">Editing or Deleting an Existing Flight (exclusive for admins only)</p>
+
+<p align="center">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
+/WhatsApp Image 2023-06-20 at 1.44.12 AM.jpeg" alt="Editing or Deleting an Existing Flight 1" width="400">
+</p>
+
+<p align="center">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
+/WhatsApp Image 2023-06-20 at 1.44.23 AM.jpeg" alt="Editing or Deleting an Existing Flight 2" width="400">
+</p>
+
+
 ## Installation
 
 To install and set up the ECS Employee Recognition Program, follow these steps:
