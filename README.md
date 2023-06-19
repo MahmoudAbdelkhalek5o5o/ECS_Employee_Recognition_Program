@@ -43,3 +43,17 @@ To install and set up the ECS Employee Recognition Program, follow these steps:
 
 1. Clone the repository:
    git clone https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program.git
+2. Navigate to the project directory:
+   cd ECS_Employee_Recognition_Program
+3. Install dependencies:
+   npm install
+4. Set up the environment variables:
+- Copy the `.env.example` file to `.env`.
+- Update the necessary configuration values in the `.env` file.
+
+5. Set up the database:
+- Create a new database for the application.
+- Update the database connection details in the `.env` file.
+
+6. Run database migrations:
+
