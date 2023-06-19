@@ -40,21 +40,21 @@ The ECS Employee Recognition Program is a web-based application that allows mana
 <p align="center">Login Portal</p>
 
 <p align="center">
-  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/WhatsApp%20Image%202023-06-20%20at%201.41.28%20AM.jpeg" alt="Login Portal" width="400">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/Employee_Recognission_Program/screenshots/AdminView.jpeg" alt="Login Portal" width="400">
 </p>
 
 <br><p align="center">Signup Portal</p>
 
 <p align="center">
   <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
-/WhatsApp Image 2023-06-20 at 1.43.42 AM.jpeg" alt="Signup Portal" width="400">
+/Categories.jpeg" alt="Signup Portal" width="400">
 </p>
 
 <br><p align="center">Creating a New Flight (exclusive for admins only)</p>
 
 <p align="center">
   <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
-/WhatsApp Image 2023-06-20 at 1.43.59 AM.jpeg" alt="Creating a New Flight" width="400">
+/Vendors.jpeg" alt="Creating a New Flight" width="400">
 </p>
 
 
@@ -62,12 +62,12 @@ The ECS Employee Recognition Program is a web-based application that allows mana
 
 <p align="center">
   <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
-/WhatsApp Image 2023-06-20 at 1.44.12 AM.jpeg" alt="Editing or Deleting an Existing Flight 1" width="400">
+/LeaderBoard.jpeg" alt="Editing or Deleting an Existing Flight 1" width="400">
 </p>
 
 <p align="center">
   <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/Employee_Recognission_Program/screenshots
-/WhatsApp Image 2023-06-20 at 1.44.23 AM.jpeg" alt="Editing or Deleting an Existing Flight 2" width="400">
+/UserForm.jpeg" alt="Editing or Deleting an Existing Flight 2" width="400">
 </p>
 
 
