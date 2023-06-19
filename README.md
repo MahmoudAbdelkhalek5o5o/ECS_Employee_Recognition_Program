@@ -35,35 +35,37 @@ The ECS Employee Recognition Program is a web-based application that allows mana
   - Generate reports on recognition trends and statistics.
   - Analyze recognition data to identify top-performing employees or teams.
 
-## ECS Employee Recognition Program
+## Screenshots Examples
 
-<p align="center">Login Portal</p>
+<p align="center">Admin Creating new Vendor</p>
 
 <p align="center">
-  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/AdminView.jpeg" alt="Login Portal" width="400">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/AdminView.jpeg" alt="Login Portal" width="800">
 </p>
 
-<br><p align="center">Signup Portal</p>
+<br><p align="center">User views Categories</p>
 
 <p align="center">
-  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/Categories.jpeg" alt="Signup Portal" width="400">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/Categories.jpeg" alt="Signup Portal" width="800">
 </p>
 
-<br><p align="center">Creating a New Flight (exclusive for admins only)</p>
+<br><p align="center">User views Vendors</p>
 
 <p align="center">
-  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/Vendors.jpeg" alt="Creating a New Flight" width="400">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/Vendors.jpeg" alt="Creating a New Flight" width="800">
 </p>
 
 
-<br><p align="center">Editing or Deleting an Existing Flight (exclusive for admins only)</p>
+<br><p align="center">Program Leaderboard</p>
 
 <p align="center">
-  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/LeaderBoard.jpeg" alt="Editing or Deleting an Existing Flight 1" width="400">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/LeaderBoard.jpeg" alt="Editing or Deleting an Existing Flight 1" width="800">
 </p>
 
+<br><p align="center">User Info Form</p>
+
 <p align="center">
-  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/UserForm.jpeg" alt="Editing or Deleting an Existing Flight 2" width="400">
+  <img src="https://github.com/MahmoudAbdelkhalek5o5o/ECS_Employee_Recognition_Program/blob/main/Employee_Recognission_Program/screenshots/UserForm.jpeg" alt="Editing or Deleting an Existing Flight 2" width="800">
 </p>
 
 
