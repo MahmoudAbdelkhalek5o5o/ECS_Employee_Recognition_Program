@@ -8,8 +8,6 @@ The ECS Employee Recognition Program is a web-based application that allows mana
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -46,14 +44,39 @@ To install and set up the ECS Employee Recognition Program, follow these steps:
 2. Navigate to the project directory:
    `cd ECS_Employee_Recognition_Program`
 3. Install dependencies:
-   `npm install`
+   `pip install -r requirements.txt`
 4. Set up the environment variables:
 - Copy the `.env.example` file to `.env`.
 - Update the necessary configuration values in the `.env` file.
-
 5. Set up the database:
 - Create a new database for the application.
 - Update the database connection details in the `.env` file.
-
 6. Run database migrations:
+   `python manage.py migrate`
+7. Start the application:   
+8. Access the application in your browser:
+   `http://localhost:8000`
 
+## Usage
+
+1. Open your web browser and navigate to `http://localhost:3000`.
+
+2. Register a new account or log in with your existing credentials.
+
+3. Depending on your user role (employee, manager, or administrator), you will have different permissions and capabilities within the application.
+
+4. Explore the different features, such as submitting recognition, viewing the recognition feed, granting rewards or badges, and generating reports.
+
+5. Customize the application settings and configurations as needed (see [Configuration](#configuration)).
+
+## Configuration
+
+The ECS Employee Recognition Program can be configured by modifying the values in the `.env` file. Here are some of the configurable options:
+
+- Database connection details
+- SMTP server settings for email notifications
+- Default user roles and permissions
+- Application branding and appearance
+- Default reward types and badge categories
+
+Make sure to restart the application after making any configuration changes for them to take effect.
